@@ -1,0 +1,153 @@
+@import "./_variables.css";
+
+/* ===== LAYOUT UTAMA ===== */
+.signup-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(
+      rgba(11, 58, 91, 0.85),
+      rgba(11, 58, 91, 0.85)
+    ),
+    url("../assets/latar-belakang.jpg") no-repeat center center;
+  background-size: cover;
+  padding: 20px;
+}
+
+/* ===== CARD SIGNUP ===== */
+.signup-card {
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 45px 60px;
+  width: 600px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+/* ===== LOGO BULAT “T” ===== */
+.signup-logo {
+  width: 60px;
+  height: 60px;
+  background-color: var(--color-accent);
+  color: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 0 auto 20px;
+}
+
+/* ===== TEKS ATAS ===== */
+.signup-card h2 {
+  color: #222;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.signup-card p {
+  color: #6b6b6b;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+
+/* ===== FORM ===== */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #1f1f1f;
+  margin-bottom: 5px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 6px rgba(11, 58, 91, 0.25);
+  outline: none;
+}
+
+/* ===== BUTTON ===== */
+.signup-btn {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.signup-btn:hover {
+  background-color: #ff7b45;
+  transform: translateY(-2px);
+}
+
+/* ===== REDIRECT TEXT ===== */
+.redirect-text {
+  margin-top: 18px;
+  color: #333;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.redirect-link {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.redirect-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== ANIMASI ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .signup-card {
+    width: 90%;
+    padding: 40px 25px;
+  }
+}

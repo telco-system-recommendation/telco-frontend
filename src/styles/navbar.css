@@ -1,0 +1,108 @@
+@import "./_variables.css";
+
+/* ==== NAVBAR UTAMA ==== */
+.navbar {
+  background-color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 100px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* ==== LOGO SECTION ==== */
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 40px;
+}
+
+.logo-text h1 {
+  color: var(--color-text-light);
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.logo-text p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  letter-spacing: 1px;
+}
+
+/* ==== NAVIGATION LINKS ==== */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-light);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* --- Hover dan Active State --- */
+.nav-item:hover,
+.nav-item.active {
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+  transform: translateY(-1px);
+}
+
+/* --- Ikon --- */
+.nav-icon {
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+/* ==== BUTTON (MASUK) ==== */
+.nav-btn {
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background-color: #d84b1f;
+  transform: translateY(-1px);
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 900px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 30px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 10px;
+  }
+}
