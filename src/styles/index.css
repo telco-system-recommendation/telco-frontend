@@ -157,43 +157,6 @@ p {
 }
 
 
-/* --- CTA --- */
-
-.cta {
-    background: linear-gradient(120deg, #0d47a1, #1976d2);
-    color: white;
-    text-align: center;
-    padding: 100px 20px;
-}
-
-.cta h2 {
-    color: white;
-    font-size: 2rem;
-    margin-bottom: 15px;
-}
-
-.cta button {
-    background-color: #ff5722;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    margin-top: 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: 0.3s;
-}
-
-.cta p {
-    color: white;
-}
-
-.cta button:hover {
-    background-color: #e64a19;
-}
-
-
 
 
 /* --- RESPONSIVE --- */

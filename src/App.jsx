@@ -8,6 +8,9 @@ import Footer from "./components/footer/Footer";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
+import Product from "./pages/product/Product";
+import Promo from "./pages/promo/Promo";
+
 
 // CSS Global
 import "./styles/_variables.css";
@@ -30,11 +33,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
+        <Route path="/produk" element={<Product />} />
+        <Route path="/promo" element={<Promo />} />
         {/*
         // Halaman berikut akan diaktifkan nanti
-        <Route path="/produk" element={<Produk />} />
-        <Route path="/promo" element={<Promo />} />
+        
+
         <Route path="/cart" element={<Cart />} />
         */}
       </Routes>

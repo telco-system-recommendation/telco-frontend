@@ -1,64 +1,108 @@
+import React from "react";
+import "./../../styles/signup.css";
+import { FaUser, FaEnvelope, FaLock, FaCheckCircle } from "react-icons/fa";
+import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
-import "../../styles/signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Akun berhasil dibuat! Silakan login.");
-    navigate("/login");
-  };
-
   return (
     <div className="signup-page">
+
+      {/* CARD FORM DI KIRI */}
       <div className="signup-card">
-        <div className="signup-logo">
-          <i className="fas fa-t"></i>
+        <h2 className="signup-title">Buat Akun Baru</h2>
+        <p className="signup-subtitle">
+          Daftar untuk memulai perjalanan digital Anda
+        </p>
+
+        {/* Nama */}
+        <label>Nama Lengkap</label>
+        <div className="input-wrapper">
+          <FaUser className="input-icon" />
+          <input type="text" placeholder="Masukkan nama lengkap" />
         </div>
 
-        <h2>Buat Akun Baru</h2>
-        <p>Daftar untuk memulai pengalaman digital Anda</p>
+        {/* Email */}
+        <label>Email</label>
+        <div className="input-wrapper">
+          <FaEnvelope className="input-icon" />
+          <input type="email" placeholder="nama@email.com" />
+        </div>
 
-        <form className="signup-form" onSubmit={handleSubmit}>
-          {/* Nama Lengkap */}
-          <div className="form-group">
-            <label>Nama Lengkap</label>
-            <div className="input-wrapper">
-              <i className="fa-solid fa-user"></i>
-              <input type="text" placeholder="Masukkan nama lengkap" required />
-            </div>
-          </div>
+        {/* Password */}
+        <label>Password</label>
+        <div className="input-wrapper">
+          <FaLock className="input-icon" />
+          <input type="password" placeholder="Minimal 8 karakter" />
+        </div>
 
-          {/* Email */}
-          <div className="form-group">
-            <label>Email</label>
-            <div className="input-wrapper">
-              <i className="fa-solid fa-envelope"></i>
-              <input type="email" placeholder="nama@email.com" required />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="form-group">
-            <label>Password</label>
-            <div className="input-wrapper">
-              <i className="fa-solid fa-lock"></i>
-              <input type="password" placeholder="Minimal 8 karakter" required />
-            </div>
-          </div>
-
-          <button type="submit" className="signup-btn">
-           Buat Akun
-          </button>
-        </form>
-
-        <p className="redirect-text">
-          Sudah punya akun?{" "}
-          <a href="/login" className="redirect-link">
-            Masuk
-          </a>
+        <p className="terms">
+          Dengan mendaftar, Anda menyetujui <span>Syarat & Ketentuan</span> kami
         </p>
+
+        <button className="signup-btn">Buat Akun →</button>
+
+        <div className="divider"><span>atau</span></div>
+
+        <p className="login-link">
+          Sudah punya akun?{" "}
+          <span onClick={() => navigate("/login")}>Masuk sekarang →</span>
+        </p>
+      </div>
+
+      {/* PANEL KANAN */}
+      <div className="signup-info">
+        <div className="signup-info-header">
+          <img src={logo} alt="logo" className="info-logo" />
+          <div>
+            <h3 className="info-title">Telcoreco</h3>
+            <p className="info-subtitle">Connect & Recommend</p>
+          </div>
+        </div>
+
+        <h2 className="info-bigtitle">
+          Bergabunglah dengan Ribuan Pengguna
+        </h2>
+
+        <p className="info-desc">
+          Nikmati berbagai keuntungan eksklusif dengan menjadi member Telcoreco
+        </p>
+
+        {/* Benefit List */}
+        <div className="benefit-item">
+          <FaCheckCircle className="benefit-icon" />
+          <div>
+            <h4>Proses Cepat & Mudah</h4>
+            <p>Registrasi hanya membutuhkan waktu kurang dari 1 menit</p>
+          </div>
+        </div>
+
+        <div className="benefit-item">
+          <FaCheckCircle className="benefit-icon" />
+          <div>
+            <h4>Akses ke Semua Produk</h4>
+            <p>Dapatkan akses ke ribuan produk digital terbaik</p>
+          </div>
+        </div>
+
+        <div className="benefit-item">
+          <FaCheckCircle className="benefit-icon" />
+          <div>
+            <h4>Rekomendasi Khusus</h4>
+            <p>Sistem AI kami memberikan rekomendasi sesuai preferensi Anda</p>
+          </div>
+        </div>
+
+        <div className="benefit-item">
+          <FaCheckCircle className="benefit-icon" />
+          <div>
+            <h4>Promo & Diskon Eksklusif</h4>
+            <p>Nikmati berbagai penawaran spesial hanya untuk member</p>
+          </div>
+        </div>
+
       </div>
     </div>
   );

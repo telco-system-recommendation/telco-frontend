@@ -1,136 +1,185 @@
 @import "./_variables.css";
 
-/* ===== LAYOUT UTAMA ===== */
+/* ==== PAGE BACKGROUND ==== */
 .signup-page {
   display: flex;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(
-      rgba(11, 58, 91, 0.85),
-      rgba(11, 58, 91, 0.85)
-    ),
-    url("../assets/latar-belakang.jpg") no-repeat center center;
-  background-size: cover;
-  padding: 20px;
+  align-items: center;
+  padding: 30px 50px;
+  height: 100vh;
+  background: linear-gradient(145deg, #ff7547, #e8412f);
+  color: white;
 }
 
-/* ===== CARD SIGNUP ===== */
+/* ==== CARD FORM (KIRI) ==== */
 .signup-card {
-  background-color: #fff;
+  width: 480px;
+  background: white;
+  padding: 40px 35px;
   border-radius: 14px;
-  padding: 45px 60px;
-  width: 600px;
-  text-align: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.7s ease-in-out;
+  box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.15);
+  margin-right: 60px;
+  color: #333;
 }
 
-/* ===== LOGO BULAT “T” ===== */
-.signup-logo {
-  width: 60px;
-  height: 60px;
-  background-color: var(--color-accent);
-  color: #fff;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.signup-title {
+  font-size: 26px;
   font-weight: 700;
-  font-size: 1.5rem;
-  margin: 0 auto 20px;
+  color: #0d2a4d;
+  text-align: center;
 }
 
-/* ===== TEKS ATAS ===== */
-.signup-card h2 {
-  color: #222;
-  font-weight: 600;
-  margin-bottom: 8px;
+.signup-subtitle {
+  margin-bottom: 25px;
+  color: gray;
+  text-align: center;
 }
 
-.signup-card p {
-  color: #6b6b6b;
-  margin-bottom: 30px;
-  font-size: 0.95rem;
-}
-
-/* ===== FORM ===== */
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  text-align: left;
-}
-
-.form-group label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #1f1f1f;
-  margin-bottom: 5px;
-}
-
+/* INPUT */
 .input-wrapper {
   position: relative;
-}
-
-.input-wrapper i {
-  position: absolute;
-  left: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
+  margin-bottom: 18px;
 }
 
 .input-wrapper input {
   width: 100%;
-  padding: 10px 12px 10px 38px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f8f9fa;
-  transition: all 0.3s ease;
+  padding: 11px 15px 11px 38px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
 }
 
-.input-wrapper input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 6px rgba(11, 58, 91, 0.25);
-  outline: none;
+.input-icon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: gray;
 }
 
-/* ===== BUTTON ===== */
+.terms {
+  margin: 5px 0 15px;
+  font-size: 13px;
+  color: #666;
+}
+
+.terms span {
+  color: #ff4d29;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* BUTTON */
 .signup-btn {
-  background-color: var(--color-accent);
+  width: 100%;
+  padding: 12px;
+  background: #ff4d29;
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
   margin-top: 10px;
-  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: 0.2s;
 }
 
 .signup-btn:hover {
-  background-color: #ff7b45;
-  transform: translateY(-2px);
+  background: #e63d1f;
 }
 
-/* ===== REDIRECT TEXT ===== */
-.redirect-text {
-  margin-top: 18px;
-  color: #333;
-  font-size: 0.9rem;
+/* Divider */
+.divider {
+  margin: 25px 0;
   text-align: center;
+  color: #888;
 }
 
-.redirect-link {
-  color: var(--color-accent);
-  font-weight: 600;
-  text-decoration: none;
+/* Login Link */
+.login-link {
+  text-align: center;
+  color: #333;
 }
 
-.redirect-link:hover {
-  text-decoration: underline;
+.login-link span {
+  color: #ff4d29;
+  font-weight: bold;
+  cursor: pointer;
 }
+
+/* ==== PANEL KANAN ==== */
+.signup-info {
+  width: 520px;
+  color: white; /* semua teks default putih */
+}
+
+/* LOGO DAN JUDUL */
+.signup-info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.info-logo {
+  width: 60px;
+  filter: brightness(10); /* bikin logo jadi putih / lebih terang */
+  margin-right: 12px;
+}
+
+.info-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffffff; /* putih */
+}
+
+.info-subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8); /* putih sedikit redup */
+}
+
+/* JUDUL BESAR */
+.info-bigtitle {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #ffffff; /* putih */
+}
+
+/* DESKRIPSI */
+.info-desc {
+  font-size: 16px;
+  margin-bottom: 25px;
+  max-width: 390px;
+  color: rgba(255,255,255,0.85); /* putih redup */
+}
+
+/* BENEFIT LIST */
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.benefit-icon {
+  font-size: 22px;
+  margin-right: 14px;
+  background: rgba(255,255,255,0.25);
+  padding: 10px;
+  border-radius: 12px;
+  color: white; /* icon putih */
+}
+
+.benefit-item h4 {
+  margin: 0;
+  font-size: 17px;
+  color: #ffffff; /* putih */
+}
+
+.benefit-item p {
+  margin: 5px 0 0;
+  opacity: 0.8;
+  font-size: 14px;
+  color: rgba(255,255,255,0.85); /* putih */
+}
+
+
 
 /* ===== ANIMASI ===== */
 @keyframes fadeIn {
