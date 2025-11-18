@@ -1,0 +1,168 @@
+/* ===== PAGE WRAPPER ===== */
+.dashboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ===== GREETING ===== */
+.greeting {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0e2a47;
+  margin-bottom: 30px;
+}
+
+.greeting span {
+  color: #f15a24;
+}
+
+/* ===== SUMMARY CARDS ===== */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.summary-card h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.summary-card p {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* ===== SECTION TITLES ===== */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0e2a47;
+  margin: 25px 0 16px;
+}
+
+/* ===== PRODUCT LIST GRID ===== */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  max-width: 1000px;          /* batas tampilan */
+  margin: 20px auto 0;        /* auto = CENTER */
+  place-items: center;        /* pastikan semua card di tengah */
+}
+
+
+/* ===== PRODUCT CARD ===== */
+.product-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 320px;
+  transition: 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10);
+}
+
+.product-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.product-card h4 {
+  font-size: 16px;
+  margin: 14px 0 6px;
+}
+
+.price {
+  color: #d62828;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+/* ===== BUY BUTTON ===== */
+.btn-buy {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  background: #0a3981;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-buy:hover {
+  background: #051d47;
+}
+
+/* ===== TRANSACTION LIST ===== */
+.transaction-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-item {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.transaction-item strong {
+  font-size: 15px;
+}
+
+.transaction-item p {
+  font-weight: 600;
+  color: #0e2a47;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .product-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .product-list {
+    grid-template-columns: 1fr;
+    max-width: 420px;      /* biar tetap center */
+  }
+}
+

@@ -1,86 +1,150 @@
-import React from "react";
+// src/pages/login/Login.jsx
+
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FiMail, FiLock } from "react-icons/fi";
+
 import "../../styles/login.css";
-import { FaBolt, FaWifi, FaShieldAlt, FaEnvelope, FaLock } from "react-icons/fa";
-import logo from "../../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+
+// API yang sudah ada
+import { login as loginApi, saveSession } from "../../services/authApi";
 
 const Login = () => {
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage("");
+
+  if (!email || !password) {
+    setErrorMessage("Email dan password wajib diisi.");
+    return;
+  }
+
+  try {
+    setIsSubmitting(true);
+
+    // 1. Login ke Supabase API
+    const session = await loginApi({ email, password });
+
+    // 2. Simpan session (access_token, user, dll)
+    saveSession(session);
+
+    // 3. Langsung redirect ke dashboard
+    return navigate("/dashboard");
+  } catch (error) {
+    setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
   return (
     <div className="login-page">
-
-      {/* ================= LEFT SIDE ================= */}
+      {/* Kiri: highlight Telcoreco */}
       <div className="login-left">
-        <div className="login-left-wrapper">
+        <div className="login-brand">
+          <p className="login-subtitle">Telcoreco</p>
+          <h1 className="login-title">Connect &amp; Recommend</h1>
+        </div>
 
-          {/* Logo */}
-          <div className="left-logo-box">
-            <img src={logo} alt="Telcoreco" className="left-logo-img" />
+        <div className="login-highlights">
+          <div className="highlight-item">
+            <span className="highlight-icon">⚡</span>
             <div>
-              <h2 className="left-title">Telcoreco</h2>
-              <p className="left-subtitle">Connect & Recommend</p>
+              <h3>Layanan Cepat &amp; Mudah</h3>
+              <p>Akses berbagai produk digital dengan proses yang simpel.</p>
             </div>
           </div>
 
-          {/* Feature Items */}
-          <div className="feature-item">
-            <FaBolt className="feature-icon" />
+          <div className="highlight-item">
+            <span className="highlight-icon">📡</span>
             <div>
-              <h4>Layanan Cepat & Mudah</h4>
-              <p>Akses berbagai produk digital dengan proses yang simpel dan efisien</p>
+              <h3>Rekomendasi Personal</h3>
+              <p>Dapatkan saran paket sesuai kebutuhan dan aktivitas Anda.</p>
             </div>
           </div>
 
-          <div className="feature-item">
-            <FaWifi className="feature-icon" />
+          <div className="highlight-item">
+            <span className="highlight-icon">🛡️</span>
             <div>
-              <h4>Rekomendasi Personal</h4>
-              <p>Dapatkan saran produk yang sesuai dengan kebutuhan Anda</p>
-            </div>
-          </div>
-
-          <div className="feature-item">
-            <FaShieldAlt className="feature-icon" />
-            <div>
-              <h4>Terpercaya & Aman</h4>
-              <p>Transaksi dijamin aman dengan sistem keamanan terbaik</p>
+              <h3>Transparan &amp; Aman</h3>
+              <p>Transaksi dijamin aman dengan sistem keamanan terbaik.</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ================= RIGHT CARD FORM ================= */}
-      <div className="login-card">
-        <h2>Selamat Datang Kembali</h2>
-        <p className="subtitle">Masuk ke akun Anda untuk melanjutkan</p>
+      {/* Kanan: form login */}
+      <div className="login-right">
+        <div className="login-card">
+          <h2 className="login-card-title">Selamat Datang Kembali</h2>
+          <p className="login-card-subtitle">
+            Masuk ke akun Anda untuk melanjutkan.
+          </p>
 
-        {/* Email */}
-        <label>Email</label>
-        <div className="input-wrapper">
-          <FaEnvelope className="input-icon" />
-          <input type="email" placeholder="nama@email.com" />
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <div className="input-with-icon">
+                <FiMail className="input-icon" />
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="nama@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <div className="input-with-icon">
+                <FiLock className="input-icon" />
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Masukkan password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Pesan error */}
+            {errorMessage && (
+              <p className="form-error-message">{errorMessage}</p>
+            )}
+
+            <button
+              type="submit"
+              className="btn-primary login-submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Memproses..." : "Masuk →"}
+            </button>
+          </form>
+
+          <div className="login-footer">
+            <p className="login-footer-text">
+              Belum punya akun?{" "}
+              <Link to="/signup" className="link">
+                Daftar sekarang →
+              </Link>
+            </p>
+          </div>
         </div>
-
-        {/* Password */}
-        <label>Password</label>
-        <div className="input-wrapper">
-          <FaLock className="input-icon" />
-          <input type="password" placeholder="********" />
-        </div>
-
-        <p className="forgot">Lupa password?</p>
-
-        <button className="login-btn">Masuk →</button>
-
-        <div className="divider">
-          <span>atau</span>
-        </div>
-
-        <p className="register">
-          Belum punya akun?{" "}
-          <span onClick={() => navigate("/signup")}>Daftar sekarang →</span>
-        </p>
       </div>
     </div>
   );

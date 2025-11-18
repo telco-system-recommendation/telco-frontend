@@ -1,202 +1,218 @@
-@import "./_variables.css";
-
-/* ==== PAGE BACKGROUND ==== */
+/* ==== GLOBAL CONTAINER ==== */
 .signup-page {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  padding: 20px;
+  background: linear-gradient(180deg, #ff6b3c, #d93b1c);
+}
+
+/* ==== LEFT FORM CARD ==== */
+.signup-left {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px 50px;
-  height: 100vh;
-  background: linear-gradient(145deg, #ff7547, #e8412f);
-  color: white;
 }
 
-/* ==== CARD FORM (KIRI) ==== */
 .signup-card {
+  background: #fff;
   width: 480px;
-  background: white;
-  padding: 40px 35px;
+  padding: 40px;
   border-radius: 14px;
-  box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.15);
-  margin-right: 60px;
-  color: #333;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
 }
 
-.signup-title {
-  font-size: 26px;
+.signup-card-title {
+  font-size: 24px;
   font-weight: 700;
-  color: #0d2a4d;
+  color: #1d2e4b;
   text-align: center;
 }
 
-.signup-subtitle {
-  margin-bottom: 25px;
-  color: gray;
+.signup-card-subtitle {
   text-align: center;
+  font-size: 14px;
+  color: #6b778c;
+  margin-bottom: 24px;
 }
 
-/* INPUT */
-.input-wrapper {
-  position: relative;
-  margin-bottom: 18px;
+/* ==== FORM ==== */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.input-wrapper input {
-  width: 100%;
-  padding: 11px 15px 11px 38px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2b3d55;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: #f5f7fa;
+  border: 1px solid #dce3ec;
+  font-size: 16px;
+}
+
+.input-with-icon:focus-within {
+  border-color: #ff6b3c;
+  background: #fff;
 }
 
 .input-icon {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  color: gray;
+  color: #64748b;
+  font-size: 18px;
 }
 
-.terms {
-  margin: 5px 0 15px;
-  font-size: 13px;
-  color: #666;
-}
-
-.terms span {
-  color: #ff4d29;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* BUTTON */
-.signup-btn {
-  width: 100%;
-  padding: 12px;
-  background: #ff4d29;
-  color: white;
+.input-with-icon input {
+  flex: 1;
   border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: 0.2s;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
 }
 
-.signup-btn:hover {
-  background: #e63d1f;
+/* ==== TERMS ==== */
+.form-terms {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #555;
 }
 
-/* Divider */
-.divider {
-  margin: 25px 0;
-  text-align: center;
-  color: #888;
+.form-terms a {
+  color: #ff6b3c;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-/* Login Link */
-.login-link {
-  text-align: center;
-  color: #333;
-}
-
-.login-link span {
-  color: #ff4d29;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* ==== PANEL KANAN ==== */
-.signup-info {
-  width: 520px;
-  color: white; /* semua teks default putih */
-}
-
-/* LOGO DAN JUDUL */
-.signup-info-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.info-logo {
-  width: 60px;
-  filter: brightness(10); /* bikin logo jadi putih / lebih terang */
-  margin-right: 12px;
-}
-
-.info-title {
-  font-size: 26px;
-  font-weight: bold;
-  color: #ffffff; /* putih */
-}
-
-.info-subtitle {
+/* ==== ERROR / SUCCESS ==== */
+.form-error-message {
+  color: #dc2626;
   font-size: 14px;
-  color: rgba(255,255,255,0.8); /* putih sedikit redup */
+  text-align: center;
 }
 
-/* JUDUL BESAR */
-.info-bigtitle {
-  font-size: 32px;
-  margin-bottom: 15px;
-  color: #ffffff; /* putih */
+.form-success-message {
+  color: #008b3f;
+  font-size: 14px;
+  text-align: center;
 }
 
-/* DESKRIPSI */
-.info-desc {
+/* ==== BUTTON ==== */
+.signup-submit {
+  width: 100%;
+  background: #f15a24;
+  color: #fff;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
   font-size: 16px;
-  margin-bottom: 25px;
-  max-width: 390px;
-  color: rgba(255,255,255,0.85); /* putih redup */
-}
-
-/* BENEFIT LIST */
-.benefit-item {
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
-  align-items: flex-start;
-  margin-bottom: 22px;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  transition: 0.25s ease;
 }
 
-.benefit-icon {
-  font-size: 22px;
-  margin-right: 14px;
-  background: rgba(255,255,255,0.25);
-  padding: 10px;
-  border-radius: 12px;
-  color: white; /* icon putih */
+.signup-submit::after {
+  font-size: 16px;
 }
 
-.benefit-item h4 {
-  margin: 0;
-  font-size: 17px;
-  color: #ffffff; /* putih */
+.signup-submit:hover {
+  background: #d64d1f;
+  transform: translateY(-1px);
 }
 
-.benefit-item p {
-  margin: 5px 0 0;
-  opacity: 0.8;
+.signup-submit:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+/* ==== DIVIDER ==== */
+.signup-divider {
+  text-align: center;
+  margin: 16px 0;
+  color: #999;
+  font-size: 12px;
+}
+
+/* ==== FOOTER ==== */
+.signup-footer {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.signup-footer-text {
   font-size: 14px;
-  color: rgba(255,255,255,0.85); /* putih */
+  color: #4b5563;
 }
 
-
-
-/* ===== ANIMASI ===== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.signup-footer-text a {
+  color: #ff6b3c;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 480px) {
-  .signup-card {
-    width: 90%;
-    padding: 40px 25px;
+.signup-footer-text a:hover {
+  text-decoration: underline;
+}
+
+/* ==== RIGHT SIDE (INFO) ==== */
+.signup-right {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  max-width: 400px;
+  gap: 20px;
+}
+
+.signup-highlight h3 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.signup-highlight ul {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.signup-highlight li {
+  display: flex;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.signup-highlight li::before {
+  content: "✔";
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ==== MOBILE ==== */
+@media (max-width: 900px) {
+  .signup-page {
+    flex-direction: column-reverse;
+    padding: 40px 20px;
+    gap: 40px;
+  }
+
+  .signup-right {
+    text-align: center;
+    align-items: center;
   }
 }

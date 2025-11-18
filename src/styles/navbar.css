@@ -9,6 +9,7 @@
   padding: 15px 100px;
   position: sticky;
   top: 0;
+  width: 100%;
   z-index: 1000;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
@@ -55,9 +56,10 @@
   padding: 8px 15px;
   border-radius: 8px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
 }
 
-/* --- Hover dan Active State --- */
+/* Hover + Active */
 .nav-item:hover,
 .nav-item.active {
   background-color: var(--color-accent);
@@ -67,11 +69,29 @@
 
 /* --- Ikon --- */
 .nav-icon {
+  font-size: 1.1rem;
   color: inherit;
-  transition: color 0.3s ease;
 }
 
-/* ==== BUTTON (MASUK) ==== */
+/* ==== CART ICON ==== */
+.cart-icon-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-icon {
+  font-size: 1.35rem;
+  color: var(--color-text-light);
+  transition: 0.3s ease;
+}
+
+.cart-icon:hover {
+  color: var(--color-accent);
+}
+
+/* ==== TOMBOL MASUK ==== */
 .nav-btn {
   background-color: var(--color-accent);
   border: none;

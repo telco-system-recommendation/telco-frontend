@@ -1,36 +1,92 @@
-import { NavLink } from "react-router-dom";
-import { FaHome, FaBoxOpen, FaTag, FaShoppingCart, FaSignInAlt } from "react-icons/fa";
-import logo from "../../assets/logo.png";
+import React from "react";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { FiHome, FiBox, FiTag, FiUser, FiShoppingCart, FiLogOut } from "react-icons/fi";
+import { getSession, clearSession, logout } from "../../services/authApi";
 import "../../styles/navbar.css";
+import logo from "../../assets/logo.png";
+
 
 const Navbar = () => {
+  const session = getSession();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout(session?.access_token);
+    } catch (e) {
+      console.warn("Logout error:", e);
+    }
+    clearSession();
+    navigate("/");
+  };
+
   return (
     <nav className="navbar">
+
+      {/* ==== LOGO ==== */}
       <div className="logo-section">
-        <img src={logo} alt="Telcoreco Logo" className="logo-img" />
+        <img src={logo} alt="logo" className="logo-img" />
         <div className="logo-text">
           <h1>Telcoreco</h1>
           <p>CONNECT & RECOMMEND</p>
         </div>
       </div>
 
+      {/* ==== MENU ==== */}
       <div className="nav-links">
-        <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
-          <FaHome className="nav-icon" /> Home
-        </NavLink>
-        <NavLink to="/produk" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
-          <FaBoxOpen className="nav-icon" /> Produk
-        </NavLink>
-        <NavLink to="/promo" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
-          <FaTag className="nav-icon" /> Promo
-        </NavLink>
-        <NavLink to="/cart" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
-          <FaShoppingCart className="nav-icon" />
-        </NavLink>
-        <NavLink to="/login" className={({ isActive }) => `nav-btn ${isActive ? "active" : ""}`}>
-          <FaSignInAlt /> Masuk
-        </NavLink>
+
+        {!session && (
+          <>
+            <NavLink to="/" className="nav-item">
+              Home
+            </NavLink>
+
+            <NavLink to="/produk" className="nav-item">
+              Produk
+            </NavLink>
+
+            <NavLink to="/promo" className="nav-item">
+              Promo
+            </NavLink>
+
+            <NavLink to="/cart" className="nav-item">
+              <FiShoppingCart className="nav-icon" />
+            </NavLink>
+
+            <Link to="/login" className="nav-btn">Masuk</Link>
+          </>
+        )}
+
+        {session && (
+          <>
+            <NavLink to="/dashboard" className="nav-item">
+              <FiHome className="nav-icon" /> Dashboard
+            </NavLink>
+
+            <NavLink to="/produk" className="nav-item">
+              <FiBox className="nav-icon" /> Produk
+            </NavLink>
+
+            <NavLink to="/promo" className="nav-item">
+              <FiTag className="nav-icon" /> Promo
+            </NavLink>
+
+            <NavLink to="/profile" className="nav-item">
+              <FiUser className="nav-icon" /> Profil
+            </NavLink>
+
+            <NavLink to="/cart" className="nav-item">
+              <FiShoppingCart className="nav-icon" />
+            </NavLink>
+
+            <button className="nav-btn" onClick={handleLogout}>
+              <FiLogOut /> Logout
+            </button>
+          </>
+        )}
+
       </div>
+
     </nav>
   );
 };
