@@ -2,7 +2,7 @@ import React from "react";
 import "../../styles/promo.css";
 
 const Promo = () => {
-  const bgImage = "/src/assets/latar-belakang.jpg"; // gunakan gambar background yang sudah ada
+  const bgImage = "/src/assets/latar-belakang.jpg";
 
   return (
     <div className="promo-page">

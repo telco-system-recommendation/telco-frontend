@@ -156,8 +156,8 @@
   font-weight: 600;
   cursor: pointer;
   display: flex;
-  justify-content: center; /* CENTER X */
-  align-items: center;     /* CENTER Y */
+  justify-content: center; 
+  align-items: center;     
   gap: 6px;
   transition: 0.25s ease;
 }

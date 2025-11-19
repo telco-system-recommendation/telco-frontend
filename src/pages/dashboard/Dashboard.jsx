@@ -1,4 +1,3 @@
-// src/pages/dashboard/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { getSession } from "../../services/authApi";
 import { getProfile } from "../../services/profilesApi";
@@ -7,10 +6,21 @@ import {
   getUserTransactions,
   createTransaction,
 } from "../../services/transactionApi";
+import { useNavigate } from "react-router-dom";
+
 
 import "../../styles/dashboard.css";
 
+// mapping dari preferensi di profil -> kategori di tabel product
+const PREFERENCE_TO_CATEGORY = {
+  "Pulsa & Nelpon": "pulsa",
+  "Kuota Data": "data",
+  "Streaming Subscription": "streaming",
+  "Roaming": "roaming",
+};
+
 const Dashboard = () => {
+  const navigate = useNavigate();
   const session = getSession();
   const user = session?.user;
 
@@ -21,7 +31,7 @@ const Dashboard = () => {
 
   const totalPengeluaran = transactions
     .filter((t) => t.status === "success")
-    .reduce((sum, t) => sum + (t.price || 0), 0);
+    .reduce((sum, t) => sum + Number(t.price || 0), 0);
 
   const loadAll = async () => {
     try {
@@ -30,13 +40,28 @@ const Dashboard = () => {
       const p = await getProfile(user.id);
       setProfile(p);
 
-      const productList = await getProductsByCategory(
-        p?.preferensi_produk || null
-      );
-      setProducts(productList);
+      // --- rekomendasi produk hanya berdasarkan preferensi ---
+      let productList = [];
+
+      if (p?.preferensi_produk) {
+        const categorySlug = PREFERENCE_TO_CATEGORY[p.preferensi_produk];
+
+        if (categorySlug) {
+          // kalau mapping ada, baru fetch produk
+          productList = await getProductsByCategory(categorySlug);
+        } else {
+          // kalau preferensi tidak dikenal, jangan tampilkan apapun
+          productList = [];
+        }
+      } else {
+        // belum isi preferensi -> rekomendasi kosong
+        productList = [];
+      }
+
+      setProducts(productList || []);
 
       const trx = await getUserTransactions(user.id);
-      setTransactions(trx);
+      setTransactions(trx || []);
     } catch (err) {
       console.error("Gagal memuat dashboard:", err);
     } finally {
@@ -45,9 +70,26 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    loadAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const init = async () => {
+    if (!user) return;
+
+    // cek di localStorage apakah user ini sudah pernah isi cold start
+    const flagKey = `coldstart_completed_${user.id}`;
+    const isColdStartDone = localStorage.getItem(flagKey) === "true";
+
+    if (!isColdStartDone) {
+      navigate("/cold-start");
+      return;
+    }
+
+    await loadAll();
+  };
+
+  init();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
+
 
   const handleBuy = async (prod) => {
     try {
@@ -106,10 +148,10 @@ const Dashboard = () => {
       <div className="product-list">
         {products.map((prod) => (
           <div className="product-card" key={prod.product_id}>
-            <img src={prod.image} alt={prod.name} />
+            {prod.image && <img src={prod.image} alt={prod.name} />}
             <h4>{prod.name}</h4>
             <p className="price">
-              Rp {prod.price ? prod.price.toLocaleString("id-ID") : 0}
+              Rp {Number(prod.price || 0).toLocaleString("id-ID")}
             </p>
             <button className="btn-buy" onClick={() => handleBuy(prod)}>
               Beli Sekarang
@@ -130,7 +172,7 @@ const Dashboard = () => {
               <strong>{trx.product_name}</strong>
               <p>Status: {trx.status}</p>
             </div>
-            <p>Rp {trx.price?.toLocaleString("id-ID")}</p>
+            <p>Rp {Number(trx.price || 0).toLocaleString("id-ID")}</p>
           </div>
         ))}
       </div>

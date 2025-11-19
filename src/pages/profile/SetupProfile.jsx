@@ -1,11 +1,9 @@
-// src/pages/profile/SetupProfile.jsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSession } from "../../services/authApi";
 import { updateProfile } from "../../services/profilesApi";
 
-import "../../styles/setupProfile.css"; // ⬅️ Tambahkan ini
+import "../../styles/setupProfile.css"; 
 
 const SetupProfile = () => {
   const navigate = useNavigate();
@@ -44,7 +42,7 @@ const SetupProfile = () => {
         preferensi_produk: preferensi,
       });
 
-      navigate("/dashboard");
+      navigate("/cold-start");
     } catch (err) {
       setErrorMsg("Gagal menyimpan profil.");
     } finally {
@@ -82,19 +80,24 @@ const SetupProfile = () => {
           </label>
 
           <label>
-            Preferensi Produk
-            <select
-              value={preferensi}
-              onChange={(e) => setPreferensi(e.target.value)}
-            >
-              <option value="">Pilih preferensi produk</option>
-              <option value="pulsa">Pulsa & Paket Nelpon</option>
-              <option value="kuota">Kuota Data Internet</option>
-              <option value="streaming">Streaming & Entertainment</option>
-              <option value="roaming">Roaming Internasional</option>
-              <option value="semua">Semua Produk</option>
-            </select>
-          </label>
+  Preferensi Produk
+  <select
+    value={preferensi}
+    onChange={(e) => setPreferensi(e.target.value)}
+  >
+    <option value="">Pilih preferensi produk</option>
+
+    
+    <option value="pulsa">Pulsa & Paket Nelpon</option>
+    <option value="data">Kuota Data Internet</option>
+    <option value="streaming">Streaming & Entertainment</option>
+    <option value="roaming">Roaming Internasional</option>
+
+    
+    <option value="semua">Semua Produk</option>
+  </select>
+</label>
+
 
           {errorMsg && <p className="setup-error">{errorMsg}</p>}
 

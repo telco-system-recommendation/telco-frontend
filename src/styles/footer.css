@@ -1,12 +1,11 @@
 @import './_variables.css';
 
 
-
 .footer {
   background: #083763;
   color: #ffffff;
   padding: 50px 0 30px;
-  /* margin-top: 40px; */
+
 }
 
 .footer p{

@@ -1,13 +1,13 @@
 :root {
   /* === BRAND COLORS === */
-  --color-primary: #0b3a5b;       /* biru tua utama (navbar & tombol login) */
-  --color-primary-dark: #07253a;  /* variasi lebih gelap untuk hover */
-  --color-secondary: #1976d2;     /* biru cerah pendukung */
-  --color-accent: #f15a24;        /* oranye brand utama */
-  --color-accent-light: #ff7b45;  /* oranye hover */
-  --color-bg-light: #f5f7fa;      /* latar belakang halaman terang */
-  --color-text-dark: #1a1a1a;     /* teks utama hitam */
-  --color-text-light: #ffffff;    /* teks putih */
+  --color-primary: #0b3a5b;      
+  --color-primary-dark: #07253a;  
+  --color-secondary: #1976d2;     
+  --color-accent: #f15a24;       
+  --color-accent-light: #ff7b45;  
+  --color-bg-light: #f5f7fa;      
+  --color-text-dark: #1a1a1a;     
+  --color-text-light: #ffffff;   
 
   /* === SHADOW & BORDER === */
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);

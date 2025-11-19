@@ -1,4 +1,3 @@
-// src/services/transactionApi.js
 import { getAccessToken } from "./authApi";
 
 const SUPABASE_URL = "https://vledlplbztmprbgjwxie.supabase.co";

@@ -1,0 +1,177 @@
+/* ============================
+   Cold Start Page Layout
+   ============================ */
+
+.coldstart-page {
+  min-height: calc(100vh - 80px); /* biar tidak ketutup navbar */
+  background: linear-gradient(180deg, #02315e, #001b3b);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 16px 40px;
+}
+
+/* Card utama */
+.coldstart-wrapper {
+  background: #ffffff;
+  max-width: 760px;
+  width: 100%;
+  border-radius: 24px;
+  padding: 28px 32px 26px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+
+/* Judul & subjudul */
+.coldstart-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b2e59;
+  margin-bottom: 6px;
+}
+
+.coldstart-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 22px;
+}
+
+/* Form container */
+.coldstart-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ============================
+   Field / Label / Input
+   ============================ */
+
+.cs-field {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid transparent;
+}
+
+.cs-field:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.18);
+}
+
+.cs-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+/* Radio group */
+.cs-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.cs-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.cs-radio-group input[type="radio"] {
+  accent-color: #f97316;
+}
+
+/* Select & input (kalau dipakai) */
+.cs-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.cs-select:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.2);
+}
+
+/* ============================
+   Error & Button
+   ============================ */
+
+.cs-error {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+/* Tombol submit */
+.cs-submit {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: none;
+  background: #f97316;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.1s ease,
+    box-shadow 0.18s ease;
+  box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
+}
+
+.cs-submit:hover:not(:disabled) {
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(249, 115, 22, 0.45);
+}
+
+.cs-submit:disabled {
+  opacity: 0.7;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* ============================
+   Responsive
+   ============================ */
+
+@media (max-width: 768px) {
+  .coldstart-page {
+    padding-top: 40px;
+  }
+
+  .coldstart-wrapper {
+    padding: 22px 18px 20px;
+    border-radius: 20px;
+  }
+
+  .coldstart-title {
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coldstart-page {
+    padding: 32px 12px 24px;
+  }
+
+  .cs-field {
+    padding: 12px 12px;
+  }
+
+  .cs-radio-group {
+    gap: 4px;
+  }
+}

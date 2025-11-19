@@ -1,5 +1,3 @@
-// src/services/sessionListener.js
-
 import { getSession } from "./authApi";
 
 let listeners = [];

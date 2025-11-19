@@ -57,9 +57,9 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
-  max-width: 1000px;          /* batas tampilan */
-  margin: 20px auto 0;        /* auto = CENTER */
-  place-items: center;        /* pastikan semua card di tengah */
+  max-width: 1000px;          
+  margin: 20px auto 0;        
+  place-items: center;        
 }
 
 
@@ -162,7 +162,7 @@
 
   .product-list {
     grid-template-columns: 1fr;
-    max-width: 420px;      /* biar tetap center */
+    max-width: 420px;      
   }
 }
 

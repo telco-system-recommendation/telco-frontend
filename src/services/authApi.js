@@ -1,4 +1,3 @@
-// src/services/authApi.js
 import { notifySessionChange } from "./sessionListener";
 
 const SUPABASE_URL = "https://vledlplbztmprbgjwxie.supabase.co";
@@ -44,7 +43,7 @@ async function handleResponse(response) {
    ================ AUTH ENDPOINTS ======================
    ===================================================== */
 
-// 🔐 LOGIN — POST /auth/v1/token?grant_type=password
+// LOGIN — POST /auth/v1/token?grant_type=password
 export async function login({ email, password }) {
   const res = await fetch(`${AUTH_BASE_URL}/token?grant_type=password`, {
     method: "POST",
@@ -57,13 +56,12 @@ export async function login({ email, password }) {
 
   const session = await handleResponse(res);
 
-  // Simpan session + informasikan ke listener
   saveSession(session);
 
   return session;
 }
 
-// 📝 SIGNUP — POST /auth/v1/signup
+// SIGNUP — POST /auth/v1/signup
 export async function signup({ email, password }) {
   const res = await fetch(`${AUTH_BASE_URL}/signup`, {
     method: "POST",
@@ -77,7 +75,7 @@ export async function signup({ email, password }) {
   return handleResponse(res);
 }
 
-// 🚪 LOGOUT — POST /auth/v1/logout
+// LOGOUT — POST /auth/v1/logout
 export async function logout() {
   const token = getAccessToken();
   if (!token) {
@@ -95,12 +93,12 @@ export async function logout() {
     },
   });
 
-  // Supabase biasanya return 204, jadi aman
+ 
   if (!res.ok) {
     console.warn("Logout gagal:", await res.text());
   }
 
-  // Bersihkan session lokal
+
   clearSession();
   notifySessionChange(null);
 }
