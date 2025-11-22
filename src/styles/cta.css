@@ -1,0 +1,75 @@
+@import './_variables.css';
+
+/* === CTA SECTION — background gradient + circle === */
+.cta-section {
+  width: 100%;
+  padding: 80px 0;
+  background: linear-gradient(135deg, #0a3d62, #1e5799);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Circle kiri */
+.cta-section::before {
+  content: "";
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  top: -100px;
+  left: -50px;
+}
+
+/* Circle kanan */
+.cta-section::after {
+  content: "";
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  bottom: -120px;
+  right: -50px;
+}
+
+/* === Content container === */
+.cta-container {
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+  color: white;
+  position: relative;
+  z-index: 5;
+}
+
+.cta-container h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: white;
+}
+
+.cta-container p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  opacity: 0.9;
+  color: white;
+}
+
+/* === Button === */
+.cta-button {
+  background: #f97316;
+  padding: 12px 28px;
+  border-radius: 8px;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.cta-button:hover {
+  background: #ff8a3d;
+}
