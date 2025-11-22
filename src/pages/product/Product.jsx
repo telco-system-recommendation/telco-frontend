@@ -4,8 +4,9 @@ import "../../styles/product.css";
 import { FaPhoneAlt, FaWifi, FaTv, FaGlobe } from "react-icons/fa";
 import { getSession } from "../../services/authApi";
 import { getProductsByCategory } from "../../services/productApi";
+import { useCart } from "../../context/CartContext"; // <--- Tambahan
 
-// Modal sederhana untuk memaksa login / signup
+
 const LoginRequiredModal = ({ isOpen, onClose, onLogin, onSignup }) => {
   if (!isOpen) return null;
 
@@ -48,7 +49,7 @@ const LoginRequiredModal = ({ isOpen, onClose, onLogin, onSignup }) => {
 const CATEGORY_CONFIG = {
   pulsa: {
     label: "Pulsa & Nelpon",
-    supabaseCategory: "pulsa",       
+    supabaseCategory: "pulsa",
   },
   data: {
     label: "Kuota Data",
@@ -64,9 +65,9 @@ const CATEGORY_CONFIG = {
   },
 };
 
-
 const Product = () => {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [selectedKey, setSelectedKey] = useState(null);
   const [products, setProducts] = useState([]);
@@ -121,6 +122,27 @@ const Product = () => {
     navigate("/signup");
   };
 
+
+  const handleBuyNow = (item) => {
+    const session = getSession();
+
+   
+    if (!session || !session.access_token) {
+      handleRequireAuth();
+      return;
+    }
+
+
+    addToCart({
+      product_id: item.product_id,
+      name: item.name,
+      price: item.price,
+    });
+
+ 
+    navigate("/checkout");
+  };
+
   const currentCategoryLabel =
     selectedKey && CATEGORY_CONFIG[selectedKey]?.label;
 
@@ -152,30 +174,36 @@ const Product = () => {
 
         <div className="selected-product-grid">
           {products.map((item) => (
-  <div key={item.product_id} className="selected-product-card">
-    {item.popular && <span className="badge-popular">Populer</span>}
+            <div key={item.product_id} className="selected-product-card">
+              {item.popular && <span className="badge-popular">Populer</span>}
 
-    <h3 className="selected-product-name">{item.name}</h3>
-    <p className="selected-product-price">
-      Rp {Number(item.price || 0).toLocaleString("id-ID")}
-    </p>
-    {item.description && (
-      <p className="selected-product-desc">{item.description}</p>
-    )}
+              <h3 className="selected-product-name">{item.name}</h3>
+              <p className="selected-product-price">
+                Rp {Number(item.price || 0).toLocaleString("id-ID")}
+              </p>
+              {item.description && (
+                <p className="selected-product-desc">
+                  {item.description}
+                </p>
+              )}
 
-    {Array.isArray(item.features) && item.features.length > 0 && (
-      <ul className="selected-product-features">
-        {item.features.map((f, idx) => (
-          <li key={idx}>{f}</li>
-        ))}
-      </ul>
-    )}
+              {Array.isArray(item.features) && item.features.length > 0 && (
+                <ul className="selected-product-features">
+                  {item.features.map((f, idx) => (
+                    <li key={idx}>{f}</li>
+                  ))}
+                </ul>
+              )}
 
-    <button type="button" className="btn-buy">
-      Beli Sekarang
-    </button>
-  </div>
-))}
+              <button
+                type="button"
+                className="btn-buy"
+                onClick={() => handleBuyNow(item)} // <--- di sini
+              >
+                Beli Sekarang
+              </button>
+            </div>
+          ))}
         </div>
 
         <LoginRequiredModal

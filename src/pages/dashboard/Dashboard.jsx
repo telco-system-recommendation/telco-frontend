@@ -4,10 +4,10 @@ import { getProfile } from "../../services/profilesApi";
 import { getProductsByCategory } from "../../services/productApi";
 import {
   getUserTransactions,
-  createTransaction,
+  createTransaction, // (sekarang belum dipakai, boleh kamu hapus kalau mau)
 } from "../../services/transactionApi";
 import { useNavigate } from "react-router-dom";
-
+import { useCart } from "../../context/CartContext";
 
 import "../../styles/dashboard.css";
 
@@ -20,6 +20,7 @@ const PREFERENCE_TO_CATEGORY = {
 };
 
 const Dashboard = () => {
+  const { addToCart } = useCart();
   const navigate = useNavigate();
   const session = getSession();
   const user = session?.user;
@@ -70,42 +71,32 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-  const init = async () => {
-    if (!user) return;
+    const init = async () => {
+      if (!user) return;
 
-    // cek di localStorage apakah user ini sudah pernah isi cold start
-    const flagKey = `coldstart_completed_${user.id}`;
-    const isColdStartDone = localStorage.getItem(flagKey) === "true";
+      // cek di localStorage apakah user ini sudah pernah isi cold start
+      const flagKey = `coldstart_completed_${user.id}`;
+      const isColdStartDone = localStorage.getItem(flagKey) === "true";
 
-    if (!isColdStartDone) {
-      navigate("/cold-start");
-      return;
-    }
+      if (!isColdStartDone) {
+        navigate("/cold-start");
+        return;
+      }
 
-    await loadAll();
-  };
-
-  init();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
-
-
-
-  const handleBuy = async (prod) => {
-    try {
-      await createTransaction({
-        product_id: prod.product_id,
-        product_name: prod.name,
-        price: prod.price,
-        status: "pending",
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-      });
       await loadAll();
-      alert("Transaksi berhasil dibuat (pending).");
-    } catch (err) {
-      alert("Gagal membuat transaksi: " + err.message);
-    }
+    };
+
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleBuy = (prod) => {
+    addToCart({
+      product_id: prod.product_id,
+      name: prod.name,
+      price: prod.price,
+    });
+    navigate("/checkout");
   };
 
   if (loading) return <p>Memuat dashboard...</p>;
@@ -153,7 +144,11 @@ const Dashboard = () => {
             <p className="price">
               Rp {Number(prod.price || 0).toLocaleString("id-ID")}
             </p>
-            <button className="btn-buy" onClick={() => handleBuy(prod)}>
+
+            <button
+              className="buy-btn"
+              onClick={() => handleBuy(prod)}
+            >
               Beli Sekarang
             </button>
           </div>
