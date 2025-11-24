@@ -45,7 +45,7 @@ const Signup = () => {
       const session = await loginApi({ email, password });
       saveSession(session);
 
-      setSuccessMessage("Akun berhasil dibuat! Mengarahkan ke dashboard...");
+      setSuccessMessage("Akun berhasil dibuat!");
       // TODO: kalau nanti ada halaman "Lengkapi Profil", ganti ke /profil-setup
       setTimeout(() => {
         navigate("/setup-profile");

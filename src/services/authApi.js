@@ -75,6 +75,42 @@ export async function signup({ email, password }) {
   return handleResponse(res);
 }
 
+// RESET PASSWORD VIA EMAIL (LUPA PASSWORD)
+export async function resetPassword({ email }) {
+  const res = await fetch(`${AUTH_BASE_URL}/recover`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  // Supabase biasanya balikin body kosong, tapi handleResponse kita sudah aman
+  await handleResponse(res);
+  return true;
+}
+
+
+// UPDATE PASSWORD
+export async function updatePassword({ email, newPassword }) {
+  const res = await fetch(`${AUTH_BASE_URL}/user`, {
+    method: "PUT",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password: newPassword,
+    }),
+  });
+
+  const data = await handleResponse(res);
+  return data;
+}
+
+
 // LOGOUT — POST /auth/v1/logout
 export async function logout() {
   const token = getAccessToken();

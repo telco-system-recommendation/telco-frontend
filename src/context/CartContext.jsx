@@ -1,47 +1,64 @@
-// src/context/CartContext.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
-const CART_KEY = "telcoreco_cart";
+const CART_KEY = "telcoreco_cart_v1";
 
 export const CartProvider = ({ children }) => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => {
+    if (typeof window === "undefined") return [];
 
-  // load dari localStorage
-  useEffect(() => {
     try {
-      const raw = localStorage.getItem(CART_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          setItems(parsed);
-        }
-      }
+      const raw = window.localStorage.getItem(CART_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+
+      if (!Array.isArray(parsed)) return [];
+
+      // pastikan setiap item punya id unik
+      return parsed.map((p) => ({
+        ...p,
+        id: p.id ?? p.product_id, 
+        quantity: p.quantity ?? 1,
+      }));
     } catch (err) {
       console.error("Failed to parse cart from localStorage", err);
+      return [];
     }
-  }, []);
+  });
 
   // simpan ke localStorage setiap berubah
   useEffect(() => {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    try {
+      window.localStorage.setItem(CART_KEY, JSON.stringify(items));
+    } catch (err) {
+      console.error("Failed to save cart to localStorage", err);
+    }
   }, [items]);
 
   const addToCart = (product, qty = 1) => {
     setItems((prev) => {
-      const existing = prev.find((p) => p.product_id === product.product_id);
+      const key = product.id ?? product.product_id;
+      if (!key) {
+        console.warn("Product without id/product_id added to cart:", product);
+        return prev;
+      }
+
+      const existing = prev.find((p) => p.id === key);
+
       if (existing) {
+        // kalau produk dengan id yang sama sudah ada → tambah quantity
         return prev.map((p) =>
-          p.product_id === product.product_id
-            ? { ...p, quantity: p.quantity + qty }
-            : p
+          p.id === key ? { ...p, quantity: p.quantity + qty } : p
         );
       }
+
+      // item baru
       return [
         ...prev,
         {
-          product_id: product.product_id,
+          id: key,
+          product_id: product.product_id ?? product.id ?? key,
           name: product.name,
           price: product.price,
           quantity: qty,
@@ -50,24 +67,32 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (productId) => {
-    setItems((prev) => prev.filter((p) => p.product_id !== productId));
+  const removeFromCart = (id) => {
+    setItems((prev) => prev.filter((p) => p.id !== id));
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = (id, quantity) => {
     setItems((prev) =>
       prev
-        .map((p) =>
-          p.product_id === productId ? { ...p, quantity } : p
-        )
+        .map((p) => (p.id === id ? { ...p, quantity } : p))
         .filter((p) => p.quantity > 0)
     );
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => {
+    setItems([]);
+    try {
+      window.localStorage.removeItem(CART_KEY);
+    } catch (err) {
+      console.error("Failed to clear cart from localStorage", err);
+    }
+  };
 
-  const totalItems = items.reduce((sum, p) => sum + p.quantity, 0);
-  const subtotal = items.reduce((sum, p) => sum + p.price * p.quantity, 0);
+  const totalItems = items.reduce((sum, p) => sum + (p.quantity || 1), 0);
+  const subtotal = items.reduce(
+    (sum, p) => sum + (p.price || 0) * (p.quantity || 1),
+    0
+  );
 
   return (
     <CartContext.Provider

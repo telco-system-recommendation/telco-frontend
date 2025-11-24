@@ -173,6 +173,35 @@
   cursor: not-allowed;
 }
 
+/* ==== PASSWORD ROW + LUPA PASSWORD ==== */
+.forgot-password-wrapper {
+  width: 100%;
+  text-align: right;
+  margin-top: 6px;
+}
+
+.forgot-password-link {
+  font-size: 14px;
+  color: #0A4F9B;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+
+
+/* ==== SUCCESS TEXT ==== */
+.form-success-message {
+  color: #16a34a;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+
 /* ==== FOOTER ==== */
 .login-footer {
   margin-top: 20px;

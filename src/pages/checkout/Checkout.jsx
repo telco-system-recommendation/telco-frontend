@@ -7,9 +7,10 @@ import { createTransaction } from "../../services/transactionApi";
 import { getSession } from "../../services/authApi";
 
 const Checkout = () => {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, totalItems } = useCart();
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+
 
   const taxRate = 0.11;
   const taxAmount = subtotal * taxRate;
@@ -52,7 +53,7 @@ const Checkout = () => {
         return;
       }
 
-      // Simpan transaksi ke Supabase sebagai contoh (satu transaksi per produk)
+      // Simpan transaksi ke Supabase
       for (const item of items) {
         await createTransaction({
           product_id: item.product_id,
@@ -283,9 +284,11 @@ const Checkout = () => {
         {/* KANAN: RINGKASAN PESANAN */}
         <aside className="checkout-summary-card">
           <h3>Ringkasan Pesanan</h3>
-          <p className="summary-subtitle">
-            {items.length} Produk
-          </p>
+<p className="summary-subtitle">
+  {totalItems} item
+</p>
+
+
 
           <div className="summary-items">
             {items.map((item) => (

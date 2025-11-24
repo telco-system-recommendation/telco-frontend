@@ -12,6 +12,7 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Product from "./pages/product/Product";
 import Promo from "./pages/promo/Promo";
+import ResetPassword from "./pages/reset-password/ResetPassword";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProfileSetup from "./pages/profile/SetupProfile";
@@ -91,6 +92,9 @@ function App() {
     </ProtectedRoute>
   }
 />
+
+<Route path="/reset-password" element={<ResetPassword />} />
+
 
       </Routes>
 

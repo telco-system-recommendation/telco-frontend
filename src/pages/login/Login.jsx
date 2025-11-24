@@ -15,32 +15,31 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrorMessage("");
+    e.preventDefault();
+    setErrorMessage("");
 
-  if (!email || !password) {
-    setErrorMessage("Email dan password wajib diisi.");
-    return;
-  }
+    if (!email || !password) {
+      setErrorMessage("Email dan password wajib diisi.");
+      return;
+    }
 
-  try {
-    setIsSubmitting(true);
+    try {
+      setIsSubmitting(true);
 
-    // 1. Login ke Supabase API
-    const session = await loginApi({ email, password });
+      // 1. Login ke Supabase API
+      const session = await loginApi({ email, password });
 
-    // 2. Simpan session (access_token, user, dll)
-    saveSession(session);
+      // 2. Simpan session (access_token, user, dll)
+      saveSession(session);
 
-    // 3. Langsung redirect ke dashboard
-    return navigate("/dashboard");
-  } catch (error) {
-    setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+      // 3. Langsung redirect ke dashboard
+      return navigate("/dashboard");
+    } catch (error) {
+      setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="login-page">
@@ -87,6 +86,7 @@ const Login = () => {
           </p>
 
           <form className="login-form" onSubmit={handleSubmit}>
+            {/* EMAIL */}
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <div className="input-with-icon">
@@ -103,6 +103,7 @@ const Login = () => {
               </div>
             </div>
 
+            {/* PASSWORD + LUPA PASSWORD */}
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <div className="input-with-icon">
@@ -116,6 +117,13 @@ const Login = () => {
                   autoComplete="current-password"
                   required
                 />
+              </div>
+
+            
+              <div className="forgot-password-wrapper">
+                <Link to="/reset-password" className="forgot-password-link">
+                  Lupa password?
+                </Link>
               </div>
             </div>
 

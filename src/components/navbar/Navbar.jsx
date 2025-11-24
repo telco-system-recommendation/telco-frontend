@@ -21,18 +21,23 @@ const Navbar = () => {
   const session = getSession();
   const navigate = useNavigate();
 
-  const { totalItems } = useCart();       
+  const { totalItems, clearCart } = useCart();     
   const [isCartOpen, setIsCartOpen] = useState(false); 
 
   const handleLogout = async () => {
-    try {
-      await logout(session?.access_token);
-    } catch (e) {
-      console.warn("Logout error:", e);
-    }
-    clearSession();
-    navigate("/");
-  };
+  try {
+    await logout(session?.access_token);
+  } catch (e) {
+    console.warn("Logout error:", e);
+  }
+
+  clearCart();
+
+  clearSession();
+
+  navigate("/");
+};
+
 
   const handleOpenCart = () => {
     setIsCartOpen(true);
