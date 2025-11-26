@@ -25,9 +25,7 @@ export async function saveUserBehaviour(payload) {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(
-      `Gagal menyimpan user_behaviour: ${res.status} - ${text}`
-    );
+    throw new Error(`Gagal menyimpan user_behaviour: ${res.status} - ${text}`);
   }
 
   const data = await res.json();

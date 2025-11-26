@@ -91,7 +91,6 @@ export async function resetPassword({ email }) {
   return true;
 }
 
-
 // UPDATE PASSWORD
 export async function updatePassword({ email, newPassword }) {
   const res = await fetch(`${AUTH_BASE_URL}/user`, {
@@ -109,7 +108,6 @@ export async function updatePassword({ email, newPassword }) {
   const data = await handleResponse(res);
   return data;
 }
-
 
 // LOGOUT — POST /auth/v1/logout
 export async function logout() {
@@ -137,14 +135,12 @@ export async function logout() {
   clearSession();
 }
 
-
 /* =====================================================
    ================ SESSION HELPERS =====================
    ===================================================== */
 
 const SESSION_KEY = "telcoreco_session";
 
-// Simpan session di sessionStorage (hilang kalau browser/tab ditutup)
 export function saveSession(session) {
   if (typeof window === "undefined" || !session) return;
 
@@ -152,39 +148,32 @@ export function saveSession(session) {
 
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
 
-  // beritahu listener navbar, dsb.
   notifySessionChange(payload);
 }
 
-// Bersihkan session (dipakai saat logout / token expired)
 export function clearSession() {
   if (typeof window === "undefined") return;
 
-  // hapus dari sessionStorage
   sessionStorage.removeItem(SESSION_KEY);
 
-  // bersihkan sisa lama di localStorage kalau masih ada
   try {
     localStorage.removeItem(SESSION_KEY);
-  } catch (e) {
-    // abaikan error localStorage
-  }
+  } catch (e) {}
 
   notifySessionChange(null);
 }
 
-// Ambil session aktif
 export function getSession() {
   if (typeof window === "undefined") return null;
 
-  // MIGRASI SEKALI: kalau dulu sempat nyimpan di localStorage, hapus
   try {
-    if (localStorage.getItem(SESSION_KEY) && !sessionStorage.getItem(SESSION_KEY)) {
+    if (
+      localStorage.getItem(SESSION_KEY) &&
+      !sessionStorage.getItem(SESSION_KEY)
+    ) {
       localStorage.removeItem(SESSION_KEY);
     }
-  } catch (e) {
-    // abaikan error
-  }
+  } catch (e) {}
 
   const raw = sessionStorage.getItem(SESSION_KEY);
   if (!raw) return null;
@@ -192,7 +181,6 @@ export function getSession() {
   try {
     const session = JSON.parse(raw);
 
-    // AUTO LOGOUT kalau token sudah kadaluarsa
     const nowSec = Math.floor(Date.now() / 1000);
     if (session.expires_at && nowSec >= session.expires_at) {
       clearSession();
@@ -206,9 +194,6 @@ export function getSession() {
   }
 }
 
-// Ambil access token dari session
 export function getAccessToken() {
   return getSession()?.access_token ?? null;
 }
-
-

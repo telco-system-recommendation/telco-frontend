@@ -89,7 +89,7 @@
   outline: none;
   background: transparent;
   font-size: 15px;
-  padding: 0 12px 0 40px; /* ruang untuk icon kiri */
+  padding: 0 12px 0 40px;
   margin: 0;
 }
 
@@ -252,7 +252,7 @@
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.25); /* lebih terang */
+  background: rgba(255, 255, 255, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -261,7 +261,7 @@
 .benefit-icon svg {
   width: 20px;
   height: 20px;
-  color: #ffffff; /* ICON PUTIH */
+  color: #ffffff; 
 }
 
 
@@ -274,7 +274,7 @@
 .benefit-item p {
   margin: 0;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.85); /* DESKRIPSI TERANG */
+  color: rgba(255, 255, 255, 0.85);
 }
 
 

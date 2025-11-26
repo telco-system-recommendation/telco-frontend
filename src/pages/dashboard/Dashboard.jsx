@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getSession } from "../../services/authApi";
 import { getProfile } from "../../services/profilesApi";
-import { getProductsByCategory } from "../../services/productApi";
+import {
+  getProductsByCategory,
+  getProductsByIds,
+} from "../../services/productApi";
 import {
   getUserTransactions,
-  getAllTransactions,   // 🔥 tambah ini
-  createTransaction,   // (kalau ga dipakai boleh dihapus)
+  getAllTransactions,
 } from "../../services/transactionApi";
-
-import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 
 import "../../styles/dashboard.css";
@@ -21,24 +22,8 @@ const PREFERENCE_TO_CATEGORY = {
   Roaming: "roaming",
 };
 
-const Dashboard = () => {
-  const { addToCart } = useCart();
-  const navigate = useNavigate();
-  const session = getSession();
-  const user = session?.user;
-
-  const [profile, setProfile] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [popularProducts, setPopularProducts] = useState([]);
-
-  const totalPengeluaran = transactions
-    .filter((t) => t.status === "success")
-    .reduce((sum, t) => sum + Number(t.price || 0), 0);
-
-  // Bangun daftar produk populer dari riwayat transaksi
-  const buildPopularProducts = (trxList) => {
+// hitung produk populer dari daftar semua transaksi
+const buildPopularProducts = (trxList) => {
   const map = {};
 
   (trxList || []).forEach((t) => {
@@ -60,61 +45,95 @@ const Dashboard = () => {
   });
 
   return Object.values(map)
-    .sort(
-      (a, b) =>
-        b.count - a.count || b.totalRevenue - a.totalRevenue
-    )
+    .sort((a, b) => b.count - a.count || b.totalRevenue - a.totalRevenue)
     .slice(0, 4);
 };
 
+const Dashboard = () => {
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
+  const session = getSession();
+  const user = session?.user;
+
+  const [profile, setProfile] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [popularProducts, setPopularProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const totalPengeluaran = transactions
+    .filter((t) => t.status === "success")
+    .reduce((sum, t) => sum + Number(t.price || 0), 0);
 
   const loadAll = async () => {
-  try {
-    if (!user) return;
+    try {
+      if (!user) return;
 
-    const p = await getProfile(user.id);
-    setProfile(p);
+      // ---- PROFILE ----
+      const p = await getProfile(user.id);
+      setProfile(p);
 
-    // --- rekomendasi produk berdasar preferensi user ---
-    let productList = [];
+      // ---- REKOMENDASI BERDASARKAN PREFERENSI ----
+      let productList = [];
 
-    if (p?.preferensi_produk) {
-      const categorySlug = PREFERENCE_TO_CATEGORY[p.preferensi_produk];
+      if (p?.preferensi_produk) {
+        const categorySlug = PREFERENCE_TO_CATEGORY[p.preferensi_produk];
 
-      if (categorySlug) {
-        productList = await getProductsByCategory(categorySlug);
-      } else {
-        productList = [];
+        if (categorySlug) {
+          productList = await getProductsByCategory(categorySlug);
+        }
       }
-    } else {
-      productList = [];
+
+      setProducts(productList || []);
+
+      // ---- TRANSAKSI USER + SEMUA TRANSAKSI (UNTUK POPULER) ----
+      const [trxUser, trxAll] = await Promise.all([
+        getUserTransactions(user.id),
+        getAllTransactions(),
+      ]);
+
+      setTransactions(trxUser || []);
+
+      // 1) hitung produk populer basic dari transaction_history
+      const basePopular = buildPopularProducts(trxAll || []);
+
+      // 2) ambil detail dari tabel product (description & price)
+      const ids = basePopular.map((p) => p.product_id).filter(Boolean);
+      let finalPopular = basePopular;
+
+      if (ids.length > 0) {
+        const productDetails = await getProductsByIds(ids);
+        const productMap = {};
+
+        (productDetails || []).forEach((prod) => {
+          productMap[prod.product_id] = prod;
+        });
+
+        finalPopular = basePopular.map((p) => {
+          const detail = productMap[p.product_id] || {};
+          return {
+            ...p,
+            description:
+              detail.description ||
+              detail.product_description ||
+              "Produk populer pilihan pengguna lain.",
+            price: Number(detail.price || 0),
+          };
+        });
+      }
+
+      setPopularProducts(finalPopular);
+    } catch (err) {
+      console.error("Gagal memuat dashboard:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setProducts(productList || []);
-
-    // 🔥 AMBIL DUA JENIS TRANSAKSI SEKALIGUS:
-    // - trxUser: riwayat untuk user ini (buat "Riwayat" & total pengeluaran)
-    // - trxAll : semua transaksi (buat produk populer)
-    const [trxUser, trxAll] = await Promise.all([
-      getUserTransactions(user.id),
-      getAllTransactions(),
-    ]);
-
-    setTransactions(trxUser || []);                 // ini tetap user sendiri
-    setPopularProducts(buildPopularProducts(trxAll || [])); // ini semua user
-  } catch (err) {
-    console.error("Gagal memuat dashboard:", err);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   useEffect(() => {
     const init = async () => {
       if (!user) return;
 
-      // cek di localStorage apakah user ini sudah pernah isi cold start
       const flagKey = `coldstart_completed_${user.id}`;
       const isColdStartDone = localStorage.getItem(flagKey) === "true";
 
@@ -143,111 +162,212 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-page">
-      {/* Greeting */}
-      <h2 className="greeting">
-        Halo, <span>{profile?.full_name || profile?.email}</span> 👋
-      </h2>
+      {/* ===== HEADER ===== */}
+      <header className="dashboard-header">
+        <h1>Dashboard</h1>
+        <p>
+          Selamat datang kembali,{" "}
+          <span>{profile?.full_name || profile?.email}</span>!
+        </p>
+      </header>
 
-      {/* Ringkasan */}
+      {/* ===== SUMMARY CARDS ===== */}
       <div className="summary-cards">
         <div className="summary-card">
-          <h4>Total Transaksi</h4>
-          <p>{transactions.length}</p>
+          <div className="summary-card-top">
+            <h4>Total Transaksi</h4>
+          </div>
+          <p className="summary-value">{transactions.length}</p>
         </div>
 
         <div className="summary-card">
-          <h4>Total Pengeluaran</h4>
-          <p>Rp {totalPengeluaran.toLocaleString("id-ID")}</p>
+          <div className="summary-card-top">
+            <h4>Total Pengeluaran</h4>
+          </div>
+          <p className="summary-value">
+            Rp {totalPengeluaran.toLocaleString("id-ID")}
+          </p>
         </div>
 
         <div className="summary-card">
-          <h4>Paket Aktif</h4>
-          <p>Belum tersedia</p>
+          <div className="summary-card-top">
+            <h4>Paket Aktif</h4>
+          </div>
+          <p className="summary-value">Belum tersedia</p>
         </div>
       </div>
 
-      {/* Rekomendasi Produk */}
-      <h3 className="section-title">
-        Rekomendasi untuk Anda{" "}
-        {profile?.preferensi_produk && (
-          <span>({profile.preferensi_produk})</span>
-        )}
-      </h3>
+      {/* ===== MAIN 2 KOLOM ===== */}
+      <div className="dashboard-main">
+        {/* -------- LEFT -------- */}
+        <div className="dashboard-main-left">
+          {/* === UNTUK KAMU === */}
+          <section className="recommend-card">
+            <div className="recommend-header">
+              <div className="recommend-icon">✴</div>
+              <div>
+                <p className="recommend-label">Untuk Kamu</p>
+                <p className="recommend-subtitle">
+                  Rekomendasi{" "}
+                  <strong>{profile?.preferensi_produk || "-"}</strong>{" "}
+                  berdasarkan preferensi Anda
+                </p>
+              </div>
+            </div>
 
-      {products.length === 0 && <p>Tidak ada produk yang cocok.</p>}
+            {profile?.preferensi_produk && (
+              <div className="preference-badge">
+                Preferensi: {profile.preferensi_produk}
+              </div>
+            )}
 
-      <div className="product-list">
-        {products.map((prod) => (
-          <div className="product-card" key={prod.product_id}>
-            {prod.image && <img src={prod.image} alt={prod.name} />}
-            <h4>{prod.name}</h4>
-            <p className="price">
-              Rp {Number(prod.price || 0).toLocaleString("id-ID")}
+            <div className="recommend-product-list">
+              {products.length === 0 && (
+                <p className="empty-text">Tidak ada produk yang cocok.</p>
+              )}
+
+              {products.map((prod) => (
+                <div className="recommend-product-item" key={prod.product_id}>
+                  <div className="recommend-product-info">
+                    <h4>{prod.name}</h4>
+                    <p>{prod.description}</p>
+                  </div>
+
+                  <div className="recommend-product-meta">
+                    <p className="recommend-price">
+                      Rp {Number(prod.price || 0).toLocaleString("id-ID")}
+                    </p>
+                    <button className="buy-btn" onClick={() => handleBuy(prod)}>
+                      Beli Sekarang
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* === PRODUK POPULER === */}
+          <section className="recommend-card popular-section">
+            <h3 className="popular-title">Produk Populer</h3>
+            <p className="popular-subtitle">
+              Produk yang paling sering dibeli oleh pengguna.
             </p>
 
-            <button
-              className="buy-btn"
-              onClick={() => handleBuy(prod)}
-            >
-              Beli Sekarang
-            </button>
-          </div>
-        ))}
-      </div>
+            <div className="recommend-product-list">
+              {popularProducts.length === 0 && (
+                <p className="empty-text">
+                  Belum ada produk populer karena belum ada transaksi.
+                </p>
+              )}
 
-      {/* Produk Populer */}
-      <h3 className="section-title">Produk Populer</h3>
+              {popularProducts.map((prod) => (
+                <div className="recommend-product-item" key={prod.product_id}>
+                  <div className="recommend-product-info">
+                    <h4>{prod.name}</h4>
+                    <p>{prod.description || "-"}</p>
+                  </div>
 
-      {popularProducts.length === 0 && (
-        <p>Belum ada produk populer karena belum ada transaksi.</p>
-      )}
-
-      {popularProducts.length > 0 && (
-        <div className="product-list">
-          {popularProducts.map((prod) => (
-            <div className="product-card" key={prod.product_id}>
-              <h4>{prod.name}</h4>
-              <p className="price">
-                Total dibelanjakan: Rp{" "}
-                {Number(prod.totalRevenue || 0).toLocaleString("id-ID")}
-              </p>
-              <p className="meta">Dibeli sebanyak {prod.count}x</p>
-              <button
-                className="buy-btn"
-                onClick={() =>
-                  handleBuy({
-                    product_id: prod.product_id,
-                    name: prod.name,
-                    // asumsi harga per unit = totalRevenue / count
-                    price:
-                      prod.count > 0
-                        ? Math.round(prod.totalRevenue / prod.count)
-                        : 0,
-                  })
-                }
-              >
-                Beli Lagi
-              </button>
+                  <div className="recommend-product-meta">
+                    <p className="recommend-price">
+                      Rp {Number(prod.price || 0).toLocaleString("id-ID")}
+                    </p>
+                    <p className="popular-meta">
+                      Dibeli sebanyak {prod.count}x
+                    </p>
+                    <button
+                      className="buy-btn"
+                      onClick={() =>
+                        handleBuy({
+                          product_id: prod.product_id,
+                          name: prod.name,
+                          price: prod.price,
+                        })
+                      }
+                    >
+                      Beli Sekarang
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </section>
+
+          {/* === RIWAYAT TRANSAKSI === */}
+          <section className="recommend-card history-section">
+            {transactions.length === 0 ? (
+              <p className="empty-text">Belum ada transaksi.</p>
+            ) : (
+              <>
+                <h3 className="history-title">Riwayat Transaksi</h3>
+                <p className="history-subtitle">
+                  Transaksi pembelian produk terbaru
+                </p>
+
+                <table className="history-table">
+                  <thead>
+                    <tr>
+                      <th>Produk</th>
+                      <th>Tanggal</th>
+                      <th>Harga</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((trx) => (
+                      <tr key={trx.id}>
+                        <td>{trx.product_name}</td>
+                        <td>{trx.created_at?.slice(0, 10)}</td>
+                        <td>
+                          Rp {Number(trx.price || 0).toLocaleString("id-ID")}
+                        </td>
+                        <td>
+                          <span
+                            className={`status-pill ${
+                              trx.status === "success" ? "success" : ""
+                            }`}
+                          >
+                            {trx.status === "success" ? "Berhasil" : trx.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </section>
         </div>
-      )}
 
-      {/* Riwayat Transaksi */}
-      <h3 className="section-title">Riwayat Transaksi Terbaru</h3>
+        {/* -------- RIGHT (aksi cepat + paket aktif dummy) -------- */}
+        <div className="dashboard-main-right">
+          <section className="quick-actions-card">
+            <h3>Aksi Cepat</h3>
+            <p className="quick-desc">Akses fitur populer dengan cepat.</p>
 
-      {transactions.length === 0 && <p>Belum ada transaksi.</p>}
+            <button
+              className="quick-btn primary"
+              onClick={() => navigate("/produk")}
+            >
+              Lihat Semua Produk
+            </button>
+            <button className="quick-btn" onClick={() => navigate("/profile")}>
+              Lihat Profil
+            </button>
+            <button className="quick-btn" onClick={() => navigate("/promo")}>
+              Promo Terbaru
+            </button>
 
-      <div className="transaction-list">
-        {transactions.map((trx) => (
-          <div className="transaction-item" key={trx.id}>
-            <div>
-              <strong>{trx.product_name}</strong>
-              <p>Status: {trx.status}</p>
+            <div className="active-package-card">
+              <h3>Paket Aktif</h3>
+              <p className="active-name">Paket Hemat 10GB</p>
+              <p className="active-subtext">Sisa kuota: 7.2 GB</p>
+              <div className="quota-bar">
+                <div className="quota-bar-used" />
+              </div>
+              <p className="active-expired">Berlaku hingga 30 November 2025</p>
             </div>
-            <p>Rp {Number(trx.price || 0).toLocaleString("id-ID")}</p>
-          </div>
-        ))}
+          </section>
+        </div>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export const getUserTransactions = async (userId) => {
 };
 
 /* =======================================================
-    🔥 GET SEMUA TRANSAKSI (untuk PRODUK POPULER GLOBAL)
+    GET SEMUA TRANSAKSI (untuk PRODUK POPULER GLOBAL)
    ======================================================= */
 export const getAllTransactions = async () => {
   const token = getAccessToken();

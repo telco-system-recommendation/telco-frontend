@@ -1,4 +1,3 @@
-// src/components/cart/CartSidebar.jsx
 import React from "react";
 import { useCart } from "../../context/CartContext";
 import { FiX, FiTrash2, FiMinus, FiPlus, FiShoppingCart } from "react-icons/fi";
@@ -80,10 +79,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                         <button
                           type="button"
                           onClick={() =>
-                            updateQuantity(
-                              item.product_id,
-                              item.quantity - 1
-                            )
+                            updateQuantity(item.product_id, item.quantity - 1)
                           }
                         >
                           <FiMinus />
@@ -92,10 +88,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                         <button
                           type="button"
                           onClick={() =>
-                            updateQuantity(
-                              item.product_id,
-                              item.quantity + 1
-                            )
+                            updateQuantity(item.product_id, item.quantity + 1)
                           }
                         >
                           <FiPlus />
@@ -115,15 +108,11 @@ const CartSidebar = ({ isOpen, onClose }) => {
               </div>
               <div className="cart-summary-row">
                 <span>Pajak (11%)</span>
-                <span>
-                  Rp {Math.round(taxAmount).toLocaleString("id-ID")}
-                </span>
+                <span>Rp {Math.round(taxAmount).toLocaleString("id-ID")}</span>
               </div>
               <div className="cart-summary-row total">
                 <span>Total</span>
-                <span>
-                  Rp {Math.round(total).toLocaleString("id-ID")}
-                </span>
+                <span>Rp {Math.round(total).toLocaleString("id-ID")}</span>
               </div>
               <button
                 type="button"
