@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiMail, FiLock, FiUser } from "react-icons/fi";
+import {
+  FiMail,
+  FiLock,
+  FiUser,
+  FiZap,
+  FiGrid,
+  FiTarget,
+  FiTag,
+} from "react-icons/fi";
+
+import Logo from "../../assets/logo.png";
 import "../../styles/signup.css";
+
 import {
   signup as signupApi,
   login as loginApi,
@@ -25,7 +36,7 @@ const Signup = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (!email || !password || !confirmPassword) {
+    if (!fullName || !email || !password || !confirmPassword) {
       setErrorMessage("Semua field wajib diisi.");
       return;
     }
@@ -41,12 +52,11 @@ const Signup = () => {
       // 1. Sign up ke Supabase
       await signupApi({ email, password });
 
-      // 2. (Opsional) langsung login agar dapat access_token
+      // 2. Langsung login supaya dapat access_token
       const session = await loginApi({ email, password });
       saveSession(session);
 
       setSuccessMessage("Akun berhasil dibuat!");
-      // TODO: kalau nanti ada halaman "Lengkapi Profil", ganti ke /profil-setup
       setTimeout(() => {
         navigate("/setup-profile");
       }, 800);
@@ -68,6 +78,7 @@ const Signup = () => {
           </p>
 
           <form className="signup-form" onSubmit={handleSubmit}>
+            {/* NAMA LENGKAP */}
             <div className="form-group">
               <label htmlFor="fullName">Nama Lengkap</label>
               <div className="input-with-icon">
@@ -83,6 +94,7 @@ const Signup = () => {
               </div>
             </div>
 
+            {/* EMAIL */}
             <div className="form-group">
               <label htmlFor="email">Email</label>
               <div className="input-with-icon">
@@ -99,6 +111,7 @@ const Signup = () => {
               </div>
             </div>
 
+            {/* PASSWORD */}
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <div className="input-with-icon">
@@ -115,6 +128,7 @@ const Signup = () => {
               </div>
             </div>
 
+            {/* KONFIRMASI PASSWORD */}
             <div className="form-group">
               <label htmlFor="confirmPassword">Konfirmasi Password</label>
               <div className="input-with-icon">
@@ -159,16 +173,67 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* Kanan: highlight benefit (sesuai desain figma yang kamu kirim) */}
+      {/* Kanan: highlight benefit (tanpa emoji, pakai icon) */}
       <div className="signup-right">
-        <div className="signup-highlight">
-          <h3>Bergabunglah dengan Ribuan Pengguna</h3>
-          <ul>
-            <li>⚡ Proses Cepat &amp; Mudah</li>
-            <li>📱 Akses ke Semua Produk</li>
-            <li>🎯 Rekomendasi Khusus</li>
-            <li>🏷️ Promo &amp; Diskon Eksklusif</li>
-          </ul>
+        <div className="signup-right-card">
+          {/* Logo + brand */}
+          <div className="signup-right-header">
+            <div className="signup-logo-circle">
+              <span className="signup-logo-dot" />
+              <img src={Logo} alt="Telcoreco" className="signup-brand-icon" />
+            </div>
+            <div>
+              <p className="signup-brand-subtitle">Telcoreco</p>
+              <h3 className="signup-brand-title">Connect &amp; Recommend</h3>
+            </div>
+          </div>
+
+          <p className="signup-right-text">
+            Bergabunglah dengan ribuan pengguna dan nikmati berbagai keuntungan
+            eksklusif sebagai member Telcoreco.
+          </p>
+
+          <div className="signup-benefits">
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <FiZap />
+              </span>
+              <div>
+                <h4>Proses Cepat &amp; Mudah</h4>
+                <p>Registrasi hanya membutuhkan waktu kurang dari 1 menit.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <FiGrid />
+              </span>
+              <div>
+                <h4>Akses ke Semua Produk</h4>
+                <p>Dapatkan akses ke ribuan produk digital terbaik.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <FiTarget />
+              </span>
+              <div>
+                <h4>Rekomendasi Khusus</h4>
+                <p>Sistem AI kami memberikan rekomendasi sesuai preferensi.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <FiTag />
+              </span>
+              <div>
+                <h4>Promo &amp; Diskon Eksklusif</h4>
+                <p>Nikmati penawaran spesial hanya untuk member Telcoreco.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

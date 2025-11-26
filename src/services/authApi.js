@@ -114,9 +114,10 @@ export async function updatePassword({ email, newPassword }) {
 // LOGOUT — POST /auth/v1/logout
 export async function logout() {
   const token = getAccessToken();
+
+  // kalau sudah tidak ada token, cukup clear local state
   if (!token) {
     clearSession();
-    notifySessionChange(null);
     return;
   }
 
@@ -129,40 +130,85 @@ export async function logout() {
     },
   });
 
- 
   if (!res.ok) {
     console.warn("Logout gagal:", await res.text());
   }
 
-
   clearSession();
-  notifySessionChange(null);
 }
+
 
 /* =====================================================
    ================ SESSION HELPERS =====================
    ===================================================== */
 
+const SESSION_KEY = "telcoreco_session";
+
+// Simpan session di sessionStorage (hilang kalau browser/tab ditutup)
 export function saveSession(session) {
-  localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-  notifySessionChange(session);
+  if (typeof window === "undefined" || !session) return;
+
+  const payload = { ...session };
+
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+
+  // beritahu listener navbar, dsb.
+  notifySessionChange(payload);
 }
 
+// Bersihkan session (dipakai saat logout / token expired)
+export function clearSession() {
+  if (typeof window === "undefined") return;
+
+  // hapus dari sessionStorage
+  sessionStorage.removeItem(SESSION_KEY);
+
+  // bersihkan sisa lama di localStorage kalau masih ada
+  try {
+    localStorage.removeItem(SESSION_KEY);
+  } catch (e) {
+    // abaikan error localStorage
+  }
+
+  notifySessionChange(null);
+}
+
+// Ambil session aktif
 export function getSession() {
-  const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+  if (typeof window === "undefined") return null;
+
+  // MIGRASI SEKALI: kalau dulu sempat nyimpan di localStorage, hapus
+  try {
+    if (localStorage.getItem(SESSION_KEY) && !sessionStorage.getItem(SESSION_KEY)) {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  } catch (e) {
+    // abaikan error
+  }
+
+  const raw = sessionStorage.getItem(SESSION_KEY);
   if (!raw) return null;
 
   try {
-    return JSON.parse(raw);
-  } catch {
+    const session = JSON.parse(raw);
+
+    // AUTO LOGOUT kalau token sudah kadaluarsa
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (session.expires_at && nowSec >= session.expires_at) {
+      clearSession();
+      return null;
+    }
+
+    return session;
+  } catch (e) {
+    clearSession();
     return null;
   }
 }
 
-export function clearSession() {
-  localStorage.removeItem(SESSION_STORAGE_KEY);
-}
-
+// Ambil access token dari session
 export function getAccessToken() {
   return getSession()?.access_token ?? null;
 }
+
+
