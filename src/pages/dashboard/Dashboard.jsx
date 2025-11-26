@@ -89,17 +89,38 @@ const Dashboard = () => {
       setProfile(p);
 
       // ---- REKOMENDASI BERDASARKAN PREFERENSI ----
-      let productList = [];
+let productList = [];
 
-      if (p?.preferensi_produk) {
-        const categorySlug = PREFERENCE_TO_CATEGORY[p.preferensi_produk];
+if (p?.preferensi_produk) {
+  if (p.preferensi_produk === "Semua Produk") {
+    const allSlugs = Object.values(PREFERENCE_TO_CATEGORY); 
 
-        if (categorySlug) {
-          productList = await getProductsByCategory(categorySlug);
-        }
+    const results = await Promise.all(
+      allSlugs.map((slug) => getProductsByCategory(slug))
+    );
+
+    const merged = results.flat().filter(Boolean);
+
+    const mapById = {};
+    merged.forEach((prod) => {
+      if (!prod?.product_id) return;
+      if (!mapById[prod.product_id]) {
+        mapById[prod.product_id] = prod;
       }
+    });
 
-      setProducts(productList || []);
+    productList = Object.values(mapById);
+  } else {
+    const categorySlug = PREFERENCE_TO_CATEGORY[p.preferensi_produk];
+
+    if (categorySlug) {
+      productList = await getProductsByCategory(categorySlug);
+    }
+  }
+}
+
+setProducts(productList || []);
+
 
       // ---- TRANSAKSI USER + SEMUA TRANSAKSI (UNTUK POPULER) ----
       const [trxUser, trxAll] = await Promise.all([
