@@ -76,6 +76,11 @@
   gap: 20px;
 }
 
+/* semua section di kolom kiri full width (Untuk Kamu, Popular, History) */
+.dashboard-main-left > section {
+  width: 100%;
+}
+
 /* RIGHT */
 .dashboard-main-right {
   display: flex;
@@ -83,7 +88,7 @@
   gap: 20px;
 }
 
-/* ===== RECOMMEND CARD ("Untuk Kamu") ===== */
+/* ===== BASE CARD UNTUK "UNTUK KAMU" / POPULER / HISTORY ===== */
 .recommend-card {
   background: #ffffff;
   border-radius: 16px;
@@ -92,6 +97,7 @@
   border: 1px solid #e5e7eb;
 }
 
+/* ===== RECOMMEND CARD ("Untuk Kamu") ===== */
 .recommend-header {
   display: flex;
   align-items: center;
@@ -135,7 +141,7 @@
   margin-top: 14px;
 }
 
-/* list produk di dalam kartu "Untuk Kamu" */
+/* list produk di dalam kartu "Untuk Kamu" (juga dipakai Produk Populer) */
 .recommend-product-list {
   margin-top: 16px;
   display: flex;
@@ -289,49 +295,7 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* === PRODUK POPULER  === */
-
-.popular-section {
-  margin-top: 24px;
-  width: 100%;
-}
-
-/* Card luar*/
-.popular-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 22px 24px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e5e7eb;
-  width: 100%;
-}
-
-/* Judul + subjudul di dalam card  */
-.popular-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.popular-subtitle {
-  margin: 4px 0 14px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-/* List item */
-.popular-list {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-
-
-/* ===== BUY BUTTON  ===== */
+/* ===== BUTTON BELI (dipakai di rekomendasi & populer) ===== */
 .buy-btn {
   padding: 8px 16px;
   border-radius: 8px;
@@ -349,23 +313,37 @@
   transform: translateY(-1px);
 }
 
+/* === PRODUK POPULER — SAMA PERSIS "UNTUK KAMU" === */
+
+.popular-section {
+  margin-top: 24px;
+}
+
+.popular-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.popular-subtitle {
+  margin: 4px 0 14px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.popular-meta {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
 /* ===== HISTORY / RIWAYAT ===== */
 
 .history-section {
   margin-top: 28px;
-  width: 100%;
 }
 
-.history-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 18px 20px 20px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e5e7eb;
-  width: 100%;
-}
-
-/* Judul & subjudul DI DALAM box */
 .history-title {
   margin: 0;
   font-size: 16px;
@@ -427,70 +405,37 @@
   color: #15803d;
 }
 
-/* === PRODUK POPULER  === */
-
-.dashboard-page .popular-section {
-  margin-top: 24px;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-/* Card luar */
-.dashboard-page .popular-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 22px 24px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e5e7eb;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;  
-}
-
-/* Judul + subjudul di dalam card */
-.dashboard-page .popular-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.dashboard-page .popular-subtitle {
-  margin: 4px 0 14px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-/* List item*/
-.dashboard-page .popular-list {
-  margin-top: 16px;
+.dashboard-header {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-/* ===== HISTORY / RIWAYAT ===== */
-
-.dashboard-page .history-section {
-  margin-top: 28px;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+.dashboard-header-text h1 {
+  margin-bottom: 4px;
 }
 
-.dashboard-page .history-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 18px 20px 20px;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e5e7eb;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
+.dashboard-logout-btn {
+  border: 1px solid #ff6b54;
+  background: #fff4f1;
+  color: #ff6b54;
+  padding: 8px 16px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.dashboard-logout-btn:hover {
+  background: #ffe1db;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+  transform: translateY(-1px);
 }
 
 
@@ -510,4 +455,3 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
-

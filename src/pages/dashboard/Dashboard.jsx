@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSession } from "../../services/authApi";
+import { FiLogOut } from "react-icons/fi";
+
+import { getSession, logout, clearSession } from "../../services/authApi";
 import { getProfile } from "../../services/profilesApi";
 import {
   getProductsByCategory,
@@ -50,7 +52,7 @@ const buildPopularProducts = (trxList) => {
 };
 
 const Dashboard = () => {
-  const { addToCart } = useCart();
+  const { addToCart, clearCart } = useCart();
   const navigate = useNavigate();
   const session = getSession();
   const user = session?.user;
@@ -64,6 +66,19 @@ const Dashboard = () => {
   const totalPengeluaran = transactions
     .filter((t) => t.status === "success")
     .reduce((sum, t) => sum + Number(t.price || 0), 0);
+
+  const handleLogout = async () => {
+    try {
+      await logout(session?.access_token);
+    } catch (err) {
+      console.error("Gagal logout:", err);
+    }
+
+    clearCart();
+    clearSession();
+
+    navigate("/");
+  };
 
   const loadAll = async () => {
     try {
@@ -164,11 +179,22 @@ const Dashboard = () => {
     <div className="dashboard-page">
       {/* ===== HEADER ===== */}
       <header className="dashboard-header">
-        <h1>Dashboard</h1>
-        <p>
-          Selamat datang kembali,{" "}
-          <span>{profile?.full_name || profile?.email}</span>!
-        </p>
+        <div className="dashboard-header-text">
+          <h1>Dashboard</h1>
+          <p>
+            Selamat datang kembali,{" "}
+            <span>{profile?.full_name || profile?.email}</span>!
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="dashboard-logout-btn"
+          onClick={handleLogout}
+        >
+          <FiLogOut />
+          <span>Logout</span>
+        </button>
       </header>
 
       {/* ===== SUMMARY CARDS ===== */}

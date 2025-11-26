@@ -1,4 +1,3 @@
-// src/pages/profile/Profile.jsx
 import React, { useEffect, useState } from "react";
 import {
   FiUser,
@@ -8,10 +7,13 @@ import {
   FiBell,
   FiCreditCard,
   FiLock,
+  FiLogOut,
 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
-import { getSession } from "../../services/authApi";
+import { getSession, logout, clearSession } from "../../services/authApi";
 import { getProfile, updateProfile } from "../../services/profilesApi";
+import { useCart } from "../../context/CartContext";
 
 import "../../styles/profile.css";
 
@@ -23,8 +25,11 @@ const PREFERENSI_OPTIONS = [
 ];
 
 const Profile = () => {
+  const navigate = useNavigate();
   const session = getSession();
   const user = session?.user;
+
+  const { clearCart } = useCart();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -41,46 +46,42 @@ const Profile = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // ambil profil user dari Supabase
+
   useEffect(() => {
-  const loadProfile = async () => {
-    try {
-      setLoading(true);
-      setError("");
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-      // ambil user dari session localStorage
-      const session = getSession();
-      const currentUser = session?.user;
+        
+        const sessionData = getSession();
+        const currentUser = sessionData?.user;
 
-      if (!currentUser) {
-        setError("Session tidak ditemukan. Silakan login ulang.");
-        setLoading(false);
-        return;
+        if (!currentUser) {
+          setError("Session tidak ditemukan. Silakan login ulang.");
+          setLoading(false);
+          return;
+        }
+
+        const p = await getProfile(currentUser.id);
+
+        setProfile(p);
+        setFullName(p?.full_name || "");
+        setEmail(p?.email || currentUser.email || "");
+        setPhone(p?.phone || "");
+        setAddress(p?.address || "");
+        setPreferensi(p?.preferensi_produk || "");
+      } catch (err) {
+        setError(err.message || "Gagal memuat profil.");
+      } finally {
+        setLoading(false); 
       }
+    };
 
-      const p = await getProfile(currentUser.id);
+    loadProfile();
+  }, []); 
 
-      setProfile(p);
-      setFullName(p?.full_name || "");
-      setEmail(p?.email || currentUser.email || "");
-      setPhone(p?.phone || "");
-      setAddress(p?.address || "");
-      setPreferensi(p?.preferensi_produk || "");
-    } catch (err) {
-      setError(err.message || "Gagal memuat profil.");
-    } finally {
-      setLoading(false);  // <-- sekarang PASTI dipanggil
-    }
-  };
-
-  loadProfile();
-}, []); // dependency kosong, kita ambil user langsung dari getSession()
-
-
-  const initialName = (fullName || email || "")
-    .trim()
-    .charAt(0)
-    .toUpperCase();
+  const initialName = (fullName || email || "").trim().charAt(0).toUpperCase();
 
   const handleStartEdit = () => {
     setIsEditing(true);
@@ -118,7 +119,7 @@ const Profile = () => {
         phone,
         preferensi_produk: preferensi || null,
         email,
-        address: address || null, // kalau tabel belum punya kolom ini, tinggal hapus saja field ini
+        address: address || null, 
       };
 
       const updated = await updateProfile(user.id, payload);
@@ -130,6 +131,18 @@ const Profile = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout(session?.access_token);
+    } catch (e) {
+      console.warn("Logout error:", e);
+    }
+
+    clearCart();
+    clearSession();
+    navigate("/");
   };
 
   if (loading) {
@@ -159,27 +172,26 @@ const Profile = () => {
           </button>
 
           <div className="profile-summary-extra">
-  <div className="summary-item">
-    <div className="summary-icon phone">
-      <FiPhone />
-    </div>
-    <div className="summary-text">
-      <p className="summary-label">Telepon</p>
-      <p className="summary-value">{profile?.phone}</p>
-    </div>
-  </div>
+            <div className="summary-item">
+              <div className="summary-icon phone">
+                <FiPhone />
+              </div>
+              <div className="summary-text">
+                <p className="summary-label">Telepon</p>
+                <p className="summary-value">{profile?.phone}</p>
+              </div>
+            </div>
 
-  <div className="summary-item">
-    <div className="summary-icon location">
-      <FiMapPin />
-    </div>
-    <div className="summary-text">
-      <p className="summary-label">Alamat</p>
-      <p className="summary-value">{profile?.address}</p>
-    </div>
-  </div>
-</div>
-
+            <div className="summary-item">
+              <div className="summary-icon location">
+                <FiMapPin />
+              </div>
+              <div className="summary-text">
+                <p className="summary-label">Alamat</p>
+                <p className="summary-value">{profile?.address}</p>
+              </div>
+            </div>
+          </div>
         </aside>
 
         {/* ===== KONTEN KANAN ===== */}
@@ -222,7 +234,7 @@ const Profile = () => {
                       className="profile-input"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      disabled={true} 
+                      disabled={true}
                     />
                   </div>
                   <p className="field-hint">
@@ -319,7 +331,7 @@ const Profile = () => {
             </div>
           </section>
 
-          {/* --- Pengaturan Akun (dummy action) --- */}
+          {/* --- Pengaturan Akun + Logout --- */}
           <section className="profile-card">
             <div className="profile-card-header">
               <h3>Pengaturan Akun</h3>
@@ -340,6 +352,15 @@ const Profile = () => {
               <button type="button" className="account-row">
                 <FiCreditCard />
                 <span>Metode Pembayaran</span>
+              </button>
+
+              <button
+                type="button"
+                className="account-row logout"
+                onClick={handleLogout}
+              >
+                <FiLogOut />
+                <span>Logout</span>
               </button>
             </div>
           </section>

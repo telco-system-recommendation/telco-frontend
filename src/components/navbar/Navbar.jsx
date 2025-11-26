@@ -1,15 +1,10 @@
-import React, { useState } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import {
-  FiHome,
-  FiBox,
-  FiTag,
-  FiUser,
-  FiShoppingCart,
-  FiLogOut,
-} from "react-icons/fi";
+// src/components/navbar/Navbar.jsx
+import React, { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
+import { FiHome, FiBox, FiTag, FiUser, FiShoppingCart } from "react-icons/fi";
 
-import { getSession, clearSession, logout } from "../../services/authApi";
+import { getSession } from "../../services/authApi";
+import { subscribeSession } from "../../services/sessionListener";
 import "../../styles/navbar.css";
 import logo from "../../assets/logo.png";
 
@@ -18,34 +13,27 @@ import { useCart } from "../../context/CartContext";
 import CartSidebar from "../cart/CartSidebar";
 
 const Navbar = () => {
-  const session = getSession();
-  const navigate = useNavigate();
+  
+  const [session, setSession] = useState(() => getSession());
 
-  const { totalItems, clearCart } = useCart();     
-  const [isCartOpen, setIsCartOpen] = useState(false); 
+  const { totalItems } = useCart();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const handleLogout = async () => {
-  try {
-    await logout(session?.access_token);
-  } catch (e) {
-    console.warn("Logout error:", e);
-  }
+  useEffect(() => {
+   
+    setSession(getSession());
 
-  clearCart();
+    const unsubscribe = subscribeSession((newSession) => {
+      setSession(newSession);
+    });
 
-  clearSession();
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
-  navigate("/");
-};
-
-
-  const handleOpenCart = () => {
-    setIsCartOpen(true);
-  };
-
-  const handleCloseCart = () => {
-    setIsCartOpen(false);
-  };
+  const handleOpenCart = () => setIsCartOpen(true);
+  const handleCloseCart = () => setIsCartOpen(false);
 
   return (
     <>
@@ -124,10 +112,7 @@ const Navbar = () => {
                   <span className="cart-badge">{totalItems}</span>
                 )}
               </button>
-
-              <button className="nav-btn" onClick={handleLogout}>
-                <FiLogOut /> Logout
-              </button>
+              
             </>
           )}
         </div>
