@@ -1,6 +1,6 @@
 import { getAccessToken } from "./authApi";
 
-const SUPABASE_URL = "https://vledlplbztmprbgjwxie.supabase.co";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // GET /transaction_history?user_id=eq.<userId>
