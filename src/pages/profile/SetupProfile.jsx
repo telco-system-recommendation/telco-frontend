@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSession } from "../../services/authApi";
 import { updateProfile } from "../../services/profilesApi";
-
+import { FiBarChart2 } from "react-icons/fi";
 import "../../styles/setupProfile.css"; 
 
 const SetupProfile = () => {
@@ -53,7 +53,12 @@ const SetupProfile = () => {
   return (
     <div className="setup-profile-page">
       <div className="setup-profile-wrapper">
-        <h1 className="setup-title">Lengkapi Profil Anda</h1>
+        <div className="setup-top-icon">
+  <FiBarChart2 />
+</div>
+
+<h1 className="setup-title">Lengkapi Profil Anda</h1>
+
         <p className="setup-subtitle">
           Bantu kami memberikan rekomendasi produk terbaik untuk Anda
         </p>
@@ -87,16 +92,17 @@ const SetupProfile = () => {
   >
     <option value="">Pilih preferensi produk</option>
 
-    
-    <option value="pulsa">Pulsa & Paket Nelpon</option>
-    <option value="data">Kuota Data Internet</option>
-    <option value="streaming">Streaming & Entertainment</option>
-    <option value="roaming">Roaming Internasional</option>
+    {/* pakai LABEL yang sama dengan Dashboard & Profile */}
+    <option value="Pulsa & Nelpon">Pulsa & Paket Nelpon</option>
+    <option value="Kuota Data">Kuota Data Internet</option>
+    <option value="Streaming Subscription">Streaming & Entertainment</option>
+    <option value="Roaming">Roaming Internasional</option>
 
-    
-    <option value="semua">Semua Produk</option>
+    {/* opsi spesial: semua produk */}
+    <option value="Semua Produk">Semua Produk</option>
   </select>
 </label>
+
 
 
           {errorMsg && <p className="setup-error">{errorMsg}</p>}

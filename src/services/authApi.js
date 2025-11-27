@@ -75,12 +75,47 @@ export async function signup({ email, password }) {
   return handleResponse(res);
 }
 
+// RESET PASSWORD VIA EMAIL (LUPA PASSWORD)
+export async function resetPassword({ email }) {
+  const res = await fetch(`${AUTH_BASE_URL}/recover`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  // Supabase biasanya balikin body kosong, tapi handleResponse kita sudah aman
+  await handleResponse(res);
+  return true;
+}
+
+// UPDATE PASSWORD
+export async function updatePassword({ email, newPassword }) {
+  const res = await fetch(`${AUTH_BASE_URL}/user`, {
+    method: "PUT",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password: newPassword,
+    }),
+  });
+
+  const data = await handleResponse(res);
+  return data;
+}
+
 // LOGOUT — POST /auth/v1/logout
 export async function logout() {
   const token = getAccessToken();
+
+  // kalau sudah tidak ada token, cukup clear local state
   if (!token) {
     clearSession();
-    notifySessionChange(null);
     return;
   }
 
@@ -93,38 +128,70 @@ export async function logout() {
     },
   });
 
- 
   if (!res.ok) {
     console.warn("Logout gagal:", await res.text());
   }
 
-
   clearSession();
-  notifySessionChange(null);
 }
 
 /* =====================================================
    ================ SESSION HELPERS =====================
    ===================================================== */
 
+const SESSION_KEY = "telcoreco_session";
+
 export function saveSession(session) {
-  localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-  notifySessionChange(session);
-}
+  if (typeof window === "undefined" || !session) return;
 
-export function getSession() {
-  const raw = localStorage.getItem(SESSION_STORAGE_KEY);
-  if (!raw) return null;
+  const payload = { ...session };
 
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+
+  notifySessionChange(payload);
 }
 
 export function clearSession() {
-  localStorage.removeItem(SESSION_STORAGE_KEY);
+  if (typeof window === "undefined") return;
+
+  sessionStorage.removeItem(SESSION_KEY);
+
+  try {
+    localStorage.removeItem(SESSION_KEY);
+  } catch (e) {}
+
+  notifySessionChange(null);
+}
+
+export function getSession() {
+  if (typeof window === "undefined") return null;
+
+  try {
+    if (
+      localStorage.getItem(SESSION_KEY) &&
+      !sessionStorage.getItem(SESSION_KEY)
+    ) {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  } catch (e) {}
+
+  const raw = sessionStorage.getItem(SESSION_KEY);
+  if (!raw) return null;
+
+  try {
+    const session = JSON.parse(raw);
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (session.expires_at && nowSec >= session.expires_at) {
+      clearSession();
+      return null;
+    }
+
+    return session;
+  } catch (e) {
+    clearSession();
+    return null;
+  }
 }
 
 export function getAccessToken() {

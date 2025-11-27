@@ -28,3 +28,30 @@ export async function getProductsByCategory(category) {
 
   return res.json();
 }
+
+// Ambil detail beberapa produk sekaligus berdasarkan product_id
+export const getProductsByIds = async (ids = []) => {
+  if (!ids.length) return [];
+
+  const token = getAccessToken();
+  if (!token) throw new Error("Tidak ada access token.");
+
+  const idList = ids.map((id) => `"${id}"`).join(",");
+
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/product?product_id=in.(${idList})`,
+    {
+      headers: {
+        apikey: ANON_KEY,
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    console.error("Error getProductsByIds:", await res.text());
+    throw new Error("Gagal mengambil detail produk populer.");
+  }
+
+  return await res.json();
+};

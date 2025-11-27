@@ -27,18 +27,7 @@
 
 .login-subtitle {
   font-size: 14px;
-  color: #FF6B3C !important; 
-}
-
-
-.login-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.login-subtitle {
-  font-size: 14px;
+  color: #FF6B3C !important;
   opacity: 0.8;
 }
 
@@ -47,21 +36,84 @@
   font-weight: 700;
 }
 
-/* ==== HIGHLIGHT ITEMS ==== */
+/* ==== LOGO AREA ==== */
+.login-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-circle {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  background: #ff4d4f;
+  border-radius: 50%;
+}
+
+.brand-icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* ==== HIGHLIGHTS ==== */
 .login-highlights {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  margin-top: 24px;
 }
 
 .highlight-item {
   display: flex;
-  gap: 14px;
-  align-items: flex-start;
+  gap: 16px;
+  align-items: center;
 }
 
-.highlight-icon {
-  font-size: 20px;
+/* Kotak icon highlight kiri */
+.highlight-icon-box {
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-image {
+  width: 22px;
+  height: 22px;
+  color: #ff6b3c;
+  stroke-width: 2.2;
+  transform: translateY(1px);
+}
+
+.highlight-item h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.highlight-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* ==== RIGHT SIDE CARD ==== */
@@ -72,7 +124,7 @@
 }
 
 .login-card {
-  background: #fff;
+  background: #ffffff;
   width: 480px;
   padding: 40px;
   border-radius: 14px;
@@ -108,33 +160,50 @@
   display: block;
 }
 
-.input-with-icon {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 16px;
-  border-radius: 8px;
+/* ===== INPUT + ICON ===== */
+
+/* wrapper kotak luar */
+.login-page .input-with-icon {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 46px;
+
   background: #f5f7fa;
   border: 1px solid #dce3ec;
-  font-size: 16px;
+  border-radius: 8px;
 }
 
-.input-with-icon:focus-within {
-  border-color: #2f7df6;
-  background: #fff;
+
+.login-page .input-with-icon:focus-within {
+  border-color: #3b82f6; 
 }
 
-.input-icon {
+
+.login-page .input-with-icon .input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
   color: #64748b;
-  font-size: 18px;
+  pointer-events: none; 
 }
 
-.input-with-icon input {
-  flex: 1;
+ 
+.login-page .input-with-icon input {
+  width: 100%;
+  height: 100%;
   border: none;
   outline: none;
+  box-shadow: none;
+
   background: transparent;
   font-size: 15px;
+
+  padding: 0 12px 0 40px;  
+  margin: 0;
 }
 
 /* ==== ERROR TEXT ==== */
@@ -148,7 +217,7 @@
 .login-submit {
   width: 100%;
   background: #f15a24;
-  color: #fff;
+  color: #ffffff;
   padding: 12px;
   border-radius: 8px;
   border: none;
@@ -156,12 +225,11 @@
   font-weight: 600;
   cursor: pointer;
   display: flex;
-  justify-content: center; 
-  align-items: center;     
+  justify-content: center;
+  align-items: center;
   gap: 6px;
   transition: 0.25s ease;
 }
-
 
 .login-submit:hover {
   background: #0a4f9b;
@@ -171,6 +239,23 @@
 .login-submit:disabled {
   background: #7891c4;
   cursor: not-allowed;
+}
+
+/* ==== PASSWORD LINK ==== */
+.forgot-password-wrapper {
+  width: 100%;
+  text-align: right;
+  margin-top: 6px;
+}
+
+.forgot-password-link {
+  font-size: 14px;
+  color: #0A4F9B;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
 }
 
 /* ==== FOOTER ==== */
@@ -193,6 +278,33 @@
 .link:hover {
   text-decoration: underline;
 }
+
+/* === FIX CENTER PERFECT TEXT & ICON === */
+.login-page .input-with-icon {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 48px; 
+}
+
+.login-page .input-with-icon .input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%); 
+}
+
+.login-page .input-with-icon input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  padding: 0 14px 0 42px; 
+  font-size: 15px;
+  line-height: 48px;     
+}
+
 
 /* ==== MOBILE ==== */
 @media (max-width: 900px) {

@@ -21,23 +21,26 @@
 }
 
 /* ==== ICON ON TOP ==== */
-.setup-profile-wrapper::before {
-  content: "📶";
+.setup-top-icon {
   position: absolute;
   top: -42px;
   left: 50%;
   transform: translateX(-50%);
   background: #f15a24;
-  color: #fff;
-  font-size: 36px;
   width: 78px;
   height: 78px;
   border-radius: 18px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   box-shadow: 0 4px 20px rgba(241, 90, 36, 0.5);
 }
+
+.setup-top-icon svg {
+  color: #fff;
+  font-size: 36px;
+}
+
 
 /* ==== TITLE ==== */
 .setup-title {

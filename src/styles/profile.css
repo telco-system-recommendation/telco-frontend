@@ -372,6 +372,21 @@
   color: #4b5563;
 }
 
+.account-row.logout {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #dc2626;
+}
+
+.account-row.logout svg {
+  color: #ef4444;
+}
+
+.account-row.logout:hover {
+  background: #fee2e2;
+}
+
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .profile-layout {
