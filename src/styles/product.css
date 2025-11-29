@@ -230,7 +230,7 @@
   font-size: 14px;
 }
 
-/* Modal login diperlukan */
+
 .login-modal-overlay {
   position: fixed;
   inset: 0;
@@ -297,7 +297,7 @@
   cursor: pointer;
 }
 
-/* primary */
+
 .btn-login {
   background: #0b2e59;
   color: #ffffff;
@@ -307,7 +307,7 @@
   background: #103b74;
 }
 
-/* secondary (orange) */
+
 .btn-signup {
   background: #f97316;
   color: #ffffff;
@@ -317,7 +317,7 @@
   background: #ea580c;
 }
 
-/* ghost */
+
 .btn-cancel {
   background: #e5e7eb;
   color: #374151;
@@ -326,6 +326,115 @@
 .btn-cancel:hover {
   background: #d1d5db;
 }
+
+/* ===========================================================
+   TRANSISI HALAMAN PRODUCT
+   =========================================================== */
+
+
+.product-page {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+  animation: productPageEnter 0.55s ease-out forwards;
+}
+
+@keyframes productPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.product-grid .product-card {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: productCardIn 0.5s ease-out forwards;
+}
+
+
+.product-grid .product-card:nth-child(1) { animation-delay: 0.06s; }
+.product-grid .product-card:nth-child(2) { animation-delay: 0.10s; }
+.product-grid .product-card:nth-child(3) { animation-delay: 0.14s; }
+.product-grid .product-card:nth-child(4) { animation-delay: 0.18s; }
+
+@keyframes productCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.selected-product-grid .selected-product-card {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: productDetailIn 0.5s ease-out forwards;
+}
+
+.selected-product-grid .selected-product-card:nth-child(1) { animation-delay: 0.06s; }
+.selected-product-grid .selected-product-card:nth-child(2) { animation-delay: 0.10s; }
+.selected-product-grid .selected-product-card:nth-child(3) { animation-delay: 0.14s; }
+.selected-product-grid .selected-product-card:nth-child(4) { animation-delay: 0.18s; }
+
+@keyframes productDetailIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================================
+   TRANSISI MODAL LOGIN DI HALAMAN PRODUCT
+   =========================================================== */
+
+.login-modal-overlay {
+  animation: productModalFade 0.22s ease-out forwards;
+}
+
+.login-modal {
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  will-change: opacity, transform;
+  animation: productModalPop 0.26s ease-out forwards;
+}
+
+@keyframes productModalFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes productModalPop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
 
 /* Responsif */
 @media (max-width: 1024px) {
@@ -353,5 +462,54 @@
 
   .product-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .product-page {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .selected-product-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-page {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .selected-product-card {
+    padding: 20px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .product-card {
+    padding: 18px 16px;
+  }
+
+  .selected-product-card {
+    padding: 18px 16px;
   }
 }

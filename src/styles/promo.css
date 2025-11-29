@@ -33,11 +33,10 @@
   display: flex;
   width: 75%;
   margin: auto;
-  border-radius: 20px;       
-  overflow: hidden;         
+  border-radius: 20px;
+  overflow: hidden;
   background: transparent;
 }
-
 
 .promo-hero-left {
   flex: 1;
@@ -88,21 +87,19 @@
   margin: 40px auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px; 
+  gap: 20px;
 }
-
 
 .promo-card {
   background: white;
   border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   padding-bottom: 20px;
 }
 
-
 /* === WRAPPER GAMBAR === */
 .promo-card-img {
-  position: relative;               
+  position: relative;
   width: 100%;
 }
 
@@ -126,10 +123,15 @@
   z-index: 5;
 }
 
-.promo-blue { background: #1e6bff; }
-.promo-orange { background: #f97316; }
-.promo-purple { background: #a855f7; }
-
+.promo-blue {
+  background: #1e6bff;
+}
+.promo-orange {
+  background: #f97316;
+}
+.promo-purple {
+  background: #a855f7;
+}
 
 /* === BADGE DISKON === */
 .promo-discount {
@@ -143,7 +145,6 @@
   border-radius: 8px;
   z-index: 5;
 }
-
 
 .promo-card h4 {
   padding: 10px 12px 0;
@@ -174,20 +175,18 @@
   width: 75%;
   margin: 40px auto;
   padding: 50px 20px;
-  background: #f5f6fa; 
+  background: #f5f6fa;
   border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.05); 
-  
-  /* shadow lembut */
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.06);
   text-align: center;
 }
 
 .newsletter-box h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #023e73;  
+  color: #023e73;
   margin-bottom: 10px;
 }
 
@@ -214,3 +213,178 @@
   background: #ff8a3d;
 }
 
+/* ===========================================================
+   TRANSISI HALAMAN PROMO 
+   =========================================================== */
+
+.promo-page {
+  opacity: 0;
+  transform: translateY(16px);
+  will-change: opacity, transform;
+  animation: promoPageEnter 0.55s ease-out forwards;
+}
+
+@keyframes promoPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.promo-hero {
+  opacity: 0;
+  transform: translateY(12px);
+  will-change: opacity, transform;
+  animation: promoHeroEnter 0.6s ease-out forwards;
+  animation-delay: 0.08s;
+}
+
+@keyframes promoHeroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.promo-cards .promo-card {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: promoCardIn 0.55s ease-out forwards;
+}
+
+.promo-cards .promo-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.promo-cards .promo-card:nth-child(2) {
+  animation-delay: 0.14s;
+}
+.promo-cards .promo-card:nth-child(3) {
+  animation-delay: 0.18s;
+}
+
+@keyframes promoCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.newsletter-box {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: promoNewsletterIn 0.6s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes promoNewsletterIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================================
+   RESPONSIVE 
+   =========================================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .promo-page {
+    padding: 32px 16px 60px;
+  }
+
+  .promo-hero,
+  .promo-cards,
+  .newsletter-box {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 28px;
+  }
+
+  .promo-hero {
+    flex-direction: row;
+  }
+
+  .promo-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile besar */
+@media (max-width: 768px) {
+  .promo-header h2 {
+    font-size: 26px;
+  }
+
+  .promo-page {
+    padding: 28px 14px 48px;
+  }
+
+  .promo-hero {
+    flex-direction: column;
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  .promo-hero-left {
+    padding: 24px 20px;
+  }
+
+  .promo-hero-right {
+    height: 180px;
+  }
+
+  .promo-cards {
+    width: 100%;
+    margin: 28px auto;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .promo-card {
+    border-radius: 16px;
+  }
+
+  .newsletter-box {
+    width: 100%;
+    margin: 24px auto 0;
+    padding: 32px 18px;
+  }
+}
+
+/* Mobile kecil */
+@media (max-width: 480px) {
+  .promo-header h2 {
+    font-size: 22px;
+  }
+
+  .promo-page {
+    padding: 24px 12px 40px;
+  }
+
+  .promo-hero-left {
+    padding: 20px 16px;
+  }
+
+  .promo-card {
+    border-radius: 14px;
+  }
+}

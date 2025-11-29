@@ -1,14 +1,15 @@
-/* ==== GLOBAL RESET ==== */
+/* ==== LAYOUT LOGIN PAGE ==== */
 .login-page {
   display: flex;
-  height: 100vh;
   width: 100%;
+  min-height: calc(100vh - 140px);
   background: linear-gradient(180deg, #063970, #002449);
   justify-content: center;
   align-items: center;
   gap: 60px;
-  padding: 20px;
+  padding: 80px 20px 100px;
 }
+
 
 /* ==== LEFT SIDE ==== */
 .login-left {
@@ -83,7 +84,7 @@
   align-items: center;
 }
 
-/* Kotak icon highlight kiri */
+
 .highlight-icon-box {
   width: 50px;
   height: 50px;
@@ -162,7 +163,7 @@
 
 /* ===== INPUT + ICON ===== */
 
-/* wrapper kotak luar */
+
 .login-page .input-with-icon {
   position: relative;
   display: block;
@@ -305,17 +306,93 @@
   line-height: 48px;     
 }
 
+/* transisi */
+
+.page-login .login-left,
+.page-login .login-card {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+  animation: loginUltraSmooth 0.6s ease-out forwards;
+}
+
+
+.page-login .login-card {
+  animation-delay: 0.12s;
+}
+
+@keyframes loginUltraSmooth {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-submit {
+  position: relative;
+  overflow: hidden;
+}
+
+
+.login-submit-text {
+  display: inline-block;
+}
+
+
+.login-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #ffffff;
+  margin-right: 8px;
+  display: inline-block;
+  animation: loginSpinner 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+
+@keyframes loginSpinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.login-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
 
 /* ==== MOBILE ==== */
 @media (max-width: 900px) {
   .login-page {
+    min-height: auto;
+    padding: 40px 16px 48px;
     flex-direction: column;
-    padding: 40px 20px;
-    gap: 40px;
+    align-items: center;
+    gap: 24px;
   }
 
+ 
   .login-left {
-    text-align: center;
-    align-items: center;
+    display: none;
+  }
+
+  .login-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 480px;
   }
 }

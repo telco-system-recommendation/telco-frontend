@@ -14,7 +14,10 @@ function WhyChoose() {
             <FiThumbsUp size={40} />
           </div>
           <h3>Rekomendasi Personal</h3>
-          <p>Dapatkan saran produk yang sesuai dengan kebiasaan dan preferensi Anda</p>
+          <p>
+            Dapatkan saran produk yang sesuai dengan kebiasaan dan preferensi
+            Anda
+          </p>
         </div>
 
         <div className="card">
@@ -22,7 +25,9 @@ function WhyChoose() {
             <FiCheckCircle size={40} />
           </div>
           <h3>Harga Terbaik</h3>
-          <p>Bandingkan harga dan temukan penawaran terbaik untuk setiap produk</p>
+          <p>
+            Bandingkan harga dan temukan penawaran terbaik untuk setiap produk
+          </p>
         </div>
 
         <div className="card">

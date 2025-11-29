@@ -68,7 +68,6 @@
   margin-bottom: 8px;
 }
 
-/* Radio group */
 .cs-radio-group {
   display: flex;
   flex-direction: column;
@@ -88,7 +87,6 @@
   accent-color: #f97316;
 }
 
-/* Select & input (kalau dipakai) */
 .cs-select {
   width: 100%;
   padding: 10px 12px;
@@ -114,7 +112,6 @@
   color: #b91c1c;
 }
 
-/* Tombol submit */
 .cs-submit {
   margin-top: 8px;
   width: 100%;
@@ -126,8 +123,7 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.18s ease, transform 0.1s ease,
-    box-shadow 0.18s ease;
+  transition: background 0.18s ease, transform 0.1s ease, box-shadow 0.18s ease;
   box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
 }
 
@@ -141,6 +137,47 @@
   opacity: 0.7;
   cursor: default;
   box-shadow: none;
+}
+
+/* ============================================================
+   TRANSISI HALAMAN COLD START (SMOOTH ENTER)
+   ============================================================ */
+
+.page-coldstart .coldstart-page {
+  opacity: 0;
+  transform: translateY(16px);
+  will-change: opacity, transform;
+  animation: coldstartPageEnter 0.55s ease-out forwards;
+}
+
+@keyframes coldstartPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-coldstart .coldstart-wrapper {
+  opacity: 0;
+  transform: translateY(12px);
+  will-change: opacity, transform;
+  animation: coldstartCardEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.12s;
+}
+
+@keyframes coldstartCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ============================

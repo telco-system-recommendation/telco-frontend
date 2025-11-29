@@ -18,7 +18,7 @@ export const CartProvider = ({ children }) => {
       // pastikan setiap item punya id unik
       return parsed.map((p) => ({
         ...p,
-        id: p.id ?? p.product_id, 
+        id: p.id ?? p.product_id,
         quantity: p.quantity ?? 1,
       }));
     } catch (err) {

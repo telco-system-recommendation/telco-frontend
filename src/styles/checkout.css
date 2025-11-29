@@ -212,15 +212,15 @@
 }
 
 .payment-option {
-  justify-content: flex-start;   /* Pastikan konten mulai dari kiri */
+  justify-content: flex-start;   
   align-items: center;
 }
 
 .payment-option > div {
-  text-align: left;              /* RATA KIRI untuk title & desc */
+  text-align: left;              
   display: flex;
   flex-direction: column;
-  align-items: flex-start;       /* SUPAYA TITLE TIDAK KE TENGAH */
+  align-items: flex-start;      
 }
 
 .payment-option {
@@ -340,9 +340,57 @@
   margin-bottom: 4px;
 }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+/* transisi */
+
+.page-checkout .checkout-page {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+  animation: checkoutEnter 0.55s ease-out forwards;
+}
+
+@keyframes checkoutEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.page-checkout .checkout-card,
+.page-checkout .checkout-summary-card {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: checkoutCardIn 0.55s ease-out forwards;
+}
+
+
+.page-checkout .checkout-card {
+  animation-delay: 0.10s;
+}
+
+.page-checkout .checkout-summary-card {
+  animation-delay: 0.16s;
+}
+
+@keyframes checkoutCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* responsif*/
 @media (max-width: 960px) {
   .checkout-layout {
     grid-template-columns: 1fr;

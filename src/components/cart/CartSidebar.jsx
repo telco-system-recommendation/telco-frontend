@@ -2,6 +2,7 @@ import React from "react";
 import { useCart } from "../../context/CartContext";
 import { FiX, FiTrash2, FiMinus, FiPlus, FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { getSession } from "../../services/authApi";
 import "../../styles/cart.css";
 
 const CartSidebar = ({ isOpen, onClose }) => {
@@ -9,29 +10,44 @@ const CartSidebar = ({ isOpen, onClose }) => {
     useCart();
   const navigate = useNavigate();
 
+  const session = getSession();
+  const isLoggedIn = !!(session && session.user && session.access_token);
+
   const taxRate = 0.11;
   const taxAmount = subtotal * taxRate;
   const total = subtotal + taxAmount;
 
   const handleCheckout = () => {
     if (items.length === 0) return;
+
+    if (!isLoggedIn) {
+      onClose();
+      navigate("/login");
+      return;
+    }
+
     onClose();
     navigate("/checkout");
   };
 
   if (!isOpen) return null;
 
+  const headerSubtitle = !isLoggedIn
+    ? ""
+    : totalItems > 0
+    ? `${totalItems} item`
+    : "Belum ada produk";
+
   return (
     <div className="cart-overlay" onClick={onClose}>
       {/* panel kanan */}
       <div className="cart-sidebar" onClick={(e) => e.stopPropagation()}>
-        {/* HEADER BIRU + TOMBOL X */}
         <div className="cart-header">
           <div>
             <h3>Keranjang Belanja</h3>
-            <p className="cart-subtitle">
-              {totalItems > 0 ? `${totalItems} item` : "Belum ada produk"}
-            </p>
+            {headerSubtitle && (
+              <p className="cart-subtitle">{headerSubtitle}</p>
+            )}
           </div>
           <button
             type="button"
@@ -44,13 +60,35 @@ const CartSidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* ISI */}
-        {items.length === 0 ? (
+        {!isLoggedIn ? (
+          //  BELUM LOGIN
+          <div className="cart-empty">
+            <FiShoppingCart className="cart-empty-icon" />
+            <h4>Login Diperlukan</h4>
+            <p>
+              Silakan login terlebih dahulu untuk menambahkan produk ke
+              keranjang
+            </p>
+            <button
+              type="button"
+              className="cart-checkout-btn"
+              onClick={() => {
+                onClose();
+                navigate("/login");
+              }}
+            >
+              Login Sekarang
+            </button>
+          </div>
+        ) : items.length === 0 ? (
+          //  SUDAH LOGIN, KOSONG
           <div className="cart-empty">
             <FiShoppingCart className="cart-empty-icon" />
             <h4>Keranjang Kosong</h4>
             <p>Belum ada produk di keranjang. Yuk, mulai belanja!</p>
           </div>
         ) : (
+          //  SUDAH LOGIN, ADA ITEM
           <>
             <div className="cart-items">
               {items.map((item) => (
@@ -81,6 +119,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                           onClick={() =>
                             updateQuantity(item.product_id, item.quantity - 1)
                           }
+                          disabled={item.quantity <= 1}
                         >
                           <FiMinus />
                         </button>

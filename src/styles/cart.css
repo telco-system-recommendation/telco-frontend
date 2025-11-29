@@ -1,26 +1,23 @@
-/* overlay gelap yang nutup seluruh layar (termasuk navbar) */
 .cart-overlay {
   position: fixed;
-  inset: 0; /* top:0, right:0, bottom:0, left:0 */
+  inset: 0;
   background: rgba(15, 23, 42, 0.45);
   display: flex;
   justify-content: flex-end;
-  z-index: 2000; /* > navbar 1000 */
+  z-index: 2000;
 }
 
-/* panel kanan */
 .cart-sidebar {
   width: 380px;
   max-width: 100%;
   background: #ffffff;
-  height: 100vh; /* full layar, nggak ikut scroll halaman */
+  height: 100vh;
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 18px rgba(15, 23, 42, 0.25);
   animation: cart-slide-in 0.18s ease-out;
 }
 
-/* animasi masuk dari kanan */
 @keyframes cart-slide-in {
   from {
     transform: translateX(100%);
@@ -30,7 +27,6 @@
   }
 }
 
-/* HEADER BIRU DI ATAS */
 .cart-header {
   padding: 16px 20px;
   background: #0b335a;
@@ -52,7 +48,6 @@
   margin-top: 2px;
 }
 
-/* Tombol X */
 .cart-close-btn {
   border: none;
   background: transparent;
@@ -62,7 +57,6 @@
   padding: 4px;
 }
 
-/* isi kosong */
 .cart-empty {
   flex: 1;
   display: flex;

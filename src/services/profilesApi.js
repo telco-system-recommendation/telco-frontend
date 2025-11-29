@@ -28,19 +28,16 @@ export async function updateProfile(userId, payload) {
   const token = getAccessToken();
   if (!token) throw new Error("Tidak ada access token.");
 
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`,
-    {
-      method: "PATCH",
-      headers: {
-        apikey: ANON_KEY,
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-      body: JSON.stringify(payload),
-    }
-  );
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+    method: "PATCH",
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(payload),
+  });
 
   if (!res.ok) throw new Error("Gagal mengupdate profil.");
   const data = await res.json();

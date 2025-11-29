@@ -1,6 +1,8 @@
 import bgHero from "../../assets/latar-belakang.jpg";
+import { useNavigate } from "react-router-dom";
 
 function Hero() {
+  const navigate = useNavigate();
   return (
     <section
       className="hero"
@@ -16,8 +18,12 @@ function Hero() {
           kebutuhan Anda dengan harga terbaik.
         </p>
         <div className="hero-buttons">
-          <button className="btn-primary">Lihat Semua Produk</button>
-          <button className="btn-outline">Lihat Promo</button>
+          <button className="btn-primary" onClick={() => navigate("/produk")}>
+            Lihat Semua Produk
+          </button>
+          <button className="btn-outline" onClick={() => navigate("/promo")}>
+            Lihat Promo
+          </button>
         </div>
       </div>
     </section>

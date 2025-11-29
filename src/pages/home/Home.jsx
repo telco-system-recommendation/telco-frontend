@@ -7,13 +7,13 @@ import CTA from "../../components/cta/CTA";
 
 const Home = () => {
   return (
-    <>
+    <div className="page page-home">
       <Hero />
       <WhyChoose />
       <Categories />
       <PopularProducts />
       <CTA />
-    </>
+    </div>
   );
 };
 

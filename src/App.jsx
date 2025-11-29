@@ -18,6 +18,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import ProfileSetup from "./pages/profile/SetupProfile";
 import ColdStart from "./pages/profile/ColdStart";
 import Profile from "./pages/profile/Profile";
+import Receipt from "./pages/receipt/Receipt";
 
 // Protected Route
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -36,8 +37,9 @@ import "./styles/profile.css";
 function App() {
   return (
     <Router>
-      <Navbar />
-
+      <div className="app-root">
+        <Navbar />
+        <main className="page-wrapper">
       <Routes>
         {/* PUBLIC */}
         <Route path="/" element={<Home />} />
@@ -95,10 +97,19 @@ function App() {
 
 <Route path="/reset-password" element={<ResetPassword />} />
 
+<Route
+  path="/receipt"
+  element={
+    <ProtectedRoute>
+      <Receipt />
+    </ProtectedRoute>
+  }
+/>
 
       </Routes>
-
-      <Footer />
+</main>
+     <Footer />
+      </div>
     </Router>
   );
 }

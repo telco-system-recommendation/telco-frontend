@@ -16,7 +16,7 @@ function Categories() {
           </div>
           <h3>Pulsa & Nelpon</h3>
           <p>Paket pulsa dan telepon</p>
-          <a href="#">Lihat Produk →</a>
+          <a href="/produk">Lihat Produk →</a>
         </div>
 
         <div className="category-card">
@@ -25,7 +25,7 @@ function Categories() {
           </div>
           <h3>Kuota Data</h3>
           <p>Paket internet unlimited</p>
-          <a href="#">Lihat Produk →</a>
+          <a href="/produk">Lihat Produk →</a>
         </div>
 
         <div className="category-card">
@@ -34,7 +34,7 @@ function Categories() {
           </div>
           <h3>Streaming</h3>
           <p>Platform hiburan digital</p>
-          <a href="#">Lihat Produk →</a>
+          <a href="/produk">Lihat Produk →</a>
         </div>
 
         <div className="category-card">
@@ -43,7 +43,7 @@ function Categories() {
           </div>
           <h3>Roaming</h3>
           <p>Paket internasional</p>
-          <a href="#">Lihat Produk →</a>
+          <a href="/produk">Lihat Produk →</a>
         </div>
       </div>
     </section>

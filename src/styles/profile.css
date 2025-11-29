@@ -89,16 +89,15 @@
   margin-top: 6px;
   display: flex;
   flex-direction: column;
-  gap: 8px; 
+  gap: 8px;
 }
 
 .summary-item {
   display: flex;
-  align-items: center; 
+  align-items: center;
   gap: 12px;
 }
 
-/* icon kotak lembut */
 .summary-icon {
   width: 32px;
   height: 32px;
@@ -122,7 +121,6 @@
   color: #16a34a;
 }
 
-/* teks di samping icon */
 .summary-text {
   display: flex;
   flex-direction: column;
@@ -171,14 +169,12 @@
   margin-top: 4px;
 }
 
-/* header preferensi produk */
 .profile-card-header.warn {
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
 
-/* titik merah kecil dengan glow */
 .dot-live {
   width: 8px;
   height: 8px;
@@ -386,6 +382,105 @@
   background: #fee2e2;
 }
 
+/* ===========================================================
+   TRANSISI HALUS KHUSUS HALAMAN PROFIL
+   =========================================================== */
+
+.page-profile .profile-page {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+  animation: profileEnter 0.55s ease-out forwards;
+}
+
+@keyframes profileEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-profile .profile-summary-card,
+.page-profile .profile-card {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: profileCardIn 0.55s ease-out forwards;
+}
+
+.page-profile .profile-summary-card {
+  animation-delay: 0.1s;
+}
+
+.page-profile .profile-card:nth-of-type(1) {
+  animation-delay: 0.16s;
+}
+
+.page-profile .profile-card:nth-of-type(2) {
+  animation-delay: 0.22s;
+}
+
+@keyframes profileCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================================
+   LOADING STATE PROFIL
+   =========================================================== */
+
+.profile-loading {
+  padding: 48px 0;
+  text-align: center;
+  color: #4b5563;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-loading::before {
+  content: "";
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 3px solid rgba(15, 23, 42, 0.18);
+  border-top-color: var(--color-accent, #f15a24);
+  animation: profileSpinner 0.7s linear infinite;
+}
+
+.profile-loading-text {
+  animation: profileTextPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes profileSpinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes profileTextPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {

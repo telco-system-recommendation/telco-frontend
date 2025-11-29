@@ -1,12 +1,12 @@
 /* ==== GLOBAL CONTAINER ==== */
 .signup-page {
   display: flex;
-  height: 100vh;
   width: 100%;
+  min-height: calc(100vh - 140px);
   justify-content: center;
   align-items: center;
   gap: 60px;
-  padding: 20px;
+  padding: 80px 20px 100px;
   background: linear-gradient(180deg, #ff6b3c, #d93b1c);
 }
 
@@ -54,7 +54,6 @@
   display: block;
 }
 
-/* ===== INPUT + ICON (MIRIP LOGIN, TANPA EMOTE) ===== */
 .input-with-icon {
   position: relative;
   width: 100%;
@@ -81,7 +80,6 @@
   pointer-events: none;
 }
 
-/* input text */
 .input-with-icon input {
   width: 100%;
   height: 100%;
@@ -135,6 +133,8 @@
   align-items: center;
   gap: 6px;
   transition: 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .signup-submit:hover {
@@ -145,6 +145,7 @@
 .signup-submit:disabled {
   background: #999;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* ==== FOOTER ==== */
@@ -176,14 +177,12 @@
   color: #fff;
 }
 
-/* Card kanan (logo + teks + benefit) */
 .signup-right-card {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* header logo + brand */
 .signup-right-header {
   display: flex;
   align-items: center;
@@ -207,7 +206,7 @@
   right: -5px;
   width: 14px;
   height: 14px;
-  background: #0A4F9B;
+  background: #0a4f9b;
   border-radius: 999px;
 }
 
@@ -227,7 +226,6 @@
   font-weight: 700;
 }
 
-/* paragraf intro kanan */
 .signup-right-text {
   font-size: 14px;
   max-width: 360px;
@@ -235,7 +233,6 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* list benefit */
 .signup-benefits {
   display: flex;
   flex-direction: column;
@@ -261,9 +258,8 @@
 .benefit-icon svg {
   width: 20px;
   height: 20px;
-  color: #ffffff; 
+  color: #ffffff;
 }
-
 
 .benefit-item h4 {
   margin: 0 0 4px;
@@ -277,18 +273,19 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-
 /* ==== MOBILE ==== */
 @media (max-width: 900px) {
   .signup-page {
     flex-direction: column-reverse;
-    padding: 40px 20px;
-    gap: 40px;
+    padding: 40px 20px 48px;
+    gap: 32px;
+    min-height: auto;
   }
 
   .signup-right {
     justify-content: center;
     text-align: center;
+    display: none;
   }
 
   .signup-right-text {
@@ -298,5 +295,80 @@
   .benefit-item {
     justify-content: center;
     text-align: left;
+  }
+
+  .signup-card {
+    width: 100%;
+    max-width: 480px;
+  }
+}
+
+.page-signup .signup-card,
+.page-signup .signup-right-card {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+  animation: signupUltraSmooth 0.6s ease-out forwards;
+}
+
+.page-signup .signup-right-card {
+  animation-delay: 0.12s;
+}
+
+@keyframes signupUltraSmooth {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====== LOADING SPINNER ====== */
+.signup-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  display: inline-block;
+  margin-right: 8px;
+  animation: spinnerRotate 0.65s linear infinite;
+}
+
+@keyframes spinnerRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.signup-submit-text {
+  display: inline-block;
+}
+
+@media (max-width: 900px) {
+  .signup-card {
+    width: 100%;
+    max-width: 520px;
+    padding: 48px 36px;
+    border-radius: 18px;
+  }
+
+  .signup-form {
+    gap: 22px;
+  }
+
+  .signup-right {
+    display: none !important;
+  }
+
+  .signup-page {
+    padding: 60px 20px 80px;
+    min-height: auto;
   }
 }

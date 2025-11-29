@@ -4,8 +4,7 @@ import "../../styles/product.css";
 import { FaPhoneAlt, FaWifi, FaTv, FaGlobe } from "react-icons/fa";
 import { getSession } from "../../services/authApi";
 import { getProductsByCategory } from "../../services/productApi";
-import { useCart } from "../../context/CartContext"; // <--- Tambahan
-
+import { useCart } from "../../context/CartContext";
 
 const LoginRequiredModal = ({ isOpen, onClose, onLogin, onSignup }) => {
   if (!isOpen) return null;
@@ -45,7 +44,6 @@ const LoginRequiredModal = ({ isOpen, onClose, onLogin, onSignup }) => {
   );
 };
 
-// Mapping kategori di UI -> kategori di Supabase
 const CATEGORY_CONFIG = {
   pulsa: {
     label: "Pulsa & Nelpon",
@@ -82,7 +80,6 @@ const Product = () => {
   const handleViewProducts = async (categoryKey) => {
     const session = getSession();
 
-    // kalau belum login → munculkan modal
     if (!session || !session.access_token) {
       handleRequireAuth();
       return;
@@ -122,16 +119,13 @@ const Product = () => {
     navigate("/signup");
   };
 
-
   const handleBuyNow = (item) => {
     const session = getSession();
 
-   
     if (!session || !session.access_token) {
       handleRequireAuth();
       return;
     }
-
 
     addToCart({
       product_id: item.product_id,
@@ -139,71 +133,149 @@ const Product = () => {
       price: item.price,
     });
 
- 
     navigate("/checkout");
   };
 
   const currentCategoryLabel =
     selectedKey && CATEGORY_CONFIG[selectedKey]?.label;
 
-  // Tampilan list produk (setelah kategori dipilih)
+  // TAMPILAN LIST PRODUK SETELAH KATEGORI DIPILIH
   if (selectedKey) {
     return (
-      <div className="product-page">
-        <button
-          type="button"
-          className="back-to-category"
-          onClick={handleBackToCategories}
-        >
-          &larr; Kembali ke Kategori
-        </button>
+      <div className="page page-product">
+        <div className="product-page">
+          <button
+            type="button"
+            className="back-to-category"
+            onClick={handleBackToCategories}
+          >
+            &larr; Kembali ke Kategori
+          </button>
 
-        <h2 className="product-title">{currentCategoryLabel}</h2>
+          <h2 className="product-title">{currentCategoryLabel}</h2>
+          <p className="product-subtitle">
+            Pilih produk yang sesuai dengan kebutuhan Anda
+          </p>
+
+          {loading && <p className="product-info">Memuat produk...</p>}
+          {error && <p className="product-error">{error}</p>}
+
+          {!loading && !error && products.length === 0 && (
+            <p className="product-info">Belum ada produk untuk kategori ini.</p>
+          )}
+
+          <div className="selected-product-grid">
+            {products.map((item) => (
+              <div key={item.product_id} className="selected-product-card">
+                {item.popular && <span className="badge-popular">Populer</span>}
+
+                <h3 className="selected-product-name">{item.name}</h3>
+                <p className="selected-product-price">
+                  Rp {Number(item.price || 0).toLocaleString("id-ID")}
+                </p>
+                {item.description && (
+                  <p className="selected-product-desc">{item.description}</p>
+                )}
+
+                {Array.isArray(item.features) && item.features.length > 0 && (
+                  <ul className="selected-product-features">
+                    {item.features.map((f, idx) => (
+                      <li key={idx}>{f}</li>
+                    ))}
+                  </ul>
+                )}
+
+                <button
+                  type="button"
+                  className="btn-buy"
+                  onClick={() => handleBuyNow(item)}
+                >
+                  Beli Sekarang
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <LoginRequiredModal
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+            onLogin={handleGoLogin}
+            onSignup={handleGoSignup}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // TAMPILAN DEFAULT: PILIH KATEGORI
+  return (
+    <div className="page page-product">
+      <div className="product-page">
+        <h2 className="product-title">Pilih Kategori Produk</h2>
         <p className="product-subtitle">
-          Pilih produk yang sesuai dengan kebutuhan Anda
+          Temukan produk telekomunikasi yang sesuai dengan kebutuhan Anda
         </p>
 
-        {loading && <p className="product-info">Memuat produk...</p>}
-        {error && <p className="product-error">{error}</p>}
-
-        {!loading && !error && products.length === 0 && (
-          <p className="product-info">
-            Belum ada produk untuk kategori ini.
-          </p>
-        )}
-
-        <div className="selected-product-grid">
-          {products.map((item) => (
-            <div key={item.product_id} className="selected-product-card">
-              {item.popular && <span className="badge-popular">Populer</span>}
-
-              <h3 className="selected-product-name">{item.name}</h3>
-              <p className="selected-product-price">
-                Rp {Number(item.price || 0).toLocaleString("id-ID")}
-              </p>
-              {item.description && (
-                <p className="selected-product-desc">
-                  {item.description}
-                </p>
-              )}
-
-              {Array.isArray(item.features) && item.features.length > 0 && (
-                <ul className="selected-product-features">
-                  {item.features.map((f, idx) => (
-                    <li key={idx}>{f}</li>
-                  ))}
-                </ul>
-              )}
-
-              <button
-                type="button"
-                className="btn-buy"
-                onClick={() => handleBuyNow(item)} // <--- di sini
-              >
-                Beli Sekarang
-              </button>
+        <div className="product-grid">
+          <div className="product-card">
+            <div className="icon blue">
+              <FaPhoneAlt size={32} />
             </div>
-          ))}
+            <h3>Pulsa &amp; Nelpon</h3>
+            <p>Paket pulsa dan telepon untuk kebutuhan komunikasi</p>
+            <button
+              type="button"
+              className="btn-product"
+              onClick={() => handleViewProducts("pulsa")}
+            >
+              Lihat Produk
+            </button>
+          </div>
+
+          <div className="product-card">
+            <div className="icon green">
+              <FaWifi size={32} />
+            </div>
+            <h3>Kuota Data</h3>
+            <p>Paket internet untuk browsing dan streaming</p>
+            <button
+              type="button"
+              className="btn-product"
+              onClick={() => handleViewProducts("data")}
+            >
+              Lihat Produk
+            </button>
+          </div>
+
+          <div className="product-card">
+            <div className="icon purple">
+              <FaTv size={32} />
+            </div>
+            <h3>Streaming Subscription</h3>
+            <p>Akses ke platform hiburan digital favorit</p>
+            <button
+              type="button"
+              className="btn-product"
+              onClick={() => handleViewProducts("streaming")}
+            >
+              Lihat Produk
+            </button>
+          </div>
+
+          <div className="product-card">
+            <div className="icon orange">
+              <FaGlobe size={32} />
+            </div>
+            <h3>Roaming</h3>
+            <p>Paket roaming internasional untuk perjalanan</p>
+            <button
+              type="button"
+              className="btn-product"
+              onClick={() => handleViewProducts("roaming")}
+            >
+              Lihat Produk
+            </button>
+          </div>
         </div>
 
         <LoginRequiredModal
@@ -213,85 +285,6 @@ const Product = () => {
           onSignup={handleGoSignup}
         />
       </div>
-    );
-  }
-
-  // Tampilan default: pilih kategori
-  return (
-    <div className="product-page">
-      <h2 className="product-title">Pilih Kategori Produk</h2>
-      <p className="product-subtitle">
-        Temukan produk telekomunikasi yang sesuai dengan kebutuhan Anda
-      </p>
-
-      <div className="product-grid">
-        <div className="product-card">
-          <div className="icon blue">
-            <FaPhoneAlt size={32} />
-          </div>
-          <h3>Pulsa &amp; Nelpon</h3>
-          <p>Paket pulsa dan telepon untuk kebutuhan komunikasi</p>
-          <button
-            type="button"
-            className="btn-product"
-            onClick={() => handleViewProducts("pulsa")}
-          >
-            Lihat Produk
-          </button>
-        </div>
-
-        <div className="product-card">
-          <div className="icon green">
-            <FaWifi size={32} />
-          </div>
-          <h3>Kuota Data</h3>
-          <p>Paket internet untuk browsing dan streaming</p>
-          <button
-            type="button"
-            className="btn-product"
-            onClick={() => handleViewProducts("data")}
-          >
-            Lihat Produk
-          </button>
-        </div>
-
-        <div className="product-card">
-          <div className="icon purple">
-            <FaTv size={32} />
-          </div>
-          <h3>Streaming Subscription</h3>
-          <p>Akses ke platform hiburan digital favorit</p>
-          <button
-            type="button"
-            className="btn-product"
-            onClick={() => handleViewProducts("streaming")}
-          >
-            Lihat Produk
-          </button>
-        </div>
-
-        <div className="product-card">
-          <div className="icon orange">
-            <FaGlobe size={32} />
-          </div>
-          <h3>Roaming</h3>
-          <p>Paket roaming internasional untuk perjalanan</p>
-          <button
-            type="button"
-            className="btn-product"
-            onClick={() => handleViewProducts("roaming")}
-          >
-            Lihat Produk
-          </button>
-        </div>
-      </div>
-
-      <LoginRequiredModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onLogin={handleGoLogin}
-        onSignup={handleGoSignup}
-      />
     </div>
   );
 };

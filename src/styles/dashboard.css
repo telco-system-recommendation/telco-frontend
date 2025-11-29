@@ -61,7 +61,7 @@
   color: #0f172a;
 }
 
-/* ===== MAIN LAYOUT (2 COLUMNS) ===== */
+/* ===== MAIN LAYOUT  ===== */
 .dashboard-main {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1.1fr);
@@ -76,12 +76,10 @@
   gap: 20px;
 }
 
-/* semua section di kolom kiri full width (Untuk Kamu, Popular, History) */
 .dashboard-main-left > section {
   width: 100%;
 }
 
-/* RIGHT */
 .dashboard-main-right {
   display: flex;
   flex-direction: column;
@@ -141,7 +139,7 @@
   margin-top: 14px;
 }
 
-/* list produk di dalam kartu "Untuk Kamu" (juga dipakai Produk Populer) */
+/* list produk di dalam kartu */
 .recommend-product-list {
   margin-top: 16px;
   display: flex;
@@ -295,7 +293,7 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* ===== BUTTON BELI (dipakai di rekomendasi & populer) ===== */
+/* ===== BUTTON BELI ===== */
 .buy-btn {
   padding: 8px 16px;
   border-radius: 8px;
@@ -313,7 +311,7 @@
   transform: translateY(-1px);
 }
 
-/* === PRODUK POPULER — SAMA PERSIS "UNTUK KAMU" === */
+/* === PRODUK POPULER === */
 
 .popular-section {
   margin-top: 24px;
@@ -428,8 +426,7 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, box-shadow 0.15s ease,
-    transform 0.1s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 
 .dashboard-logout-btn:hover {
@@ -438,6 +435,125 @@
   transform: translateY(-1px);
 }
 
+/* ===========================================================
+   TRANSISI HALUS UNTUK ISI DASHBOARD
+   =========================================================== */
+
+.page-dashboard .dashboard-page {
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+  animation: dashboardEnter 0.55s ease-out forwards;
+}
+
+@keyframes dashboardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-dashboard .summary-card,
+.page-dashboard .recommend-card,
+.page-dashboard .quick-actions-card,
+.page-dashboard .active-package-card,
+.page-dashboard .history-section {
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  animation: dashboardCardIn 0.55s ease-out forwards;
+}
+
+.page-dashboard .summary-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.page-dashboard .summary-card:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.page-dashboard .summary-card:nth-child(3) {
+  animation-delay: 0.22s;
+}
+
+.page-dashboard .recommend-card {
+  animation-delay: 0.26s;
+}
+.page-dashboard .quick-actions-card {
+  animation-delay: 0.3s;
+}
+.page-dashboard .active-package-card {
+  animation-delay: 0.34s;
+}
+.page-dashboard .history-section {
+  animation-delay: 0.38s;
+}
+
+@keyframes dashboardCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================================
+   LOADING STATE DASHBOARD
+   =========================================================== */
+
+.page-dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 140px);
+}
+
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.dashboard-loading::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 3px solid rgba(15, 23, 42, 0.18);
+  border-top-color: #f15a24;
+  animation: dashboardSpinner 0.7s linear infinite;
+}
+
+.dashboard-loading-text {
+  animation: dashboardTextPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes dashboardSpinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dashboardTextPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1100px) {

@@ -28,7 +28,6 @@ const TRAVEL_MAP = {
   often: 0.7,
 };
 
-// --- mapping 3 pertanyaan baru ---
 const DATA_USAGE_MAP = {
   light: 3,      // < 5 GB
   medium: 12,    // 5–20 GB
@@ -54,16 +53,16 @@ const ColdStart = () => {
   const navigate = useNavigate();
 
   // state jawaban
-  const [plan, setPlan] = useState("");          // jenis paket
-  const [brand, setBrand] = useState("");        // device brand
+  const [plan, setPlan] = useState("");        
+  const [brand, setBrand] = useState(""); 
 
-  const [dataUsage, setDataUsage] = useState(""); // avg_data_usage_gb
-  const [spend, setSpend] = useState("");         // monthly_spend
-  const [topup, setTopup] = useState("");         // topup_freq
+  const [dataUsage, setDataUsage] = useState(""); 
+  const [spend, setSpend] = useState(""); 
+  const [topup, setTopup] = useState("");  
 
-  const [video, setVideo] = useState("");        // streaming
-  const [call, setCall] = useState("");          // paket telepon
-  const [travel, setTravel] = useState("");      // frekuensi bepergian
+  const [video, setVideo] = useState("");
+  const [call, setCall] = useState("");  
+  const [travel, setTravel] = useState(""); 
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -72,7 +71,7 @@ const ColdStart = () => {
     e.preventDefault();
     setError("");
 
-    // validasi semua wajib isi
+
     if (
       !plan ||
       !brand ||
@@ -128,6 +127,7 @@ const ColdStart = () => {
   };
 
   return (
+    <div className="page page-cold-start">
     <div className="coldstart-page">
       <div className="coldstart-wrapper">
         <h1 className="coldstart-title">Profil Awal</h1>
@@ -498,6 +498,7 @@ const ColdStart = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };

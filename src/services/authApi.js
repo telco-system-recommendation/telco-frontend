@@ -86,7 +86,6 @@ export async function resetPassword({ email }) {
     body: JSON.stringify({ email }),
   });
 
-  // Supabase biasanya balikin body kosong, tapi handleResponse kita sudah aman
   await handleResponse(res);
   return true;
 }

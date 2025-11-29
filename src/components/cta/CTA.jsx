@@ -2,8 +2,6 @@ import React from "react";
 import "./../../styles/cta.css";
 import { useNavigate } from "react-router-dom";
 
-
-
 const CTA = () => {
   const navigate = useNavigate();
   return (
@@ -14,7 +12,9 @@ const CTA = () => {
           Daftar sekarang dan dapatkan rekomendasi produk yang dipersonalisasi
           khusus untuk Anda
         </p>
-        <button className="cta-button" onClick={() => navigate("/signup")}>Daftar Gratis</button>
+        <button className="cta-button" onClick={() => navigate("/signup")}>
+          Daftar Gratis
+        </button>
       </div>
     </section>
   );

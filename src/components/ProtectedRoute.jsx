@@ -5,7 +5,6 @@ import { getSession } from "../services/authApi";
 const ProtectedRoute = ({ children }) => {
   const session = getSession();
 
-  // kalau belum ada access_token → tendang ke /login
   if (!session || !session.access_token) {
     return <Navigate to="/login" replace />;
   }

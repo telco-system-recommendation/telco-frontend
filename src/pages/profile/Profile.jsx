@@ -46,14 +46,12 @@ const Profile = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-
   useEffect(() => {
     const loadProfile = async () => {
       try {
         setLoading(true);
         setError("");
 
-        
         const sessionData = getSession();
         const currentUser = sessionData?.user;
 
@@ -74,12 +72,12 @@ const Profile = () => {
       } catch (err) {
         setError(err.message || "Gagal memuat profil.");
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
     loadProfile();
-  }, []); 
+  }, []);
 
   const initialName = (fullName || email || "").trim().charAt(0).toUpperCase();
 
@@ -119,7 +117,7 @@ const Profile = () => {
         phone,
         preferensi_produk: preferensi || null,
         email,
-        address: address || null, 
+        address: address || null,
       };
 
       const updated = await updateProfile(user.id, payload);
@@ -146,225 +144,233 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <p className="profile-loading">Memuat profil...</p>;
+    return (
+      <div className="profile-loading">
+        <span className="profile-loading-text">Memuat profil...</span>
+      </div>
+    );
   }
 
   return (
-    <div className="profile-page">
-      <h2 className="profile-title">Profil Saya</h2>
+    <div className="page page-profile">
+      <div className="profile-page">
+        <h2 className="profile-title">Profil Saya</h2>
 
-      <div className="profile-layout">
-        {/* ===== KARTU RINGKAS KIRI ===== */}
-        <aside className="profile-summary-card">
-          <div className="profile-avatar">{initialName || "U"}</div>
+        <div className="profile-layout">
+          {/* ===== KARTU RINGKAS KIRI ===== */}
+          <aside className="profile-summary-card">
+            <div className="profile-avatar">{initialName || "U"}</div>
 
-          <h3 className="profile-summary-name">
-            {fullName || "Nama belum diisi"}
-          </h3>
-          <p className="profile-summary-email">{email}</p>
+            <h3 className="profile-summary-name">
+              {fullName || "Nama belum diisi"}
+            </h3>
+            <p className="profile-summary-email">{email}</p>
 
-          <button
-            type="button"
-            className="profile-edit-btn"
-            onClick={isEditing ? handleCancel : handleStartEdit}
-          >
-            {isEditing ? "Batal Edit" : "Edit Profil"}
-          </button>
+            <button
+              type="button"
+              className="profile-edit-btn"
+              onClick={isEditing ? handleCancel : handleStartEdit}
+            >
+              {isEditing ? "Batal Edit" : "Edit Profil"}
+            </button>
 
-          <div className="profile-summary-extra">
-            <div className="summary-item">
-              <div className="summary-icon phone">
-                <FiPhone />
+            <div className="profile-summary-extra">
+              <div className="summary-item">
+                <div className="summary-icon phone">
+                  <FiPhone />
+                </div>
+                <div className="summary-text">
+                  <p className="summary-label">Telepon</p>
+                  <p className="summary-value">{profile?.phone}</p>
+                </div>
               </div>
-              <div className="summary-text">
-                <p className="summary-label">Telepon</p>
-                <p className="summary-value">{profile?.phone}</p>
+
+              <div className="summary-item">
+                <div className="summary-icon location">
+                  <FiMapPin />
+                </div>
+                <div className="summary-text">
+                  <p className="summary-label">Alamat</p>
+                  <p className="summary-value">{profile?.address}</p>
+                </div>
               </div>
             </div>
+          </aside>
 
-            <div className="summary-item">
-              <div className="summary-icon location">
-                <FiMapPin />
+          {/* ===== KONTEN KANAN ===== */}
+          <main className="profile-main">
+            {/* --- Info pribadi --- */}
+            <section className="profile-card">
+              <div className="profile-card-header">
+                <h3>Informasi Pribadi</h3>
+                <p>Kelola informasi pribadi Anda</p>
               </div>
-              <div className="summary-text">
-                <p className="summary-label">Alamat</p>
-                <p className="summary-value">{profile?.address}</p>
-              </div>
-            </div>
-          </div>
-        </aside>
 
-        {/* ===== KONTEN KANAN ===== */}
-        <main className="profile-main">
-          {/* --- Info pribadi --- */}
-          <section className="profile-card">
-            <div className="profile-card-header">
-              <h3>Informasi Pribadi</h3>
-              <p>Kelola informasi pribadi Anda</p>
-            </div>
+              {error && <div className="profile-alert error">{error}</div>}
+              {success && (
+                <div className="profile-alert success">{success}</div>
+              )}
 
-            {error && <div className="profile-alert error">{error}</div>}
-            {success && <div className="profile-alert success">{success}</div>}
+              <form onSubmit={handleSave} className="profile-form">
+                <div className="profile-form-grid">
+                  {/* Nama */}
+                  <div className="profile-field">
+                    <label>Nama Lengkap</label>
+                    <div className="profile-input-wrapper">
+                      <FiUser className="profile-input-icon" />
+                      <input
+                        type="text"
+                        className="profile-input"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Nama lengkap Anda"
+                        disabled={!isEditing}
+                      />
+                    </div>
+                  </div>
 
-            <form onSubmit={handleSave} className="profile-form">
-              <div className="profile-form-grid">
-                {/* Nama */}
-                <div className="profile-field">
-                  <label>Nama Lengkap</label>
-                  <div className="profile-input-wrapper">
-                    <FiUser className="profile-input-icon" />
-                    <input
-                      type="text"
-                      className="profile-input"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Nama lengkap Anda"
-                      disabled={!isEditing}
-                    />
+                  {/* Email */}
+                  <div className="profile-field">
+                    <label>Email</label>
+                    <div className="profile-input-wrapper">
+                      <FiMail className="profile-input-icon" />
+                      <input
+                        type="email"
+                        className="profile-input"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={true}
+                      />
+                    </div>
+                    <p className="field-hint">
+                      Untuk mengubah email, silakan hubungi dukungan.
+                    </p>
+                  </div>
+
+                  {/* Nomor Telepon */}
+                  <div className="profile-field">
+                    <label>Nomor Telepon</label>
+                    <div className="profile-input-wrapper">
+                      <FiPhone className="profile-input-icon" />
+                      <input
+                        type="text"
+                        className="profile-input"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="08123xxxxxxx"
+                        disabled={!isEditing}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Alamat */}
+                  <div className="profile-field">
+                    <label>Alamat</label>
+                    <div className="profile-input-wrapper">
+                      <FiMapPin className="profile-input-icon" />
+                      <input
+                        type="text"
+                        className="profile-input"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="Contoh: Jl. Sudirman No. 123, Jakarta"
+                        disabled={!isEditing}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Email */}
-                <div className="profile-field">
-                  <label>Email</label>
-                  <div className="profile-input-wrapper">
-                    <FiMail className="profile-input-icon" />
-                    <input
-                      type="email"
-                      className="profile-input"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled={true}
-                    />
+                {isEditing && (
+                  <div className="profile-actions">
+                    <button
+                      type="submit"
+                      className="profile-btn primary"
+                      disabled={saving}
+                    >
+                      {saving ? "Menyimpan..." : "Simpan"}
+                    </button>
+                    <button
+                      type="button"
+                      className="profile-btn ghost"
+                      onClick={handleCancel}
+                      disabled={saving}
+                    >
+                      Batal
+                    </button>
                   </div>
-                  <p className="field-hint">
-                    Untuk mengubah email, silakan hubungi dukungan.
+                )}
+              </form>
+            </section>
+
+            {/* --- Preferensi Produk --- */}
+            <section className="profile-card">
+              <div className="profile-card-header warn">
+                <span className="dot-live" />
+                <div>
+                  <h3>Preferensi Produk</h3>
+                  <p>
+                    Atur preferensi produk untuk rekomendasi yang lebih personal
                   </p>
                 </div>
-
-                {/* Nomor Telepon */}
-                <div className="profile-field">
-                  <label>Nomor Telepon</label>
-                  <div className="profile-input-wrapper">
-                    <FiPhone className="profile-input-icon" />
-                    <input
-                      type="text"
-                      className="profile-input"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="08123xxxxxxx"
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
-
-                {/* Alamat */}
-                <div className="profile-field">
-                  <label>Alamat</label>
-                  <div className="profile-input-wrapper">
-                    <FiMapPin className="profile-input-icon" />
-                    <input
-                      type="text"
-                      className="profile-input"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Contoh: Jl. Sudirman No. 123, Jakarta"
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
               </div>
 
-              {isEditing && (
-                <div className="profile-actions">
-                  <button
-                    type="submit"
-                    className="profile-btn primary"
-                    disabled={saving}
-                  >
-                    {saving ? "Menyimpan..." : "Simpan"}
-                  </button>
-                  <button
-                    type="button"
-                    className="profile-btn ghost"
-                    onClick={handleCancel}
-                    disabled={saving}
-                  >
-                    Batal
-                  </button>
-                </div>
-              )}
-            </form>
-          </section>
-
-          {/* --- Preferensi Produk --- */}
-          <section className="profile-card">
-            <div className="profile-card-header warn">
-              <span className="dot-live" />
-              <div>
-                <h3>Preferensi Produk</h3>
-                <p>
-                  Atur preferensi produk untuk rekomendasi yang lebih personal
+              <div className="profile-field">
+                <label>Preferensi Produk</label>
+                <select
+                  className="profile-select"
+                  value={preferensi}
+                  onChange={(e) => setPreferensi(e.target.value)}
+                  disabled={!isEditing}
+                >
+                  <option value="">Pilih preferensi</option>
+                  {PREFERENSI_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+                <p className="field-hint">
+                  Preferensi ini akan digunakan untuk memberikan rekomendasi
+                  produk di dashboard Anda.
                 </p>
               </div>
-            </div>
+            </section>
 
-            <div className="profile-field">
-              <label>Preferensi Produk</label>
-              <select
-                className="profile-select"
-                value={preferensi}
-                onChange={(e) => setPreferensi(e.target.value)}
-                disabled={!isEditing}
-              >
-                <option value="">Pilih preferensi</option>
-                {PREFERENSI_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-              <p className="field-hint">
-                Preferensi ini akan digunakan untuk memberikan rekomendasi
-                produk di dashboard Anda.
-              </p>
-            </div>
-          </section>
+            {/* --- Pengaturan Akun + Logout --- */}
+            <section className="profile-card">
+              <div className="profile-card-header">
+                <h3>Pengaturan Akun</h3>
+                <p>Kelola preferensi dan keamanan akun</p>
+              </div>
 
-          {/* --- Pengaturan Akun + Logout --- */}
-          <section className="profile-card">
-            <div className="profile-card-header">
-              <h3>Pengaturan Akun</h3>
-              <p>Kelola preferensi dan keamanan akun</p>
-            </div>
+              <div className="account-settings">
+                <button type="button" className="account-row">
+                  <FiLock />
+                  <span>Ubah Password</span>
+                </button>
 
-            <div className="account-settings">
-              <button type="button" className="account-row">
-                <FiLock />
-                <span>Ubah Password</span>
-              </button>
+                <button type="button" className="account-row">
+                  <FiBell />
+                  <span>Notifikasi</span>
+                </button>
 
-              <button type="button" className="account-row">
-                <FiBell />
-                <span>Notifikasi</span>
-              </button>
+                <button type="button" className="account-row">
+                  <FiCreditCard />
+                  <span>Metode Pembayaran</span>
+                </button>
 
-              <button type="button" className="account-row">
-                <FiCreditCard />
-                <span>Metode Pembayaran</span>
-              </button>
-
-              <button
-                type="button"
-                className="account-row logout"
-                onClick={handleLogout}
-              >
-                <FiLogOut />
-                <span>Logout</span>
-              </button>
-            </div>
-          </section>
-        </main>
+                <button
+                  type="button"
+                  className="account-row logout"
+                  onClick={handleLogout}
+                >
+                  <FiLogOut />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </section>
+          </main>
+        </div>
       </div>
     </div>
   );
