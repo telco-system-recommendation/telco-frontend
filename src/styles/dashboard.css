@@ -258,12 +258,14 @@
   font-size: 15px;
   font-weight: 600;
   margin: 0 0 6px;
+  color: #ffffff;
 }
 
 .active-name {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
+  color: #f15a24;
 }
 
 .active-subtext {
@@ -434,6 +436,56 @@
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
   transform: translateY(-1px);
 }
+
+/* ===== PAGINATION (UNTUK REKOMENDASI & HISTORY) ===== */
+
+.pagination {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn,
+.pagination-page-btn {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.pagination-btn[disabled],
+.pagination-page-btn[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pagination-page-btn.active {
+  background: #0a4f9b;
+  color: #ffffff;
+  border-color: #0a4f9b;
+}
+
+.pagination-btn:hover:not([disabled]),
+.pagination-page-btn:hover:not([disabled]) {
+  background: #0a4f9b;
+  color: #ffffff;
+  border-color: #0a4f9b;
+  transform: translateY(-0.5px);
+}
+
+.history-pagination {
+  margin-top: 12px;
+}
+
 
 /* ===========================================================
    TRANSISI HALUS UNTUK ISI DASHBOARD

@@ -11,13 +11,19 @@ import {
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
-import { getSession, logout, clearSession } from "../../services/authApi";
+import {
+  getSession,
+  logout,
+  clearSession,
+  updatePassword,
+} from "../../services/authApi";
 import { getProfile, updateProfile } from "../../services/profilesApi";
 import { useCart } from "../../context/CartContext";
 
 import "../../styles/profile.css";
 
 const PREFERENSI_OPTIONS = [
+  "Semua Produk",
   "Pulsa & Nelpon",
   "Kuota Data",
   "Streaming Subscription",
@@ -45,6 +51,14 @@ const Profile = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // ==== STATE UBAH PASSWORD ====
+  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -141,6 +155,48 @@ const Profile = () => {
     clearCart();
     clearSession();
     navigate("/");
+  };
+
+  // ==== HANDLER UNTUK PANEL UBAH PASSWORD ====
+  const handleToggleChangePassword = () => {
+    setIsPasswordOpen((prev) => !prev);
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
+    setPasswordSuccess("");
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!newPassword || !confirmPassword) {
+      setPasswordError("Password baru dan konfirmasi wajib diisi.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError("Password baru minimal 6 karakter.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Konfirmasi password tidak sama.");
+      return;
+    }
+
+    try {
+      setChangingPassword(true);
+      await updatePassword(newPassword);
+      setPasswordSuccess("Password berhasil diperbarui.");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      setPasswordError(err.message || "Gagal mengubah password.");
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
   if (loading) {
@@ -344,10 +400,91 @@ const Profile = () => {
               </div>
 
               <div className="account-settings">
-                <button type="button" className="account-row">
+                {/* ROW UBAH PASSWORD */}
+                <button
+                  type="button"
+                  className="account-row"
+                  onClick={handleToggleChangePassword}
+                >
                   <FiLock />
                   <span>Ubah Password</span>
                 </button>
+
+                {/* PANEL UBAH PASSWORD */}
+                {isPasswordOpen && (
+                  <div className="change-password-panel">
+                    <h4 className="change-password-title">Ubah Password</h4>
+                    <p className="change-password-desc">
+                      Masukkan password baru Anda. Pastikan mudah diingat namun
+                      sulit ditebak.
+                    </p>
+
+                    {passwordError && (
+                      <div className="profile-alert error small">
+                        {passwordError}
+                      </div>
+                    )}
+                    {passwordSuccess && (
+                      <div className="profile-alert success small">
+                        {passwordSuccess}
+                      </div>
+                    )}
+
+                    <form onSubmit={handleChangePassword}>
+                      <div className="profile-form-grid">
+                        <div className="profile-field">
+                          <label>Password Baru</label>
+                          <div className="profile-input-wrapper">
+                            <FiLock className="profile-input-icon" />
+                            <input
+                              type="password"
+                              className="profile-input"
+                              value={newPassword}
+                              onChange={(e) => setNewPassword(e.target.value)}
+                              placeholder="Minimal 6 karakter"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="profile-field">
+                          <label>Konfirmasi Password Baru</label>
+                          <div className="profile-input-wrapper">
+                            <FiLock className="profile-input-icon" />
+                            <input
+                              type="password"
+                              className="profile-input"
+                              value={confirmPassword}
+                              onChange={(e) =>
+                                setConfirmPassword(e.target.value)
+                              }
+                              placeholder="Ulangi password baru"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="change-password-actions">
+                        <button
+                          type="submit"
+                          className="profile-btn primary"
+                          disabled={changingPassword}
+                        >
+                          {changingPassword
+                            ? "Menyimpan..."
+                            : "Simpan Password"}
+                        </button>
+                        <button
+                          type="button"
+                          className="profile-btn ghost"
+                          onClick={handleToggleChangePassword}
+                          disabled={changingPassword}
+                        >
+                          Tutup
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
 
                 <button type="button" className="account-row">
                   <FiBell />

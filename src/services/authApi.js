@@ -91,17 +91,28 @@ export async function resetPassword({ email }) {
 }
 
 // UPDATE PASSWORD
-export async function updatePassword({ email, newPassword }) {
+export async function updatePassword(newPassword) {
+  const session = getSession();
+
+  const token =
+    session?.access_token ||
+    session?.accessToken ||
+    session?.session?.access_token;
+
+  if (!token) {
+    throw new Error(
+      "Token login tidak ditemukan. Silakan logout lalu login ulang sebelum mengubah password."
+    );
+  }
+
   const res = await fetch(`${AUTH_BASE_URL}/user`, {
     method: "PUT",
     headers: {
       apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      email,
-      password: newPassword,
-    }),
+    body: JSON.stringify({ password: newPassword }),
   });
 
   const data = await handleResponse(res);
