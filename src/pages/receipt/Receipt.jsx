@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiCheckCircle } from "react-icons/fi";
 
+import Logo from "../../assets/logo.png";
 import "../../styles/receipt.css";
 
 const Receipt = () => {
@@ -9,7 +10,6 @@ const Receipt = () => {
   const navigate = useNavigate();
   const data = location.state;
 
-  // Kalau user buka /receipt langsung tanpa data → lempar ke dashboard
   useEffect(() => {
     if (!data) {
       navigate("/dashboard");
@@ -53,6 +53,17 @@ const Receipt = () => {
       <div className="receipt-page">
         <div className="receipt-container">
           <div className="receipt-card">
+            {/*  HEADER UNTUK PRINT (LOGO + BRAND)  */}
+            <div className="receipt-print-header">
+              <img
+                src={Logo}
+                alt="Telcoreco"
+                className="receipt-print-logo"
+              />
+              <span className="receipt-print-brand">Telcoreco</span>
+            </div>
+
+            {/*  HEADER STATUS PEMBAYARAN  */}
             <div className="receipt-header">
               <div className="receipt-icon">
                 <FiCheckCircle />
@@ -96,7 +107,7 @@ const Receipt = () => {
                   <span className="receipt-value">{customer?.phone}</span>
                 </div>
                 <div className="receipt-info-row">
-                  <span className="receipt-label">Kota</span>
+                  <span className="receipt-label">Kabupaten/Kota</span>
                   <span className="receipt-value">{customer?.city}</span>
                 </div>
                 <div className="receipt-info-row">

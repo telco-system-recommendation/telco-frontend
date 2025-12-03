@@ -46,6 +46,12 @@ const Checkout = () => {
     accountName: "",
   });
 
+
+  const [isPaying, setIsPaying] = useState(false);
+
+
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleBackClick = () => {
     navigate(-1);
   };
@@ -53,14 +59,18 @@ const Checkout = () => {
   const handleNextToPayment = (e) => {
     e.preventDefault();
     if (!contact.name || !contact.phone || !contact.email) {
-      alert("Lengkapi informasi kontak terlebih dahulu.");
+      setErrorMessage("Lengkapi informasi kontak terlebih dahulu.");
       return;
     }
+    setErrorMessage(""); 
     setStep(2);
   };
 
   // VALIDASI PEMBAYARAN
   const validatePaymentDetails = () => {
+
+    setErrorMessage("");
+
     if (paymentMethod === "card") {
       if (
         !cardDetail.number ||
@@ -68,21 +78,21 @@ const Checkout = () => {
         !cardDetail.expiry ||
         !cardDetail.cvv
       ) {
-        alert("Lengkapi detail kartu terlebih dahulu.");
+        setErrorMessage("Lengkapi detail kartu terlebih dahulu.");
         return false;
       }
     }
 
     if (paymentMethod === "ewallet") {
       if (!ewalletDetail.provider) {
-        alert("Pilih e-wallet terlebih dahulu.");
+        setErrorMessage("Pilih e-wallet terlebih dahulu.");
         return false;
       }
     }
 
     if (paymentMethod === "bank") {
       if (!bankDetail.bank) {
-        alert("Pilih bank tujuan transfer terlebih dahulu.");
+        setErrorMessage("Pilih bank tujuan transfer terlebih dahulu.");
         return false;
       }
     }
@@ -91,30 +101,35 @@ const Checkout = () => {
   };
 
   // BAYAR SEKARANG
-
   const handlePayNow = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validatePaymentDetails()) return;
 
-    try {
-      const session = getSession();
-      if (!session || !session.user || !session.user.id) {
-        navigate("/login");
-        return;
-      }
+  if (isPaying) return;
 
-      const user = session.user;
-      const orderId = `TRX-${Date.now()}`;
-      const transactionTime = new Date().toISOString();
+  if (!validatePaymentDetails()) return;
 
-      // SIMPAN TRANSAKSI
-      await Promise.all(
-        items.map((item) =>
+  try {
+    setIsPaying(true);
+
+    const session = getSession();
+    if (!session || !session.user || !session.user.id) {
+      navigate("/login");
+      return;
+    }
+
+    const user = session.user;
+    const orderId = `TRX-${Date.now()}`;
+    const transactionTime = new Date().toISOString();
+    const trxPromises = [];
+
+    items.forEach((item) => {
+      for (let i = 0; i < item.quantity; i++) {
+        trxPromises.push(
           createTransaction({
             product_id: item.product_id,
             product_name: item.name,
-            price: item.price * item.quantity,
+            price: item.price,
             status: "success",
             user_id: user.id,
             created_at: transactionTime,
@@ -131,40 +146,50 @@ const Checkout = () => {
 
             data_quota_gb: item.data_quota_gb || null,
           })
-        )
-      );
+        );
+      }
+    });
 
-      const customer = {
-        name: contact.name,
-        email: contact.email,
-        phone: contact.phone,
-        city: shipping.city,
-        address: shipping.address,
-      };
 
-      // Kosongkan keranjang
-      clearCart();
+    await Promise.all(trxPromises);
 
-      // Pindah ke halaman struk
-      navigate("/receipt", {
-        state: {
-          orderId,
-          transactionTime,
-          items,
-          subtotal,
-          taxAmount,
-          total,
-          paymentMethod,
-          customer,
-        },
-      });
-    } catch (err) {
-      console.error(err);
-      alert("Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi.");
-    }
-  };
 
-  // RENDER FORM SESUAI METODE BAYAR
+    const customer = {
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+      city: shipping.city,
+      address: shipping.address,
+    };
+
+    clearCart();
+
+
+    navigate("/receipt", {
+      state: {
+        orderId,
+        transactionTime,
+        items,
+        subtotal,
+        taxAmount,
+        total,
+        paymentMethod,
+        customer,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    setErrorMessage(
+      "Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi."
+    );
+  } finally {
+
+    setIsPaying(false);
+  }
+};
+
+
+
 
   const renderPaymentDetails = () => {
     if (paymentMethod === "card") {
@@ -335,6 +360,13 @@ const Checkout = () => {
 
         <div className="checkout-layout">
           <main className="checkout-main">
+            {/* Banner error */}
+            {errorMessage && (
+              <div className="checkout-error">
+                {errorMessage}
+              </div>
+            )}
+
             {step === 1 && (
               <form onSubmit={handleNextToPayment}>
                 <section className="checkout-card">
@@ -406,7 +438,7 @@ const Checkout = () => {
 
                   <div className="form-row-2">
                     <div className="form-group">
-                      <label>Kota</label>
+                      <label>Kabupaten/Kota</label>
                       <input
                         type="text"
                         value={shipping.city}
@@ -515,8 +547,9 @@ const Checkout = () => {
                     type="button"
                     className="primary-btn"
                     onClick={handlePayNow}
+                    disabled={isPaying || totalItems === 0}
                   >
-                    Bayar Sekarang
+                    {isPaying ? "Memproses..." : "Bayar Sekarang"}
                   </button>
                 </div>
               </section>

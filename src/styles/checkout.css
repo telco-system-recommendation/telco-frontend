@@ -340,6 +340,22 @@
   margin-bottom: 4px;
 }
 
+.primary-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkout-error {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: #fee2e2; 
+  color: #b91c1c;         
+  font-size: 14px;
+}
+
+
+
 /* transisi */
 
 .page-checkout .checkout-page {

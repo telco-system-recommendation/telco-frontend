@@ -5,6 +5,7 @@ import Logo from "../../assets/logo.png";
 import "../../styles/login.css";
 
 import { login as loginApi, saveSession } from "../../services/authApi";
+import { hasUserBehaviour } from "../../services/userBehaviourApi";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,27 +16,44 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
+  e.preventDefault();
+  setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("Email dan password wajib diisi.");
-      return;
-    }
+  if (!email || !password) {
+    setErrorMessage("Email dan password wajib diisi.");
+    return;
+  }
+
+  try {
+    setIsSubmitting(true);
+
+    const session = await loginApi({ email, password });
+    saveSession(session);
+
+    const userId = session?.user?.id;
+    const accessToken = session?.access_token;
+
+    let alreadyHasBehaviour = false;
 
     try {
-      setIsSubmitting(true);
-
-      const session = await loginApi({ email, password });
-      saveSession(session);
-
-      return navigate("/dashboard");
-    } catch (error) {
-      setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
-    } finally {
-      setIsSubmitting(false);
+      alreadyHasBehaviour = await hasUserBehaviour(userId, accessToken);
+    } catch (err) {
+      console.error("Gagal cek user_behaviour:", err);
     }
-  };
+
+    if (alreadyHasBehaviour) {
+      // sudah pernah isi ColdStart
+      return navigate("/dashboard");
+    } else {
+      // belum pernah isi → wajib ke ColdStart
+      return navigate("/cold-start");
+    }
+  } catch (error) {
+    setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="page page-login">
