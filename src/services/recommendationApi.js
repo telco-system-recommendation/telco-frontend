@@ -9,7 +9,7 @@ const RECOMMENDATIONS_URL = `${SUPABASE_URL}/rest/v1/recommendations`;
 
 // Base URL API model
 const MODEL_BASE_URL =
-  import.meta.env.VITE_MODEL_API_URL || "https://54.196.76.81:3000";
+  import.meta.env.VITE_MODEL_API_URL;
 const MODEL_RECOMMEND_URL = `${MODEL_BASE_URL}/recommend`;
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;

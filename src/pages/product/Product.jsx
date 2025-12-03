@@ -240,7 +240,6 @@ const Product = () => {
 
           {products.length > 0 && (
             <>
-              <h3 className="product-list-title">Semua Produk</h3>
               <div className="selected-product-grid">
                 {products.map((item) => (
                   <div
