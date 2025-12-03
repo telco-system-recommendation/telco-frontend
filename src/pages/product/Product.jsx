@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/product.css";
 import { FaPhoneAlt, FaWifi, FaTv, FaGlobe } from "react-icons/fa";
+
 import { getSession } from "../../services/authApi";
 import { getProductsByCategory } from "../../services/productApi";
+import { getDashboardRecommendations } from "../../services/recommendationApi"; 
 import { useCart } from "../../context/CartContext";
 
 const LoginRequiredModal = ({ isOpen, onClose, onLogin, onSignup }) => {
@@ -69,6 +71,7 @@ const Product = () => {
 
   const [selectedKey, setSelectedKey] = useState(null);
   const [products, setProducts] = useState([]);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -80,21 +83,48 @@ const Product = () => {
   const handleViewProducts = async (categoryKey) => {
     const session = getSession();
 
+    // kalau belum login → modal
     if (!session || !session.access_token) {
       handleRequireAuth();
       return;
     }
 
+    const userId = session.user?.id;
     const cfg = CATEGORY_CONFIG[categoryKey];
-    if (!cfg) return;
+    if (!cfg || !userId) return;
 
     try {
       setLoading(true);
       setError("");
       setSelectedKey(categoryKey);
+      setRecommendedProducts([]);
+      setProducts([]);
 
-      const data = await getProductsByCategory(cfg.supabaseCategory);
-      setProducts(data || []);
+      // 1. Ambil semua produk di kategori tersebut
+      const allProducts = (await getProductsByCategory(
+        cfg.supabaseCategory
+      )) || [];
+
+      // 2. Minta rekomendasi model berdasarkan kategori
+      let recs = [];
+      try {
+        recs =
+          (await getDashboardRecommendations({
+            userId,
+            category: cfg.supabaseCategory,
+          })) || [];
+      } catch (err) {
+        console.warn("Gagal mengambil rekomendasi kategori:", err);
+      }
+
+      // 3. Pisahkan produk rekomendasi & non-rekomendasi (hindari duplikat)
+      const recIdSet = new Set(recs.map((p) => p.product_id));
+      const nonRecommended = allProducts.filter(
+        (p) => !recIdSet.has(p.product_id)
+      );
+
+      setRecommendedProducts(recs);
+      setProducts(nonRecommended);
     } catch (err) {
       console.error(err);
       setError(err.message || "Gagal memuat produk.");
@@ -106,6 +136,7 @@ const Product = () => {
   const handleBackToCategories = () => {
     setSelectedKey(null);
     setProducts([]);
+    setRecommendedProducts([]);
     setError("");
   };
 
@@ -139,7 +170,7 @@ const Product = () => {
   const currentCategoryLabel =
     selectedKey && CATEGORY_CONFIG[selectedKey]?.label;
 
-  // TAMPILAN LIST PRODUK SETELAH KATEGORI DIPILIH
+  // ====== TAMPILAN LIST PRODUK SETELAH KATEGORI DIPILIH ======
   if (selectedKey) {
     return (
       <div className="page page-product">
@@ -154,47 +185,103 @@ const Product = () => {
 
           <h2 className="product-title">{currentCategoryLabel}</h2>
           <p className="product-subtitle">
-            Pilih produk yang sesuai dengan kebutuhan Anda
+            Produk yang disarankan otomatis berdasarkan perilaku dan preferensi Anda.
           </p>
 
           {loading && <p className="product-info">Memuat produk...</p>}
           {error && <p className="product-error">{error}</p>}
 
+          {/* ===== BLOK REKOMENDASI MODEL ===== */}
+          {!loading &&
+            !error &&
+            recommendedProducts &&
+            recommendedProducts.length > 0 && (
+              <div className="recommend-section">
+
+
+                <div className="selected-product-grid">
+                  {recommendedProducts.map((item) => (
+                    <div
+                      key={item.product_id}
+                      className="selected-product-card"
+                    >
+
+                      <h3 className="selected-product-name">{item.name}</h3>
+                      <p className="selected-product-price">
+                        Rp {Number(item.price || 0).toLocaleString("id-ID")}
+                      </p>
+                      {item.description && (
+                        <p className="selected-product-desc">
+                          {item.description}
+                        </p>
+                      )}
+
+                      <button
+                        type="button"
+                        className="btn-buy"
+                        onClick={() => handleBuyNow(item)}
+                      >
+                        Beli Sekarang
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ===== LIST PRODUK LAIN DI KATEGORI YANG SAMA ===== */}
           {!loading && !error && products.length === 0 && (
-            <p className="product-info">Belum ada produk untuk kategori ini.</p>
+            <p className="product-info">
+              {recommendedProducts.length > 0
+                ? "Selain rekomendasi di atas, belum ada produk lain untuk kategori ini."
+                : "Belum ada produk untuk kategori ini."}
+            </p>
           )}
 
-          <div className="selected-product-grid">
-            {products.map((item) => (
-              <div key={item.product_id} className="selected-product-card">
-                {item.popular && <span className="badge-popular">Populer</span>}
+          {products.length > 0 && (
+            <>
+              <h3 className="product-list-title">Semua Produk</h3>
+              <div className="selected-product-grid">
+                {products.map((item) => (
+                  <div
+                    key={item.product_id}
+                    className="selected-product-card"
+                  >
+                    {item.popular && (
+                      <span className="badge-popular">Populer</span>
+                    )}
 
-                <h3 className="selected-product-name">{item.name}</h3>
-                <p className="selected-product-price">
-                  Rp {Number(item.price || 0).toLocaleString("id-ID")}
-                </p>
-                {item.description && (
-                  <p className="selected-product-desc">{item.description}</p>
-                )}
+                    <h3 className="selected-product-name">{item.name}</h3>
+                    <p className="selected-product-price">
+                      Rp {Number(item.price || 0).toLocaleString("id-ID")}
+                    </p>
+                    {item.description && (
+                      <p className="selected-product-desc">
+                        {item.description}
+                      </p>
+                    )}
 
-                {Array.isArray(item.features) && item.features.length > 0 && (
-                  <ul className="selected-product-features">
-                    {item.features.map((f, idx) => (
-                      <li key={idx}>{f}</li>
-                    ))}
-                  </ul>
-                )}
+                    {Array.isArray(item.features) &&
+                      item.features.length > 0 && (
+                        <ul className="selected-product-features">
+                          {item.features.map((f, idx) => (
+                            <li key={idx}>{f}</li>
+                          ))}
+                        </ul>
+                      )}
 
-                <button
-                  type="button"
-                  className="btn-buy"
-                  onClick={() => handleBuyNow(item)}
-                >
-                  Beli Sekarang
-                </button>
+                    <button
+                      type="button"
+                      className="btn-buy"
+                      onClick={() => handleBuyNow(item)}
+                    >
+                      Beli Sekarang
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
 
           <LoginRequiredModal
             isOpen={isLoginModalOpen}
@@ -207,7 +294,7 @@ const Product = () => {
     );
   }
 
-  // TAMPILAN DEFAULT: PILIH KATEGORI
+  // ====== TAMPILAN DEFAULT: PILIH KATEGORI ======
   return (
     <div className="page page-product">
       <div className="product-page">

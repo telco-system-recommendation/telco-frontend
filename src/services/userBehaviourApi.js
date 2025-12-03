@@ -1,4 +1,4 @@
-import { getAccessToken } from "./authApi";
+import { getAccessToken, getSession } from "./authApi";
 
 const SUPABASE_URL = "https://vledlplbztmprbgjwxie.supabase.co";
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -30,4 +30,48 @@ export async function saveUserBehaviour(payload) {
 
   const data = await res.json();
   return Array.isArray(data) ? data[0] : data;
+}
+
+export async function increaseComplainCount() {
+  const token = getAccessToken();
+  const session = getSession();
+  const userId = session?.user?.id;
+
+  if (!token || !userId) throw new Error("Tidak ada token / user.");
+
+  // 1. Ambil user_behaviour row user
+  const getUrl = `${SUPABASE_URL}/rest/v1/user_behaviour?id=eq.${userId}&select=complain_count`;
+
+  const getRes = await fetch(getUrl, {
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const rows = await getRes.json();
+  const current = rows[0]?.complain_count ?? 0;
+
+  // 2. Update complain_count + 1
+  const patchUrl = `${SUPABASE_URL}/rest/v1/user_behaviour?id=eq.${userId}`;
+
+  const patchRes = await fetch(patchUrl, {
+    method: "PATCH",
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify({
+      complain_count: current + 1,
+    }),
+  });
+
+  if (!patchRes.ok) {
+    const text = await patchRes.text();
+    throw new Error(`Gagal update complain_count: ${patchRes.status} - ${text}`);
+  }
+
+  return (await patchRes.json())[0];
 }

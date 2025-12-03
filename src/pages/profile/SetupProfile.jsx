@@ -100,7 +100,6 @@ const SetupProfile = () => {
                   Streaming & Entertainment
                 </option>
                 <option value="Roaming">Roaming Internasional</option>
-                <option value="Semua Produk">Semua Produk</option>
               </select>
             </label>
 

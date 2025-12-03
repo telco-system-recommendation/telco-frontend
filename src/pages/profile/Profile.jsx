@@ -8,6 +8,7 @@ import {
   FiCreditCard,
   FiLock,
   FiLogOut,
+  FiMessageSquare,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +24,6 @@ import { useCart } from "../../context/CartContext";
 import "../../styles/profile.css";
 
 const PREFERENSI_OPTIONS = [
-  "Semua Produk",
   "Pulsa & Nelpon",
   "Kuota Data",
   "Streaming Subscription",
@@ -494,6 +494,15 @@ const Profile = () => {
                 <button type="button" className="account-row">
                   <FiCreditCard />
                   <span>Metode Pembayaran</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="account-row"
+                  onClick={() => navigate("/complaints")}
+                >
+                  <FiMessageSquare />
+                  <span>Pusat Komplain</span>
                 </button>
 
                 <button

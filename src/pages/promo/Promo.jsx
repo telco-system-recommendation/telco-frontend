@@ -8,6 +8,8 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import "../../styles/promo.css";
+import promo1 from "../../assets/promo1.jpg";
+import promo2 from "../../assets/promo2.jpg";
 
 const Promo = () => {
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ const Promo = () => {
           {/* CARD 1 */}
           <div className="promo-card">
             <div className="promo-card-img">
-              <img src={bgImage} alt="promo" />
+              <img src={promo2} alt="promo" />
 
               <span className="promo-tag promo-blue">Data</span>
               <span className="promo-discount">
@@ -87,7 +89,7 @@ const Promo = () => {
           {/* CARD 2 */}
           <div className="promo-card">
             <div className="promo-card-img">
-              <img src={bgImage} alt="promo" />
+              <img src={promo1} alt="promo" />
 
               <span className="promo-tag promo-orange">Pulsa</span>
               <span className="promo-discount">

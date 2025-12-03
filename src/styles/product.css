@@ -126,6 +126,45 @@
   text-decoration: underline;
 }
 
+/* Subtitle rekomendasi */
+.recommend-section {
+  text-align: center;
+}
+
+.recommend-section-subtitle {
+  margin-bottom: 20px;   
+  padding-bottom: 10px; 
+}
+
+/* List fitur di card produk */
+.selected-product-features {
+  margin-top: 10px;
+  padding-left: 0;
+}
+
+.selected-product-features li {
+  list-style: none;
+  margin-bottom: 6px;
+  position: relative;
+  padding-left: 20px;
+  font-size: 13px;
+  color: #4b5563; 
+}
+
+/* Icon check hijau di depan tiap fitur */
+.selected-product-features li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+  line-height: 1;
+  color: #22c55e;
+}
+
+
+
+
 /* Grid produk detail */
 .selected-product-grid {
   max-width: 1100px;
