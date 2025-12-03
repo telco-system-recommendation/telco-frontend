@@ -4,11 +4,10 @@ import { getProductsByIds } from "./productApi";
 const SUPABASE_URL = "https://vledlplbztmprbgjwxie.supabase.co";
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Endpoint table recommendations di Supabase
 const RECOMMENDATIONS_URL = `${SUPABASE_URL}/rest/v1/recommendations`;
 
-
-const MODEL_BASE_URL = import.meta.env.VITE_MODEL_API_URL || "/api";
-const MODEL_RECOMMEND_URL = `${MODEL_BASE_URL}/recommend`;
+const MODEL_RECOMMEND_URL = "/api/recommend";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -49,6 +48,7 @@ async function callModelRecommend({ userId, category, accessToken }) {
     return null;
   }
 }
+
 
 export async function getDashboardRecommendations({ userId, category }) {
   const accessToken = getAccessToken();
@@ -102,7 +102,6 @@ export async function getDashboardRecommendations({ userId, category }) {
         const hasIds =
           Array.isArray(row.recommendations) && row.recommendations.length > 0;
 
-        // Kalau masih < 24 jam dan ada ID → pakai sebagai cache
         if (hasIds && Number.isFinite(age) && age <= ONE_DAY_MS) {
           ids = row.recommendations;
         }
@@ -112,7 +111,6 @@ export async function getDashboardRecommendations({ userId, category }) {
     console.error("Error baca rekomendasi dari Supabase:", err);
   }
 
-  // 2. Kalau cache kosong / kadaluarsa → panggil API model
   if (!Array.isArray(ids) || ids.length === 0) {
     console.log(
       "[Rekomendasi] Cache kosong / kadaluarsa, minta baru ke API model..."
@@ -136,14 +134,12 @@ export async function getDashboardRecommendations({ userId, category }) {
     return [];
   }
 
-  // 3. Ambil detail produk dari tabel `product`
   try {
     const products = await getProductsByIds(ids);
     if (!Array.isArray(products)) return [];
 
     const map = new Map(products.map((p) => [p.product_id, p]));
 
-    // Urutkan sesuai urutan rekomendasi dari model
     const final = ids
       .map((id) => map.get(id))
       .filter(Boolean)
