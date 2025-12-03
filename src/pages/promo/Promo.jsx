@@ -10,10 +10,10 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/promo.css";
 import promo1 from "../../assets/promo1.jpg";
 import promo2 from "../../assets/promo2.jpg";
+import bgImage from "../../assets/latar-belakang.jpg";
 
 const Promo = () => {
   const navigate = useNavigate();
-  const bgImage = "/src/assets/latar-belakang.jpg";
 
   const goToProduct = () => navigate("/produk");
 
