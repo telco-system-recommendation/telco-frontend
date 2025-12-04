@@ -5,7 +5,7 @@ import { saveUserBehaviour } from "../../services/userBehaviourApi";
 
 import "../../styles/coldStart.css";
 
-// mapping ke nilai numerik
+// mapping ke nilai numerik 
 const VIDEO_MAP = {
   never: 0.0,
   rarely: 0.15,
@@ -29,10 +29,10 @@ const TRAVEL_MAP = {
 };
 
 const DATA_USAGE_MAP = {
-  light: 3, // < 5 GB
-  medium: 12, // 5–20 GB
-  heavy: 35, // 20–50 GB
-  very_heavy: 60, // > 50 GB
+  light: 3,      // < 5 GB
+  medium: 12,    // 5–20 GB
+  heavy: 35,     // 20–50 GB
+  very_heavy: 60 // > 50 GB
 };
 
 const SPEND_MAP = {
@@ -43,9 +43,9 @@ const SPEND_MAP = {
 };
 
 const TOPUP_MAP = {
-  low: 2, // 1–2x
-  mid: 4, // 3–4x
-  high: 6, // 5–7x
+  low: 2,       // 1–2x
+  mid: 4,       // 3–4x
+  high: 6,      // 5–7x
   very_high: 8, // >7x
 };
 
@@ -85,6 +85,8 @@ const ColdStart = () => {
       return;
     }
 
+    if (loading) return; 
+
     try {
       setLoading(true);
 
@@ -96,25 +98,21 @@ const ColdStart = () => {
       }
 
       const payload = {
-        id: userId,
         plan_type: plan,
-        avg_data_usage_gb: DATA_USAGE_MAP[dataUsage],
+        avg_data_usage_gb: Number(DATA_USAGE_MAP[dataUsage]),
         device_brand: brand,
-        monthly_spend: SPEND_MAP[spend],
-        topup_freq: TOPUP_MAP[topup],
-        travel_score: TRAVEL_MAP[travel],
+        monthly_spend: Number(SPEND_MAP[spend]),
+        topup_freq: Number(TOPUP_MAP[topup]),
+        travel_score: Number(TRAVEL_MAP[travel]),
         created_at: new Date().toISOString(),
-        pct_video_usage: VIDEO_MAP[video],
+        pct_video_usage: Number(VIDEO_MAP[video]),
         sms_frequency: 0,
-        avg_call_duration: CALL_MAP[call],
+        avg_call_duration: Number(CALL_MAP[call]),
         complain_count: 0,
       };
+
+      console.log("ColdStart payload:", payload);
       await saveUserBehaviour(payload);
-
-      // tandai bahwa user ini sudah mengisi cold start
-      const flagKey = `coldstart_completed_${userId}`;
-      localStorage.setItem(flagKey, "true");
-
       navigate("/dashboard");
     } catch (err) {
       console.error(err);

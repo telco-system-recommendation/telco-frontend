@@ -306,6 +306,61 @@
   }
 }
 
+/* ==== BRAND DI STRUK (UNTUK PRINT) ==== */
+.receipt-print-header {
+  display: none; 
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.receipt-print-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.receipt-print-brand {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ==== STYLE KHUSUS SAAT PRINT ==== */
+@media print {
+  .navbar,
+  .footer {
+    display: none !important;
+  }
+
+  .page-wrapper {
+    padding: 0;
+  }
+
+  .page-receipt .receipt-page {
+    padding-top: 16px;
+  }
+
+  .receipt-card {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .receipt-print-header {
+    display: flex;
+  }
+}
+
+@media print {
+  @page {
+    margin: 0;
+  }
+}
+
+
 /* =======================
    ANIMASI KEYFRAMES
    ======================= */

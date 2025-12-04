@@ -198,7 +198,7 @@ const Dashboard = () => {
 
       setProducts(productList || []);
 
-      // ---- TRANSAKSI USER + SEMUA TRANSAKSI (UNTUK POPULER) ----
+      //  TRANSAKSI USER + SEMUA TRANSAKSI
       const [trxUser, trxAll] = await Promise.all([
         getUserTransactions(user.id),
         getAllTransactions(),
@@ -245,14 +245,6 @@ const Dashboard = () => {
   useEffect(() => {
     const init = async () => {
       if (!user) return;
-
-      const flagKey = `coldstart_completed_${user.id}`;
-      const isColdStartDone = localStorage.getItem(flagKey) === "true";
-
-      if (!isColdStartDone) {
-        navigate("/cold-start");
-        return;
-      }
 
       await loadAll();
     };
