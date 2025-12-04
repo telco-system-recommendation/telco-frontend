@@ -1,6 +1,6 @@
 import { getAccessToken, getSession } from "./authApi";
 
-const SUPABASE_URL = "https://vledlplbztmprbgjwxie.supabase.co";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const USER_BEHAVIOUR_URL = `${SUPABASE_URL}/rest/v1/user_behaviour`;
