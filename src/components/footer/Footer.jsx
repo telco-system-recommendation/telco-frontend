@@ -29,13 +29,16 @@ function Footer() {
         <div className="footer-contact">
           <h4>Hubungi Kami</h4>
           <p>
-            <FaPhone /> +62 21 1234 5678
+            <FaPhone />
+            <span>+62 21 1234 5678</span>
           </p>
           <p>
-            <FaEnvelope /> info@telcoreco.com
+            <FaEnvelope />
+            <span>info@telcoreco.com</span>
           </p>
           <p>
-            <FaMapMarkerAlt /> Jakarta, Indonesia
+            <FaMapMarkerAlt />
+            <span> Jakarta, Indonesia</span>
           </p>
         </div>
 

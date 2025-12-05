@@ -1,40 +1,103 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { getSession } from "../services/authApi";
 
 const CartContext = createContext();
 
-const CART_KEY = "telcoreco_cart_v1";
+// kunci utama di localStorage
+const CART_STORE_KEY = "telcoreco_cart_by_user_v1";
+
+// dapatkan key user saat ini (userId atau 'guest')
+const getCurrentUserKey = () => {
+  const session = getSession();
+  const userId = session?.user?.id;
+  return userId || "guest";
+};
+
+// baca store dari localStorage
+const loadCartStore = () => {
+  if (typeof window === "undefined") return { byUser: {} };
+
+  try {
+    const raw = window.localStorage.getItem(CART_STORE_KEY);
+    if (!raw) return { byUser: {} };
+
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && parsed.byUser) {
+      return parsed;
+    }
+
+    return { byUser: {} };
+  } catch (err) {
+    console.error("Failed to parse cart store from localStorage", err);
+    return { byUser: {} };
+  }
+};
+
+
+const saveCartStore = (store) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CART_STORE_KEY, JSON.stringify(store));
+  } catch (err) {
+    console.error("Failed to save cart store to localStorage", err);
+  }
+};
 
 export const CartProvider = ({ children }) => {
+  // key user saat ini (userId atau 'guest')
+  const [userKey, setUserKey] = useState(() => getCurrentUserKey());
+
+  // items di cart untuk userKey saat ini
   const [items, setItems] = useState(() => {
-    if (typeof window === "undefined") return [];
-
-    try {
-      const raw = window.localStorage.getItem(CART_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-
-      if (!Array.isArray(parsed)) return [];
-
-      // pastikan setiap item punya id unik
-      return parsed.map((p) => ({
-        ...p,
-        id: p.id ?? p.product_id,
-        quantity: p.quantity ?? 1,
-      }));
-    } catch (err) {
-      console.error("Failed to parse cart from localStorage", err);
-      return [];
-    }
+    const store = loadCartStore();
+    const key = getCurrentUserKey();
+    const list = store.byUser[key];
+    return Array.isArray(list)
+      ? list.map((p) => ({
+          ...p,
+          id: p.id ?? p.product_id,
+          quantity: p.quantity ?? 1,
+        }))
+      : [];
   });
 
-  // simpan ke localStorage setiap berubah
+  // setiap items berubah → simpan ke store[userKey]
   useEffect(() => {
-    try {
-      window.localStorage.setItem(CART_KEY, JSON.stringify(items));
-    } catch (err) {
-      console.error("Failed to save cart to localStorage", err);
-    }
-  }, [items]);
+    const store = loadCartStore();
+    const key = userKey;
+
+    store.byUser[key] = (items || []).map((p) => ({
+      ...p,
+      id: p.id ?? p.product_id,
+      quantity: p.quantity ?? 1,
+    }));
+
+    saveCartStore(store);
+  }, [items, userKey]);
+
+  
+  const syncCartUser = () => {
+    const newKey = getCurrentUserKey();
+
+    setUserKey((prevKey) => {
+      if (prevKey === newKey) return prevKey;
+
+      const store = loadCartStore();
+      const list = store.byUser[newKey];
+
+      setItems(
+        Array.isArray(list)
+          ? list.map((p) => ({
+              ...p,
+              id: p.id ?? p.product_id,
+              quantity: p.quantity ?? 1,
+            }))
+          : []
+      );
+
+      return newKey;
+    });
+  };
 
   const addToCart = (product, qty = 1) => {
     setItems((prev) => {
@@ -45,15 +108,12 @@ export const CartProvider = ({ children }) => {
       }
 
       const existing = prev.find((p) => p.id === key);
-
       if (existing) {
-        // kalau produk dengan id yang sama sudah ada → tambah quantity
         return prev.map((p) =>
           p.id === key ? { ...p, quantity: p.quantity + qty } : p
         );
       }
 
-      // item baru
       return [
         ...prev,
         {
@@ -79,13 +139,12 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+ 
   const clearCart = () => {
     setItems([]);
-    try {
-      window.localStorage.removeItem(CART_KEY);
-    } catch (err) {
-      console.error("Failed to clear cart from localStorage", err);
-    }
+    const store = loadCartStore();
+    store.byUser[userKey] = [];
+    saveCartStore(store);
   };
 
   const totalItems = items.reduce((sum, p) => sum + (p.quantity || 1), 0);
@@ -104,6 +163,7 @@ export const CartProvider = ({ children }) => {
         clearCart,
         totalItems,
         subtotal,
+        syncCartUser, 
       }}
     >
       {children}

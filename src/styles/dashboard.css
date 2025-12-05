@@ -183,6 +183,7 @@
   font-size: 15px;
   font-weight: 700;
   color: #dc2626;
+  white-space: nowrap;
 }
 
 .match-badge {
@@ -306,6 +307,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;  
+  min-width: 130px;  
 }
 
 .buy-btn:hover {
@@ -333,10 +339,16 @@
 }
 
 .popular-meta {
-  margin: 0;
+  margin: 20px 0 0;
   font-size: 13px;
-  color: #6b7280;
+  color: #000;
+  font-weight: 600;
 }
+
+.popular-meta strong {
+  color: #dc2626;
+}
+
 
 /* ===== HISTORY / RIWAYAT ===== */
 
@@ -357,7 +369,7 @@
   color: #6b7280;
 }
 
-/* Tabel */
+
 .history-table {
   width: 100%;
   border-collapse: collapse;
@@ -486,10 +498,18 @@
   margin-top: 12px;
 }
 
+/* FORCE STYLING UNTUK POPULAR META */
+.recommend-product-item .popular-meta {
+  margin-top: 10px !important; 
+  font-weight: 600;
+  color: #111827;
+}
 
-/* ===========================================================
-   TRANSISI HALUS UNTUK ISI DASHBOARD
-   =========================================================== */
+
+
+/* 
+   TRANSISI
+    */
 
 .page-dashboard .dashboard-page {
   opacity: 0;
@@ -554,9 +574,9 @@
   }
 }
 
-/* ===========================================================
+/* 
    LOADING STATE DASHBOARD
-   =========================================================== */
+    */
 
 .page-dashboard {
   display: flex;

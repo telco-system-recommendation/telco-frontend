@@ -9,6 +9,7 @@ import {
   FiLock,
   FiLogOut,
   FiMessageSquare,
+  FiClock,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
@@ -30,12 +31,16 @@ const PREFERENSI_OPTIONS = [
   "Roaming",
 ];
 
+const PHONE_MIN_DIGITS = 10;
+const PHONE_MAX_DIGITS = 15;
+
 const Profile = () => {
   const navigate = useNavigate();
   const session = getSession();
   const user = session?.user;
 
-  const { clearCart } = useCart();
+
+  const { syncCartUser } = useCart();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -60,6 +65,9 @@ const Profile = () => {
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
 
+  const sanitizePhone = (value) =>
+    (value || "").replace(/\D/g, "").slice(0, PHONE_MAX_DIGITS);
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -80,7 +88,7 @@ const Profile = () => {
         setProfile(p);
         setFullName(p?.full_name || "");
         setEmail(p?.email || currentUser.email || "");
-        setPhone(p?.phone || "");
+        setPhone(sanitizePhone(p?.phone));
         setAddress(p?.address || "");
         setPreferensi(p?.preferensi_produk || "");
       } catch (err) {
@@ -109,12 +117,18 @@ const Profile = () => {
 
     setFullName(profile.full_name || "");
     setEmail(profile.email || user.email || "");
-    setPhone(profile.phone || "");
+    setPhone(sanitizePhone(profile.phone));
     setAddress(profile.address || "");
     setPreferensi(profile.preferensi_produk || "");
     setIsEditing(false);
     setError("");
     setSuccess("");
+  };
+
+  const handlePhoneChange = (e) => {
+    const raw = e.target.value;
+    const digitsOnly = sanitizePhone(raw);
+    setPhone(digitsOnly);
   };
 
   const handleSave = async (e) => {
@@ -126,9 +140,35 @@ const Profile = () => {
       setError("");
       setSuccess("");
 
+      const trimmedName = fullName.trim();
+      const trimmedPhone = phone.trim();
+
+      if (!trimmedName) {
+        setError("Nama lengkap tidak boleh kosong.");
+        setSaving(false);
+        return;
+      }
+
+      if (!trimmedPhone) {
+        setError("Nomor telepon wajib diisi.");
+        setSaving(false);
+        return;
+      }
+
+      if (
+        trimmedPhone.length < PHONE_MIN_DIGITS ||
+        trimmedPhone.length > PHONE_MAX_DIGITS
+      ) {
+        setError(
+          `Nomor telepon harus ${PHONE_MIN_DIGITS}–${PHONE_MAX_DIGITS} digit angka.`
+        );
+        setSaving(false);
+        return;
+      }
+
       const payload = {
-        full_name: fullName,
-        phone,
+        full_name: trimmedName,
+        phone: trimmedPhone,
         preferensi_produk: preferensi || null,
         email,
         address: address || null,
@@ -152,8 +192,12 @@ const Profile = () => {
       console.warn("Logout error:", e);
     }
 
-    clearCart();
+   
     clearSession();
+
+    
+    syncCartUser();
+
     navigate("/");
   };
 
@@ -298,9 +342,6 @@ const Profile = () => {
                         disabled={true}
                       />
                     </div>
-                    <p className="field-hint">
-                      Untuk mengubah email, silakan hubungi dukungan.
-                    </p>
                   </div>
 
                   {/* Nomor Telepon */}
@@ -309,11 +350,13 @@ const Profile = () => {
                     <div className="profile-input-wrapper">
                       <FiPhone className="profile-input-icon" />
                       <input
-                        type="text"
+                        type="tel"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         className="profile-input"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="08123xxxxxxx"
+                        onChange={handlePhoneChange}
+                        placeholder="08xxxxxxxxxx"
                         disabled={!isEditing}
                       />
                     </div>
@@ -485,6 +528,15 @@ const Profile = () => {
                     </form>
                   </div>
                 )}
+
+                <button
+                  type="button"
+                  className="account-row"
+                  onClick={() => navigate("/history")}
+                >
+                  <FiClock />
+                  <span>Riwayat Transaksi</span>
+                </button>
 
                 <button type="button" className="account-row">
                   <FiBell />

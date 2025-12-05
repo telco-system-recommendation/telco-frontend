@@ -53,7 +53,7 @@ const Receipt = () => {
       <div className="receipt-page">
         <div className="receipt-container">
           <div className="receipt-card">
-            {/*  HEADER UNTUK PRINT (LOGO + BRAND)  */}
+            {/*  HEADER UNTUK PRINT */}
             <div className="receipt-print-header">
               <img
                 src={Logo}
@@ -158,7 +158,7 @@ const Receipt = () => {
                 className="receipt-button-secondary"
                 onClick={() => navigate("/dashboard")}
               >
-                Kembali ke Dashboard
+                Kembali
               </button>
               <button
                 type="button"

@@ -81,7 +81,6 @@
   transform: translateY(-1px);
 }
 
-/* ===== BLOK TELEPON & ALAMAT ===== */
 .profile-summary-extra {
   width: 100%;
   border-top: 1px solid #e5e7eb;
@@ -94,8 +93,9 @@
 
 .summary-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
+  width: 100%;
 }
 
 .summary-icon {
@@ -121,10 +121,15 @@
   color: #16a34a;
 }
 
+
 .summary-text {
+  flex: 1;      
   display: flex;
   flex-direction: column;
   gap: 2px;
+  align-items: flex-start; 
+  text-align: left;
+  margin-left: 0 !important;
 }
 
 .summary-label {
@@ -137,7 +142,9 @@
   font-size: 14px;
   color: #374151;
   margin: 0;
+  white-space: nowrap; 
 }
+
 
 /* ===== KONTEN KANAN ===== */
 .profile-main {
@@ -415,9 +422,9 @@
   margin-bottom: 10px;
 }
 
-/* ===========================================================
-   TRANSISI HALUS KHUSUS HALAMAN PROFIL
-   =========================================================== */
+/* 
+   TRANSISI
+  */
 
 .page-profile .profile-page {
   opacity: 0;
