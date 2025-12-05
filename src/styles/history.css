@@ -1,0 +1,367 @@
+/* PAGE WRAPPER */
+.page-history {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 140px);
+}
+
+.history-page {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* BACK BUTTON */
+.history-back-btn {
+  border: none;
+  background: transparent;
+  color: #0f172a;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+
+.history-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+
+.history-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+
+.history-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.history-section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.history-section-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* FILTER BAR */
+.history-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.history-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-filter-group label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.history-filter-group select {
+  min-width: 160px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
+  font-size: 13px;
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+}
+
+/* TABLE CARD */
+.history-table-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+/* TABEL */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.history-table thead tr {
+  background: #f9fafb;
+}
+
+.history-table th,
+.history-table td {
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.history-table th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.history-table tbody tr + tr td {
+  border-top: 1px solid #f3f4f6;
+}
+
+.history-table td {
+  color: #111827;
+}
+
+
+.status-pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.status-pill.success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+
+.pagination {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn,
+.pagination-page-btn {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.pagination-btn[disabled],
+.pagination-page-btn[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.pagination-page-btn.active {
+  background: #0a4f9b;
+  color: #ffffff;
+  border-color: #0a4f9b;
+}
+
+.pagination-btn:hover:not([disabled]),
+.pagination-page-btn:hover:not([disabled]) {
+  background: #0a4f9b;
+  color: #ffffff;
+  border-color: #0a4f9b;
+  transform: translateY(-0.5px);
+}
+
+
+.history-empty,
+.history-loading {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 22px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+
+.history-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-loading::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 3px solid rgba(15, 23, 42, 0.18);
+  border-top-color: #f15a24;
+  animation: historySpinner 0.7s linear infinite;
+}
+
+.history-loading-text {
+  animation: historyTextPulse 1.2s ease-in-out infinite;
+}
+
+.page-history {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 140px);
+}
+
+.history-page {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+
+.history-back-btn {
+  border: none;
+  background: transparent;
+  color: #0f172a;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.history-header-center {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.history-main-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0a3981;
+}
+
+.history-main-subtitle {
+  margin-top: 6px;
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+
+.history-loading-text {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+
+
+.history-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+
+.history-filters-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+
+
+.history-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+
+}
+
+
+/*
+   TRANSISI 
+    */
+
+.page-history .history-page {
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  will-change: opacity, transform;
+  animation: historyPageEnter 0.32s ease-out forwards;
+}
+
+@keyframes historyPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+.history-filters-row,
+.history-table-wrapper,
+.history-empty {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  will-change: opacity, transform;
+  animation: historyCardIn 0.3s ease-out forwards;
+  animation-delay: 0.08s;
+}
+
+@keyframes historyCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .history-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .history-filters {
+    width: 100%;
+  }
+
+  .history-filter-group select {
+    width: 100%;
+  }
+}

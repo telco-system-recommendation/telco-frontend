@@ -4,11 +4,13 @@ import { FiMail, FiLock, FiZap, FiWifi, FiShield } from "react-icons/fi";
 import Logo from "../../assets/logo.png";
 import "../../styles/login.css";
 
-import { login as loginApi, saveSession } from "../../services/authApi";
+import { login as loginApi } from "../../services/authApi";
 import { hasUserBehaviour } from "../../services/userBehaviourApi";
+import { useCart } from "../../context/CartContext";   
 
 const Login = () => {
   const navigate = useNavigate();
+  const { syncCartUser } = useCart();                
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,44 +18,44 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrorMessage("");
+    e.preventDefault();
+    setErrorMessage("");
 
-  if (!email || !password) {
-    setErrorMessage("Email dan password wajib diisi.");
-    return;
-  }
-
-  try {
-    setIsSubmitting(true);
-
-    const session = await loginApi({ email, password });
-    saveSession(session);
-
-    const userId = session?.user?.id;
-    const accessToken = session?.access_token;
-
-    let alreadyHasBehaviour = false;
+    if (!email || !password) {
+      setErrorMessage("Email dan password wajib diisi.");
+      return;
+    }
 
     try {
-      alreadyHasBehaviour = await hasUserBehaviour(userId, accessToken);
-    } catch (err) {
-      console.error("Gagal cek user_behaviour:", err);
-    }
+      setIsSubmitting(true);
 
-    if (alreadyHasBehaviour) {
-      // sudah pernah isi ColdStart
-      return navigate("/dashboard");
-    } else {
-      // belum pernah isi → wajib ke ColdStart
-      return navigate("/cold-start");
+      const session = await loginApi({ email, password });
+
+
+      syncCartUser();                                 
+
+      const userId = session?.user?.id;
+      const accessToken = session?.access_token;
+
+      let alreadyHasBehaviour = false;
+      try {
+        alreadyHasBehaviour = await hasUserBehaviour(userId, accessToken);
+      } catch (err) {
+        console.error("Gagal cek user_behaviour:", err);
+      }
+
+      if (alreadyHasBehaviour) {
+        navigate("/dashboard");
+      } else {
+        navigate("/cold-start");
+      }
+    } catch (error) {
+      setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (error) {
-    setErrorMessage(error.message || "Gagal masuk. Silakan coba lagi.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
+
 
   return (
     <div className="page page-login">
@@ -110,7 +112,7 @@ const Login = () => {
           </div>
         </div>
 
-        {/* RIGHT (TIDAK DIUBAH) */}
+        {/* RIGHT */}
         <div className="login-right">
           <div className="login-card">
             <h2 className="login-card-title">Selamat Datang Kembali</h2>

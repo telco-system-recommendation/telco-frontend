@@ -13,13 +13,14 @@ import Signup from "./pages/signup/Signup";
 import Product from "./pages/product/Product";
 import Promo from "./pages/promo/Promo";
 import ResetPassword from "./pages/reset-password/ResetPassword";
-
+import History from "./pages/history/History";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ProfileSetup from "./pages/profile/SetupProfile";
 import ColdStart from "./pages/profile/ColdStart";
 import Profile from "./pages/profile/Profile";
 import Receipt from "./pages/receipt/Receipt";
 import ComplaintsCenter from "./pages/complaints/ComplaintsCenter";
+import ResetPasswordConfirm from "./pages/reset-password/ResetPasswordConfirm";
 
 // Protected Route
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -108,16 +109,27 @@ function App() {
             />
 
             <Route
-            path="/complaints"
-            element={
-              <ProtectedRoute>
-                <ComplaintsCenter />
-              </ProtectedRoute>
-            }
-          />
+              path="/complaints"
+              element={
+                <ProtectedRoute>
+                  <ComplaintsCenter />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/reset-password-confirm"
+              element={<ResetPasswordConfirm />}
+            />
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <History />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
-
-
         </main>
         <Footer />
       </div>

@@ -5,6 +5,9 @@ import { updateProfile } from "../../services/profilesApi";
 import { FiBarChart2 } from "react-icons/fi";
 import "../../styles/setupProfile.css";
 
+const PHONE_MIN_DIGITS = 10;
+const PHONE_MAX_DIGITS = 15;
+
 const SetupProfile = () => {
   const navigate = useNavigate();
 
@@ -16,12 +19,26 @@ const SetupProfile = () => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const handlePhoneChange = (e) => {
+    const raw = e.target.value;
+
+    const digitsOnly = raw.replace(/\D/g, "").slice(0, PHONE_MAX_DIGITS);
+    setPhone(digitsOnly);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
 
     if (!fullName || !phone || !preferensi) {
       setErrorMsg("Semua kolom wajib diisi.");
+      return;
+    }
+
+    if (phone.length < PHONE_MIN_DIGITS || phone.length > PHONE_MAX_DIGITS) {
+      setErrorMsg(
+        `Nomor telepon harus ${PHONE_MIN_DIGITS}–${PHONE_MAX_DIGITS} digit angka.`
+      );
       return;
     }
 
@@ -78,10 +95,12 @@ const SetupProfile = () => {
             <label>
               Nomor Telepon
               <input
-                type="text"
-                placeholder="08xx xxxx xxxx"
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="08xxxxxxxxxx"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={handlePhoneChange}
               />
             </label>
 
@@ -93,7 +112,6 @@ const SetupProfile = () => {
               >
                 <option value="">Pilih preferensi produk</option>
 
-                {/* pakai LABEL yang sama dengan Dashboard & Profile */}
                 <option value="Pulsa & Nelpon">Pulsa & Paket Nelpon</option>
                 <option value="Kuota Data">Kuota Data Internet</option>
                 <option value="Streaming Subscription">

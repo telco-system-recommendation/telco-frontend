@@ -53,7 +53,7 @@ const buildPopularProducts = (trxList) => {
 };
 
 const Dashboard = () => {
-  const { addToCart, clearCart } = useCart();
+  const { addToCart, syncCartUser } = useCart();
   const navigate = useNavigate();
   const session = getSession();
   const user = session?.user;
@@ -67,16 +67,13 @@ const Dashboard = () => {
 
   // ===== PAGINATION STATE =====
   const [recommendPage, setRecommendPage] = useState(1);
-  const [historyPage, setHistoryPage] = useState(1);
 
   const RECOMMEND_PAGE_SIZE = 5;
-  const HISTORY_PAGE_SIZE = 10;
 
   const totalPengeluaran = transactions
     .filter((t) => t.status === "success")
     .reduce((sum, t) => sum + Number(t.price || 0), 0);
 
-  // transaksi terakhir yang berhasil → paket aktif
   const activePackage = transactions.find((t) => t.status === "success");
   const activePackageDate = activePackage?.created_at
     ? new Date(activePackage.created_at).toLocaleDateString("id-ID", {
@@ -86,24 +83,14 @@ const Dashboard = () => {
       })
     : null;
 
-  // ===== DERIVED DATA UNTUK PAGINATION =====
   const totalRecommendPages = Math.max(
     1,
     Math.ceil((products?.length || 0) / RECOMMEND_PAGE_SIZE)
-  );
-  const totalHistoryPages = Math.max(
-    1,
-    Math.ceil((transactions?.length || 0) / HISTORY_PAGE_SIZE)
   );
 
   const visibleRecommendProducts = products.slice(
     (recommendPage - 1) * RECOMMEND_PAGE_SIZE,
     recommendPage * RECOMMEND_PAGE_SIZE
-  );
-
-  const visibleTransactions = transactions.slice(
-    (historyPage - 1) * HISTORY_PAGE_SIZE,
-    historyPage * HISTORY_PAGE_SIZE
   );
 
   useEffect(() => {
@@ -116,16 +103,6 @@ const Dashboard = () => {
     }
   }, [products, recommendPage]);
 
-  useEffect(() => {
-    const maxPage = Math.max(
-      1,
-      Math.ceil((transactions?.length || 0) / HISTORY_PAGE_SIZE)
-    );
-    if (historyPage > maxPage) {
-      setHistoryPage(maxPage);
-    }
-  }, [transactions, historyPage]);
-
   const handleLogout = async () => {
     try {
       await logout(session?.access_token);
@@ -133,8 +110,9 @@ const Dashboard = () => {
       console.error("Gagal logout:", err);
     }
 
-    clearCart();
+ 
     clearSession();
+    syncCartUser();
 
     navigate("/");
   };
@@ -148,7 +126,6 @@ const Dashboard = () => {
       setProfile(p);
 
       // 1) REKOMENDASI DARI MODEL
-
       let modelRecs = [];
       if (p?.preferensi_produk && p.preferensi_produk !== "Semua Produk") {
         const categorySlug = PREFERENCE_TO_CATEGORY[p.preferensi_produk];
@@ -206,10 +183,8 @@ const Dashboard = () => {
 
       setTransactions(trxUser || []);
 
-      // 1) hitung produk populer basic dari transaction_history
       const basePopular = buildPopularProducts(trxAll || []);
 
-      // 2) ambil detail dari tabel product (description & price)
       const ids = basePopular.map((p) => p.product_id).filter(Boolean);
       let finalPopular = basePopular;
 
@@ -245,13 +220,12 @@ const Dashboard = () => {
   useEffect(() => {
     const init = async () => {
       if (!user) return;
-
       await loadAll();
     };
 
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); 
 
   const handleBuy = (prod) => {
     addToCart({
@@ -373,7 +347,7 @@ const Dashboard = () => {
               </div>
             </section>
 
-            {/* === UNTUK KAMU (TETAP SEPERTI SEMULA) === */}
+            {/* === UNTUK KAMU === */}
             <section className="recommend-card">
               <div className="recommend-header">
                 <div className="recommend-icon">✴</div>
@@ -399,7 +373,10 @@ const Dashboard = () => {
                 )}
 
                 {visibleRecommendProducts.map((prod) => (
-                  <div className="recommend-product-item" key={prod.product_id}>
+                  <div
+                    className="recommend-product-item"
+                    key={prod.product_id}
+                  >
                     <div className="recommend-product-info">
                       <h4>{prod.name}</h4>
                       <p>{prod.description}</p>
@@ -478,18 +455,21 @@ const Dashboard = () => {
                 )}
 
                 {popularProducts.map((prod) => (
-                  <div className="recommend-product-item" key={prod.product_id}>
+                  <div
+                    className="recommend-product-item"
+                    key={prod.product_id}
+                  >
                     <div className="recommend-product-info">
                       <h4>{prod.name}</h4>
-                      <p>{prod.description || "-"}</p>
+                      <p>{prod.description || "-"} </p>
+                      <p className="popular-meta">
+                        Dibeli sebanyak <strong>{prod.count}x</strong>
+                      </p>
                     </div>
 
                     <div className="recommend-product-meta">
                       <p className="recommend-price">
                         Rp {Number(prod.price || 0).toLocaleString("id-ID")}
-                      </p>
-                      <p className="popular-meta">
-                        Dibeli sebanyak {prod.count}x
                       </p>
                       <button
                         className="buy-btn"
@@ -508,102 +488,9 @@ const Dashboard = () => {
                 ))}
               </div>
             </section>
-
-            {/* === RIWAYAT TRANSAKSI === */}
-            <section className="recommend-card history-section">
-              {transactions.length === 0 ? (
-                <p className="empty-text">Belum ada transaksi.</p>
-              ) : (
-                <>
-                  <h3 className="history-title">Riwayat Transaksi</h3>
-                  <p className="history-subtitle">
-                    Transaksi pembelian produk terbaru
-                  </p>
-
-                  <table className="history-table">
-                    <thead>
-                      <tr>
-                        <th>Produk</th>
-                        <th>Tanggal</th>
-                        <th>Harga</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visibleTransactions.map((trx) => (
-                        <tr key={trx.id}>
-                          <td>{trx.product_name}</td>
-                          <td>{trx.created_at?.slice(0, 10)}</td>
-                          <td>
-                            Rp {Number(trx.price || 0).toLocaleString("id-ID")}
-                          </td>
-                          <td>
-                            <span
-                              className={`status-pill ${
-                                trx.status === "success" ? "success" : ""
-                              }`}
-                            >
-                              {trx.status === "success"
-                                ? "Berhasil"
-                                : trx.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {totalHistoryPages > 1 && (
-                    <div className="pagination history-pagination">
-                      <button
-                        type="button"
-                        className="pagination-btn"
-                        disabled={historyPage === 1}
-                        onClick={() =>
-                          setHistoryPage((p) => Math.max(1, p - 1))
-                        }
-                      >
-                        Sebelumnya
-                      </button>
-
-                      {Array.from({ length: totalHistoryPages }).map(
-                        (_, idx) => {
-                          const page = idx + 1;
-                          return (
-                            <button
-                              key={page}
-                              type="button"
-                              className={`pagination-page-btn ${
-                                page === historyPage ? "active" : ""
-                              }`}
-                              onClick={() => setHistoryPage(page)}
-                            >
-                              {page}
-                            </button>
-                          );
-                        }
-                      )}
-
-                      <button
-                        type="button"
-                        className="pagination-btn"
-                        disabled={historyPage === totalHistoryPages}
-                        onClick={() =>
-                          setHistoryPage((p) =>
-                            Math.min(totalHistoryPages, p + 1)
-                          )
-                        }
-                      >
-                        Berikutnya
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </section>
           </div>
 
-          {/* -------- RIGHT (aksi cepat + paket aktif) -------- */}
+          {/* -------- RIGHT -------- */}
           <div className="dashboard-main-right">
             <section className="quick-actions-card">
               <h3>Aksi Cepat</h3>
@@ -623,6 +510,10 @@ const Dashboard = () => {
               </button>
               <button className="quick-btn" onClick={() => navigate("/promo")}>
                 Promo Terbaru
+              </button>
+
+              <button className="quick-btn" onClick={() => navigate("/history")}>
+                Riwayat Transaksi
               </button>
 
               <div className="active-package-card">

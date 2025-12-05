@@ -75,20 +75,54 @@ export async function signup({ email, password }) {
   return handleResponse(res);
 }
 
-// RESET PASSWORD VIA EMAIL (LUPA PASSWORD)
+
 export async function resetPassword({ email }) {
+  const redirectTo =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/reset-password-confirm`
+      : undefined;
+
+  const body = {
+    email,
+    ...(redirectTo ? { redirect_to: redirectTo } : {}),
+  };
+
   const res = await fetch(`${AUTH_BASE_URL}/recover`, {
     method: "POST",
     headers: {
       apikey: SUPABASE_ANON_KEY,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify(body),
   });
 
   await handleResponse(res);
   return true;
 }
+
+
+// RESET PASSWORD MENGGUNAKAN ACCESS TOKEN DARI LINK EMAIL
+export async function resetPasswordWithToken({ accessToken, newPassword }) {
+  if (!accessToken) {
+    throw new Error("Token reset password tidak ditemukan.");
+  }
+
+  const res = await fetch(`${AUTH_BASE_URL}/user`, {
+    method: "PUT",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      password: newPassword,
+    }),
+  });
+
+  return handleResponse(res);
+}
+
+
 
 // UPDATE PASSWORD
 export async function updatePassword(newPassword) {
@@ -151,12 +185,22 @@ export async function logout() {
 
 const SESSION_KEY = "telcoreco_session";
 
+// Simpan session ke sessionStorage + localStorage
 export function saveSession(session) {
   if (typeof window === "undefined" || !session) return;
 
   const payload = { ...session };
+  const serialized = JSON.stringify(payload);
 
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+  // per-tab (dipakai app di runtime)
+  sessionStorage.setItem(SESSION_KEY, serialized);
+
+  // lintas-tab (biar open link in new tab tetap login)
+  try {
+    localStorage.setItem(SESSION_KEY, serialized);
+  } catch (e) {
+    // ignore kalau private mode / quota penuh
+  }
 
   notifySessionChange(payload);
 }
@@ -176,16 +220,23 @@ export function clearSession() {
 export function getSession() {
   if (typeof window === "undefined") return null;
 
-  try {
-    if (
-      localStorage.getItem(SESSION_KEY) &&
-      !sessionStorage.getItem(SESSION_KEY)
-    ) {
-      localStorage.removeItem(SESSION_KEY);
-    }
-  } catch (e) {}
+  let raw = sessionStorage.getItem(SESSION_KEY);
 
-  const raw = sessionStorage.getItem(SESSION_KEY);
+  // Tab baru: sessionStorage kosong tapi localStorage masih ada
+  if (!raw) {
+    try {
+      const localRaw = localStorage.getItem(SESSION_KEY);
+      if (localRaw) {
+        sessionStorage.setItem(SESSION_KEY, localRaw);
+        raw = localRaw;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   if (!raw) return null;
 
   try {

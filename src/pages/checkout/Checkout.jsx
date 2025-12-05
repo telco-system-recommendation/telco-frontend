@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiPhone, FiUser, FiMail, FiMapPin } from "react-icons/fi";
 import "../../styles/checkout.css";
 import { createTransaction } from "../../services/transactionApi";
 import { getSession } from "../../services/authApi";
+import { getProfile } from "../../services/profilesApi";
 
 const Checkout = () => {
   const { items, subtotal, clearCart, totalItems } = useCart();
@@ -14,6 +15,7 @@ const Checkout = () => {
   const taxRate = 0.11;
   const taxAmount = subtotal * taxRate;
   const total = subtotal + taxAmount;
+
 
   const [contact, setContact] = useState({
     name: "",
@@ -26,6 +28,7 @@ const Checkout = () => {
     city: "Jakarta",
     postalCode: "",
   });
+
 
   const [paymentMethod, setPaymentMethod] = useState("card");
 
@@ -46,39 +49,143 @@ const Checkout = () => {
     accountName: "",
   });
 
-
   const [isPaying, setIsPaying] = useState(false);
-
-
   const [errorMessage, setErrorMessage] = useState("");
+
+
+  // PREFILL DATA KONTAK DARI PROFIL USER
+
+  useEffect(() => {
+    const session = getSession();
+    if (!session || !session.user || !session.user.id) return;
+
+    const userId = session.user.id;
+    const userEmail = session.user.email || "";
+
+    (async () => {
+      try {
+        const profile = await getProfile(userId);
+        if (!profile) return;
+
+        setContact((prev) => ({
+          ...prev,
+          name: profile.full_name || prev.name,
+          phone: profile.phone || prev.phone,
+          email: profile.email || userEmail || prev.email,
+        }));
+
+        setShipping((prev) => ({
+          ...prev,
+          address: profile.address || prev.address,
+          city: profile.city || prev.city,
+          postalCode: profile.postal_code || prev.postalCode,
+        }));
+      } catch (err) {
+        console.error("Gagal mengambil profil untuk checkout:", err);
+      }
+    })();
+  }, []);
+
+
+  // FORMAT INPUT KARTU
+ 
+  const formatCardNumber = (value) => {
+
+    let digits = value.replace(/\D/g, "").slice(0, 16);
+    return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+  };
+
+  const formatExpiry = (value) => {
+
+    let digits = value.replace(/\D/g, "").slice(0, 4);
+    if (digits.length >= 3) {
+      digits = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    }
+    return digits;
+  };
+
+  const formatCvv = (value) => {
+    return value.replace(/\D/g, "").slice(0, 3);
+  };
 
   const handleBackClick = () => {
     navigate(-1);
   };
 
+
+  // STEP 1 → VALIDASI KONTAK
+
   const handleNextToPayment = (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
     if (!contact.name || !contact.phone || !contact.email) {
       setErrorMessage("Lengkapi informasi kontak terlebih dahulu.");
       return;
     }
-    setErrorMessage(""); 
+
+    // validasi simple no HP & email
+    const phoneDigits = contact.phone.replace(/\D/g, "");
+    if (phoneDigits.length < 10) {
+      setErrorMessage("Nomor telepon tidak valid.");
+      return;
+    }
+
+    const emailValid = /\S+@\S+\.\S+/.test(contact.email);
+    if (!emailValid) {
+      setErrorMessage("Format email tidak valid.");
+      return;
+    }
+
     setStep(2);
   };
 
-  // VALIDASI PEMBAYARAN
-  const validatePaymentDetails = () => {
 
+  // VALIDASI PEMBAYARAN
+
+  const validatePaymentDetails = () => {
     setErrorMessage("");
 
     if (paymentMethod === "card") {
-      if (
-        !cardDetail.number ||
-        !cardDetail.holder ||
-        !cardDetail.expiry ||
-        !cardDetail.cvv
-      ) {
+      const cleanNumber = cardDetail.number.replace(/\s/g, "");
+
+      if (!cleanNumber || !cardDetail.holder || !cardDetail.expiry || !cardDetail.cvv) {
         setErrorMessage("Lengkapi detail kartu terlebih dahulu.");
+        return false;
+      }
+
+
+      if (!/^\d{16}$/.test(cleanNumber)) {
+        setErrorMessage("Nomor kartu harus 16 digit angka.");
+        return false;
+      }
+
+      const match = /^(\d{2})\/(\d{2})$/.exec(cardDetail.expiry);
+      if (!match) {
+        setErrorMessage("Format tanggal kadaluarsa harus MM/YY.");
+        return false;
+      }
+
+      const month = parseInt(match[1], 10);
+      const year = 2000 + parseInt(match[2], 10);
+
+      if (month < 1 || month > 12) {
+        setErrorMessage("Bulan kadaluarsa tidak valid.");
+        return false;
+      }
+
+      const now = new Date();
+      const thisMonth = now.getMonth() + 1;
+      const thisYear = now.getFullYear();
+
+      if (year < thisYear || (year === thisYear && month < thisMonth)) {
+        setErrorMessage("Kartu sudah kadaluarsa.");
+        return false;
+      }
+
+ 
+      if (!/^\d{3}$/.test(cardDetail.cvv)) {
+        setErrorMessage("CVV harus 3 digit angka.");
         return false;
       }
     }
@@ -100,96 +207,92 @@ const Checkout = () => {
     return true;
   };
 
+
   // BAYAR SEKARANG
+
   const handlePayNow = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
+    if (isPaying) return;
+    if (!validatePaymentDetails()) return;
 
-  if (isPaying) return;
+    try {
+      setIsPaying(true);
 
-  if (!validatePaymentDetails()) return;
-
-  try {
-    setIsPaying(true);
-
-    const session = getSession();
-    if (!session || !session.user || !session.user.id) {
-      navigate("/login");
-      return;
-    }
-
-    const user = session.user;
-    const orderId = `TRX-${Date.now()}`;
-    const transactionTime = new Date().toISOString();
-    const trxPromises = [];
-
-    items.forEach((item) => {
-      for (let i = 0; i < item.quantity; i++) {
-        trxPromises.push(
-          createTransaction({
-            product_id: item.product_id,
-            product_name: item.name,
-            price: item.price,
-            status: "success",
-            user_id: user.id,
-            created_at: transactionTime,
-
-            full_name: contact.name,
-            phone: contact.phone,
-            email: contact.email,
-
-            address: {
-              address: shipping.address,
-              city: shipping.city,
-              postal_code: shipping.postalCode,
-            },
-
-            data_quota_gb: item.data_quota_gb || null,
-          })
-        );
+      const session = getSession();
+      if (!session || !session.user || !session.user.id) {
+        navigate("/login");
+        return;
       }
-    });
+
+      const user = session.user;
+      const orderId = `TRX-${Date.now()}`;
+      const transactionTime = new Date().toISOString();
+      const trxPromises = [];
+
+      items.forEach((item) => {
+        for (let i = 0; i < item.quantity; i++) {
+          trxPromises.push(
+            createTransaction({
+              product_id: item.product_id,
+              product_name: item.name,
+              price: item.price,
+              status: "success",
+              user_id: user.id,
+              created_at: transactionTime,
+
+              full_name: contact.name,
+              phone: contact.phone,
+              email: contact.email,
+
+              address: {
+                address: shipping.address,
+                city: shipping.city,
+                postal_code: shipping.postalCode,
+              },
+
+              data_quota_gb: item.data_quota_gb || null,
+            })
+          );
+        }
+      });
+
+      await Promise.all(trxPromises);
+
+      const customer = {
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        city: shipping.city,
+        address: shipping.address,
+      };
+
+      clearCart();
+
+      navigate("/receipt", {
+        state: {
+          orderId,
+          transactionTime,
+          items,
+          subtotal,
+          taxAmount,
+          total,
+          paymentMethod,
+          customer,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      setErrorMessage(
+        "Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi."
+      );
+    } finally {
+      setIsPaying(false);
+    }
+  };
 
 
-    await Promise.all(trxPromises);
-
-
-    const customer = {
-      name: contact.name,
-      email: contact.email,
-      phone: contact.phone,
-      city: shipping.city,
-      address: shipping.address,
-    };
-
-    clearCart();
-
-
-    navigate("/receipt", {
-      state: {
-        orderId,
-        transactionTime,
-        items,
-        subtotal,
-        taxAmount,
-        total,
-        paymentMethod,
-        customer,
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    setErrorMessage(
-      "Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi."
-    );
-  } finally {
-
-    setIsPaying(false);
-  }
-};
-
-
-
+  // RENDER FORM PEMBAYARAN
 
   const renderPaymentDetails = () => {
     if (paymentMethod === "card") {
@@ -205,7 +308,10 @@ const Checkout = () => {
                 placeholder="1234 5678 9012 3456"
                 value={cardDetail.number}
                 onChange={(e) =>
-                  setCardDetail({ ...cardDetail, number: e.target.value })
+                  setCardDetail({
+                    ...cardDetail,
+                    number: formatCardNumber(e.target.value),
+                  })
                 }
               />
             </div>
@@ -230,7 +336,10 @@ const Checkout = () => {
                   placeholder="MM/YY"
                   value={cardDetail.expiry}
                   onChange={(e) =>
-                    setCardDetail({ ...cardDetail, expiry: e.target.value })
+                    setCardDetail({
+                      ...cardDetail,
+                      expiry: formatExpiry(e.target.value),
+                    })
                   }
                 />
               </div>
@@ -241,7 +350,10 @@ const Checkout = () => {
                   placeholder="123"
                   value={cardDetail.cvv}
                   onChange={(e) =>
-                    setCardDetail({ ...cardDetail, cvv: e.target.value })
+                    setCardDetail({
+                      ...cardDetail,
+                      cvv: formatCvv(e.target.value),
+                    })
                   }
                 />
               </div>
@@ -332,7 +444,9 @@ const Checkout = () => {
     );
   };
 
-  // UI
+
+  // UI UTAMA
+
 
   return (
     <div className="page page-checkout">
@@ -361,11 +475,7 @@ const Checkout = () => {
         <div className="checkout-layout">
           <main className="checkout-main">
             {/* Banner error */}
-            {errorMessage && (
-              <div className="checkout-error">
-                {errorMessage}
-              </div>
-            )}
+            {errorMessage && <div className="checkout-error">{errorMessage}</div>}
 
             {step === 1 && (
               <form onSubmit={handleNextToPayment}>

@@ -1,7 +1,6 @@
 @import "./_variables.css";
 
-/* ===== FOOTER WRAPPER ===== */
-
+/*  FOOTER WRAPPER  */
 .footer {
   background: #083763;
   color: #ffffff;
@@ -13,27 +12,27 @@
   color: #ffffff;
 }
 
-/* ===== FOOTER CONTENT ===== */
-
+/*  FOOTER CONTENT  */
 .footer-container {
-  width: 80%;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 80px;                
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; 
   align-items: flex-start;
   gap: 40px;
 }
 
-/* 3 kolom utama */
+
 .footer-about,
 .footer-contact,
 .footer-social {
-  flex: 1;
+  flex: 1;                         
   text-align: left;
+  min-width: 0;
 }
 
-/* logo + teks */
 .footer-logo {
   display: flex;
   align-items: center;
@@ -46,19 +45,32 @@
   height: 32px;
 }
 
+
 .footer-about p {
   opacity: 0.85;
   line-height: 1.6;
+  text-align: justify;            
 }
 
-/* ===== CONTACT ===== */
+/*  CONTACT  */
+.footer-about h4 {
+  text-align: left;               
+}
+
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;         
+}
 
 .footer-contact h4,
 .footer-social h4 {
   margin-bottom: 10px;
   font-size: 18px;
   font-weight: 600;
+  text-align: center;           
 }
+
 
 .footer-contact p {
   display: flex;
@@ -66,12 +78,25 @@
   gap: 8px;
   opacity: 0.9;
   margin: 6px 0;
+  width: max-content;
+}
+
+
+.footer-contact p svg {
+  flex: 0 0 20px;       
+}
+
+
+.footer-contact p span {
+  flex: 1;
+  display: inline-block;
+  text-align: justify;            
 }
 
 /* ===== SOCIAL ICONS ===== */
-
 .footer-social-icons {
   display: flex;
+  justify-content: center;
   gap: 12px;
   margin-top: 5px;
 }
@@ -94,10 +119,9 @@
   transform: translateY(-2px);
 }
 
-/* ===== DIVIDER & COPYRIGHT ===== */
-
+/*  DIVIDER & COPYRIGHT  */
 .footer-divider {
-  width: 80%;
+  width: 100%;
   max-width: 1200px;
   margin: 25px auto;
   border: none;
@@ -110,29 +134,18 @@
   font-size: 14px;
 }
 
-/* ================ RESPONSIVE FOOTER =================== */
+/*  RESPONSIVE FOOTER  */
 
-/* Tablet */
+
 @media (max-width: 1024px) {
-  .footer-container {
-    width: 90%;
-    gap: 24px;
-  }
-
-  .footer-divider {
-    width: 90%;
-  }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
   .footer {
     padding: 32px 0 24px;
   }
 
   .footer-container {
     width: 90%;
-    flex-direction: column;
+    padding: 0;                   
+    flex-direction: column;    
     align-items: flex-start;
     gap: 24px;
   }
@@ -141,13 +154,21 @@
   .footer-contact,
   .footer-social {
     width: 100%;
+    flex: 1 1 auto;
   }
 
-  .footer-logo {
-    justify-content: flex-start;
+  .footer-about h4,
+  .footer-contact h4,
+  .footer-social h4 {
+    text-align: left;
+  }
+
+  .footer-contact {
+    align-items: flex-start;
   }
 
   .footer-social-icons {
+    justify-content: flex-start;
     margin-top: 8px;
   }
 

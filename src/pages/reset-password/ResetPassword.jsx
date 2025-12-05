@@ -16,16 +16,19 @@ const ResetPassword = () => {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (!email) {
+    if (!email.trim()) {
       setErrorMessage("Email wajib diisi.");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      await resetPassword({ email });
+
+      // panggil API reset password (redirect_to otomatis dari origin)
+      await resetPassword({ email: email.trim() });
+
       setSuccessMessage(
-        "Link reset password telah dikirim ke email Anda. Silakan cek inbox atau folder spam."
+        "Link reset password telah dikirim ke email Anda. Silakan cek inbox atau folder spam, lalu gunakan link terbaru tersebut."
       );
     } catch (error) {
       setErrorMessage(
@@ -39,15 +42,14 @@ const ResetPassword = () => {
   return (
     <div className="page page-reset-password">
       <div className="login-page">
-        {/* bisa reuse layout kiri kalau mau, atau kosongkan */}
         <div className="login-left" />
 
         <div className="login-right">
           <div className="login-card">
             <h2 className="login-card-title">Reset Password</h2>
             <p className="login-card-subtitle">
-              Masukkan email yang terdaftar. Kami akan mengirimkan link untuk
-              mengatur ulang password Anda.
+              Masukkan email yang terdaftar di Telcoreco. Kami akan mengirimkan
+              link untuk mengatur ulang password Anda.
             </p>
 
             <form className="login-form" onSubmit={handleSubmit}>
@@ -63,6 +65,7 @@ const ResetPassword = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     autoComplete="email"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
