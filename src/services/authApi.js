@@ -77,10 +77,20 @@ export async function signup({ email, password }) {
 
 
 export async function resetPassword({ email }) {
-  const redirectTo =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/reset-password-confirm`
-      : undefined;
+  let redirectTo;
+
+  if (typeof window !== "undefined") {
+    const origin = window.location.origin;
+
+    //  production (Vercel)
+    if (origin.includes("telcoreco.vercel.app")) {
+      redirectTo = "https://telcoreco.vercel.app/reset-password-confirm";
+    } 
+    //  development (localhost)
+    else {
+      redirectTo = "http://localhost:5173/reset-password-confirm";
+    }
+  }
 
   const body = {
     email,
@@ -99,6 +109,7 @@ export async function resetPassword({ email }) {
   await handleResponse(res);
   return true;
 }
+
 
 
 // RESET PASSWORD MENGGUNAKAN ACCESS TOKEN DARI LINK EMAIL
