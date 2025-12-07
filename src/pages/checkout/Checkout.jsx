@@ -16,7 +16,6 @@ const Checkout = () => {
   const taxAmount = subtotal * taxRate;
   const total = subtotal + taxAmount;
 
-
   const [contact, setContact] = useState({
     name: "",
     phone: "",
@@ -28,7 +27,6 @@ const Checkout = () => {
     city: "Jakarta",
     postalCode: "",
   });
-
 
   const [paymentMethod, setPaymentMethod] = useState("card");
 
@@ -51,7 +49,6 @@ const Checkout = () => {
 
   const [isPaying, setIsPaying] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
 
   // PREFILL DATA KONTAK DARI PROFIL USER
 
@@ -86,17 +83,18 @@ const Checkout = () => {
     })();
   }, []);
 
+  const formatEwalletPhone = (value) => {
+    return value.replace(/\D/g, "").slice(0, 15);
+  };
 
   // FORMAT INPUT KARTU
- 
-  const formatCardNumber = (value) => {
 
+  const formatCardNumber = (value) => {
     let digits = value.replace(/\D/g, "").slice(0, 16);
     return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
   };
 
   const formatExpiry = (value) => {
-
     let digits = value.replace(/\D/g, "").slice(0, 4);
     if (digits.length >= 3) {
       digits = `${digits.slice(0, 2)}/${digits.slice(2)}`;
@@ -111,7 +109,6 @@ const Checkout = () => {
   const handleBackClick = () => {
     navigate(-1);
   };
-
 
   // STEP 1 → VALIDASI KONTAK
 
@@ -140,7 +137,6 @@ const Checkout = () => {
     setStep(2);
   };
 
-
   // VALIDASI PEMBAYARAN
 
   const validatePaymentDetails = () => {
@@ -149,11 +145,15 @@ const Checkout = () => {
     if (paymentMethod === "card") {
       const cleanNumber = cardDetail.number.replace(/\s/g, "");
 
-      if (!cleanNumber || !cardDetail.holder || !cardDetail.expiry || !cardDetail.cvv) {
+      if (
+        !cleanNumber ||
+        !cardDetail.holder ||
+        !cardDetail.expiry ||
+        !cardDetail.cvv
+      ) {
         setErrorMessage("Lengkapi detail kartu terlebih dahulu.");
         return false;
       }
-
 
       if (!/^\d{16}$/.test(cleanNumber)) {
         setErrorMessage("Nomor kartu harus 16 digit angka.");
@@ -183,7 +183,6 @@ const Checkout = () => {
         return false;
       }
 
- 
       if (!/^\d{3}$/.test(cardDetail.cvv)) {
         setErrorMessage("CVV harus 3 digit angka.");
         return false;
@@ -206,7 +205,6 @@ const Checkout = () => {
 
     return true;
   };
-
 
   // BAYAR SEKARANG
 
@@ -290,7 +288,6 @@ const Checkout = () => {
       setIsPaying(false);
     }
   };
-
 
   // RENDER FORM PEMBAYARAN
 
@@ -396,7 +393,10 @@ const Checkout = () => {
                 placeholder="08xxxxxxxxxx"
                 value={ewalletDetail.phone}
                 onChange={(e) =>
-                  setEwalletDetail({ ...ewalletDetail, phone: e.target.value })
+                  setEwalletDetail({
+                    ...ewalletDetail,
+                    phone: formatEwalletPhone(e.target.value),
+                  })
                 }
               />
             </div>
@@ -444,9 +444,7 @@ const Checkout = () => {
     );
   };
 
-
   // UI UTAMA
-
 
   return (
     <div className="page page-checkout">
@@ -475,7 +473,9 @@ const Checkout = () => {
         <div className="checkout-layout">
           <main className="checkout-main">
             {/* Banner error */}
-            {errorMessage && <div className="checkout-error">{errorMessage}</div>}
+            {errorMessage && (
+              <div className="checkout-error">{errorMessage}</div>
+            )}
 
             {step === 1 && (
               <form onSubmit={handleNextToPayment}>

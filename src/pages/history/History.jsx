@@ -18,7 +18,7 @@ const History = () => {
 
   const [page, setPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("date_desc"); 
+  const [sortBy, setSortBy] = useState("date_desc");
 
   useEffect(() => {
     if (!user) {
@@ -90,9 +90,9 @@ const History = () => {
           <button
             type="button"
             className="history-back-btn"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate(-1)}
           >
-            ← Kembali ke Dashboard
+            ← Kembali
           </button>
 
           <div className="history-header-center">
@@ -108,16 +108,15 @@ const History = () => {
     );
   }
 
-
   return (
     <div className="page page-history">
       <div className="history-page">
         <button
           type="button"
           className="history-back-btn"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate(-1)}
         >
-          ← Kembali ke Dashboard
+          ← Kembali
         </button>
 
         <div className="history-header-center">
@@ -128,20 +127,19 @@ const History = () => {
         </div>
 
         {transactions.length === 0 ? (
-  <div className="history-empty">
-    Belum ada transaksi yang tercatat.
-  </div>
-) : (
-  <>
-
-    <div className="history-filters-row">
-      <div className="history-filters">
-        <div className="history-filter-group">
-          <label>Status</label>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
+          <div className="history-empty">
+            Belum ada transaksi yang tercatat.
+          </div>
+        ) : (
+          <>
+            <div className="history-filters-row">
+              <div className="history-filters">
+                <div className="history-filter-group">
+                  <label>Status</label>
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                  >
                     <option value="all">Semua status</option>
                     <option value="success">Berhasil</option>
                     <option value="pending">Pending</option>

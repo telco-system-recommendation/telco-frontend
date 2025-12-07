@@ -33,7 +33,6 @@ const loadCartStore = () => {
   }
 };
 
-
 const saveCartStore = (store) => {
   if (typeof window === "undefined") return;
   try {
@@ -75,7 +74,6 @@ export const CartProvider = ({ children }) => {
     saveCartStore(store);
   }, [items, userKey]);
 
-  
   const syncCartUser = () => {
     const newKey = getCurrentUserKey();
 
@@ -139,7 +137,6 @@ export const CartProvider = ({ children }) => {
     );
   };
 
- 
   const clearCart = () => {
     setItems([]);
     const store = loadCartStore();
@@ -163,7 +160,7 @@ export const CartProvider = ({ children }) => {
         clearCart,
         totalItems,
         subtotal,
-        syncCartUser, 
+        syncCartUser,
       }}
     >
       {children}

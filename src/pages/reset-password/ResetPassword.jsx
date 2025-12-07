@@ -24,7 +24,7 @@ const ResetPassword = () => {
     try {
       setIsSubmitting(true);
 
-      // panggil API reset password (redirect_to otomatis dari origin)
+      // panggil API reset password
       await resetPassword({ email: email.trim() });
 
       setSuccessMessage(

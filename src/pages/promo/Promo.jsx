@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  FiZap,
-  FiTag,
-  FiPercent,
-  FiClock
-} from "react-icons/fi";
+import { FiZap, FiTag, FiPercent, FiClock } from "react-icons/fi";
 
 import { useNavigate } from "react-router-dom";
 import "../../styles/promo.css";
@@ -20,7 +15,6 @@ const Promo = () => {
   return (
     <div className="page page-promo">
       <div className="promo-page">
-
         {/* Header Section */}
         <div className="promo-header">
           <span className="promo-badge">
@@ -28,7 +22,10 @@ const Promo = () => {
             Promo Spesial
           </span>
           <h2>Promo Terbaru</h2>
-          <p>Jangan lewatkan penawaran menarik untuk produk telekomunikasi favorit Anda</p>
+          <p>
+            Jangan lewatkan penawaran menarik untuk produk telekomunikasi
+            favorit Anda
+          </p>
         </div>
 
         {/* HERO */}
@@ -40,7 +37,9 @@ const Promo = () => {
             </span>
 
             <h3>Flash Sale Weekend!</h3>
-            <p>Dapatkan diskon hingga 50% untuk semua produk setiap akhir pekan</p>
+            <p>
+              Dapatkan diskon hingga 50% untuk semua produk setiap akhir pekan
+            </p>
 
             <div className="promo-countdown">
               <FiClock style={{ marginRight: "6px" }} />
@@ -60,7 +59,6 @@ const Promo = () => {
 
         {/* PROMO CARDS */}
         <div className="promo-cards">
-
           {/* CARD 1 */}
           <div className="promo-card">
             <div className="promo-card-img">
@@ -135,7 +133,6 @@ const Promo = () => {
               Gunakan Promo
             </button>
           </div>
-
         </div>
 
         {/* NEWSLETTER */}
@@ -146,7 +143,6 @@ const Promo = () => {
             Berlangganan Newsletter
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { saveUserBehaviour } from "../../services/userBehaviourApi";
 
 import "../../styles/coldStart.css";
 
-// mapping ke nilai numerik 
+// mapping ke nilai numerik
 const VIDEO_MAP = {
   never: 0.0,
   rarely: 0.15,
@@ -29,10 +29,10 @@ const TRAVEL_MAP = {
 };
 
 const DATA_USAGE_MAP = {
-  light: 3,      // < 5 GB
-  medium: 12,    // 5–20 GB
-  heavy: 35,     // 20–50 GB
-  very_heavy: 60 // > 50 GB
+  light: 3, // < 5 GB
+  medium: 12, // 5–20 GB
+  heavy: 35, // 20–50 GB
+  very_heavy: 60, // > 50 GB
 };
 
 const SPEND_MAP = {
@@ -43,9 +43,9 @@ const SPEND_MAP = {
 };
 
 const TOPUP_MAP = {
-  low: 2,       // 1–2x
-  mid: 4,       // 3–4x
-  high: 6,      // 5–7x
+  low: 2, // 1–2x
+  mid: 4, // 3–4x
+  high: 6, // 5–7x
   very_high: 8, // >7x
 };
 
@@ -85,7 +85,7 @@ const ColdStart = () => {
       return;
     }
 
-    if (loading) return; 
+    if (loading) return;
 
     try {
       setLoading(true);
