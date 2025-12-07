@@ -7,10 +7,7 @@ import {
   FiRotateCcw,
 } from "react-icons/fi";
 
-import {
-  createComplaint,   
-  getMyComplaints,
-} from "../../services/complaintsApi";
+import { createComplaint, getMyComplaints } from "../../services/complaintsApi";
 
 import "../../styles/complaints.css";
 
@@ -65,7 +62,8 @@ const ComplaintsCenter = () => {
     } catch (err) {
       console.error(err);
       setError(
-        err.message || "Gagal mengirim komplain. Silakan coba beberapa saat lagi."
+        err.message ||
+          "Gagal mengirim komplain. Silakan coba beberapa saat lagi."
       );
     } finally {
       setSubmitting(false);
@@ -97,12 +95,7 @@ const ComplaintsCenter = () => {
   return (
     <div className="page page-complaints">
       <div className="complaints-page">
-        {/* Back link ke profil */}
-        <button
-          type="button"
-          className="complaints-back"
-          onClick={handleBack}
-        >
+        <button type="button" className="complaints-back" onClick={handleBack}>
           <FiArrowLeft />
           <span>Kembali ke Profil</span>
         </button>
@@ -124,9 +117,7 @@ const ComplaintsCenter = () => {
         <div className="complaints-tabs">
           <button
             type="button"
-            className={`complaints-tab ${
-              activeTab === "new" ? "active" : ""
-            }`}
+            className={`complaints-tab ${activeTab === "new" ? "active" : ""}`}
             onClick={() => setActiveTab("new")}
           >
             Komplain Baru
@@ -232,11 +223,7 @@ const ComplaintsCenter = () => {
                   <FiSend />
                   {submitting ? "Mengirim..." : "Kirim Komplain"}
                 </button>
-                <button
-                  type="button"
-                  className="cs-reset"
-                  onClick={resetForm}
-                >
+                <button type="button" className="cs-reset" onClick={resetForm}>
                   <FiRotateCcw />
                   Reset
                 </button>

@@ -6,11 +6,11 @@ import "../../styles/login.css";
 
 import { login as loginApi } from "../../services/authApi";
 import { hasUserBehaviour } from "../../services/userBehaviourApi";
-import { useCart } from "../../context/CartContext";   
+import { useCart } from "../../context/CartContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { syncCartUser } = useCart();                
+  const { syncCartUser } = useCart();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,8 +31,7 @@ const Login = () => {
 
       const session = await loginApi({ email, password });
 
-
-      syncCartUser();                                 
+      syncCartUser();
 
       const userId = session?.user?.id;
       const accessToken = session?.access_token;
@@ -55,7 +54,6 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
-
 
   return (
     <div className="page page-login">

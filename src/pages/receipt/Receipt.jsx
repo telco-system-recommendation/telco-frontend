@@ -55,11 +55,7 @@ const Receipt = () => {
           <div className="receipt-card">
             {/*  HEADER UNTUK PRINT */}
             <div className="receipt-print-header">
-              <img
-                src={Logo}
-                alt="Telcoreco"
-                className="receipt-print-logo"
-              />
+              <img src={Logo} alt="Telcoreco" className="receipt-print-logo" />
               <span className="receipt-print-brand">Telcoreco</span>
             </div>
 

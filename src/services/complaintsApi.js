@@ -16,7 +16,12 @@ function getAuthHeaders(token, extra = {}) {
 }
 
 // CREATE complaint + naikkan complain_count
-export async function createComplaint({ title, category, priority, description }) {
+export async function createComplaint({
+  title,
+  category,
+  priority,
+  description,
+}) {
   const token = getAccessToken();
   if (!token) throw new Error("Tidak ada access token");
 
@@ -40,7 +45,6 @@ export async function createComplaint({ title, category, priority, description }
 
   const data = await res.json();
   const complaint = Array.isArray(data) ? data[0] : data;
-
 
   try {
     await increaseComplainCount();
@@ -123,6 +127,5 @@ export async function deleteComplaint(id) {
     throw new Error(`Gagal menghapus komplain: ${res.status} - ${text}`);
   }
 
-  // 204 no content → tidak ada body
   return true;
 }

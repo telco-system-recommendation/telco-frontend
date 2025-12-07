@@ -110,7 +110,6 @@ const Dashboard = () => {
       console.error("Gagal logout:", err);
     }
 
- 
     clearSession();
     syncCartUser();
 
@@ -225,7 +224,7 @@ const Dashboard = () => {
 
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
   const handleBuy = (prod) => {
     addToCart({
@@ -373,10 +372,7 @@ const Dashboard = () => {
                 )}
 
                 {visibleRecommendProducts.map((prod) => (
-                  <div
-                    className="recommend-product-item"
-                    key={prod.product_id}
-                  >
+                  <div className="recommend-product-item" key={prod.product_id}>
                     <div className="recommend-product-info">
                       <h4>{prod.name}</h4>
                       <p>{prod.description}</p>
@@ -455,10 +451,7 @@ const Dashboard = () => {
                 )}
 
                 {popularProducts.map((prod) => (
-                  <div
-                    className="recommend-product-item"
-                    key={prod.product_id}
-                  >
+                  <div className="recommend-product-item" key={prod.product_id}>
                     <div className="recommend-product-info">
                       <h4>{prod.name}</h4>
                       <p>{prod.description || "-"} </p>
@@ -512,7 +505,10 @@ const Dashboard = () => {
                 Promo Terbaru
               </button>
 
-              <button className="quick-btn" onClick={() => navigate("/history")}>
+              <button
+                className="quick-btn"
+                onClick={() => navigate("/history")}
+              >
                 Riwayat Transaksi
               </button>
 

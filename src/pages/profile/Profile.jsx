@@ -39,7 +39,6 @@ const Profile = () => {
   const session = getSession();
   const user = session?.user;
 
-
   const { syncCartUser } = useCart();
 
   const [loading, setLoading] = useState(true);
@@ -192,10 +191,8 @@ const Profile = () => {
       console.warn("Logout error:", e);
     }
 
-   
     clearSession();
 
-    
     syncCartUser();
 
     navigate("/");

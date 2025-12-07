@@ -5,7 +5,7 @@ import { FaPhoneAlt, FaWifi, FaTv, FaGlobe } from "react-icons/fa";
 
 import { getSession } from "../../services/authApi";
 import { getProductsByCategory } from "../../services/productApi";
-import { getDashboardRecommendations } from "../../services/recommendationApi"; 
+import { getDashboardRecommendations } from "../../services/recommendationApi";
 import { useCart } from "../../context/CartContext";
 
 const LoginRequiredModal = ({ isOpen, onClose, onLogin, onSignup }) => {
@@ -101,9 +101,8 @@ const Product = () => {
       setProducts([]);
 
       // 1. Ambil semua produk di kategori tersebut
-      const allProducts = (await getProductsByCategory(
-        cfg.supabaseCategory
-      )) || [];
+      const allProducts =
+        (await getProductsByCategory(cfg.supabaseCategory)) || [];
 
       // 2. Minta rekomendasi model berdasarkan kategori
       let recs = [];
@@ -185,7 +184,8 @@ const Product = () => {
 
           <h2 className="product-title">{currentCategoryLabel}</h2>
           <p className="product-subtitle">
-            Produk yang disarankan otomatis berdasarkan perilaku dan preferensi Anda.
+            Produk yang disarankan otomatis berdasarkan perilaku dan preferensi
+            Anda.
           </p>
 
           {loading && <p className="product-info">Memuat produk...</p>}
@@ -197,15 +197,12 @@ const Product = () => {
             recommendedProducts &&
             recommendedProducts.length > 0 && (
               <div className="recommend-section">
-
-
                 <div className="selected-product-grid">
                   {recommendedProducts.map((item) => (
                     <div
                       key={item.product_id}
                       className="selected-product-card"
                     >
-
                       <h3 className="selected-product-name">{item.name}</h3>
                       <p className="selected-product-price">
                         Rp {Number(item.price || 0).toLocaleString("id-ID")}
@@ -242,10 +239,7 @@ const Product = () => {
             <>
               <div className="selected-product-grid">
                 {products.map((item) => (
-                  <div
-                    key={item.product_id}
-                    className="selected-product-card"
-                  >
+                  <div key={item.product_id} className="selected-product-card">
                     {item.popular && (
                       <span className="badge-popular">Populer</span>
                     )}
